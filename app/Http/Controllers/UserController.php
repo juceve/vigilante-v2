@@ -95,9 +95,81 @@ class UserController extends Controller
             ->with('success', 'Usuario eliminado correctamente');
     }
 
-    public function profile(User $user)
+    public function profile()
     {
-        dd($user);
+        $user = auth()->user();
+        return view('admin.profile', compact('user'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+        
+        $rules = User::$rulesUpdate;
+        $rules['email'] = 'required|string|email|max:255|unique:users,email,' . $user->id;
+        
+        $request->validate($rules);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        return redirect()->route('profile')
+            ->with('success', 'Perfil actualizado correctamente');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $user = auth()->user();
+        
+        $request->validate(User::$rulesPassword);
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->route('profile')
+                ->with('error', 'La contraseña actual no es correcta');
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('profile')
+            ->with('success', 'Contraseña actualizada correctamente');
+    }
+
+    public function updateAvatar(Request $request)
+    {
+        $user = auth()->user();
+        
+        $request->validate(User::$rulesAvatar);
+
+        if ($request->hasFile('avatar')) {
+            // Eliminar avatar anterior si existe
+            if ($user->avatar && file_exists(public_path('uploads/avatars/' . $user->avatar))) {
+                unlink(public_path('uploads/avatars/' . $user->avatar));
+            }
+
+            $file = $request->file('avatar');
+            $filename = time() . '_' . $user->id . '.' . $file->getClientOriginalExtension();
+            
+            // Crear directorio si no existe
+            if (!file_exists(public_path('uploads/avatars'))) {
+                mkdir(public_path('uploads/avatars'), 0755, true);
+            }
+            
+            $file->move(public_path('uploads/avatars'), $filename);
+
+            $user->update([
+                'avatar' => $filename,
+            ]);
+
+            return redirect()->route('profile')
+                ->with('success', 'Avatar actualizado correctamente');
+        }
+
+        return redirect()->route('profile')
+            ->with('error', 'Error al subir la imagen');
     }
 
     public function asinaRol(User $user)

@@ -17,8 +17,23 @@ class User extends Authenticatable
 
 
     static $rules = [
-        'name' => 'required',
+        'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email',
+        'password' => 'required|string|min:8',
+    ];
+
+    static $rulesUpdate = [
+        'name' => 'required|string|max:255',
+        'email' => 'required|email',
+    ];
+
+    static $rulesPassword = [
+        'current_password' => 'required',
+        'password' => 'required|string|min:8|confirmed',
+    ];
+
+    static $rulesAvatar = [
+        'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
     ];
 
     public function adminlte_desc()
@@ -59,7 +74,18 @@ class User extends Authenticatable
 
     public function adminlte_image()
     {
-        return "";
+        if ($this->avatar && file_exists(public_path('uploads/avatars/' . $this->avatar))) {
+            return asset('uploads/avatars/' . $this->avatar);
+        }
+        return asset('images/escudo2.png');
+    }
+
+    public function getAvatarUrlAttribute()
+    {
+        if ($this->avatar && file_exists(public_path('uploads/avatars/' . $this->avatar))) {
+            return asset('uploads/avatars/' . $this->avatar);
+        }
+        return asset('images/escudo2.png');
     }
 
     public function empleados()

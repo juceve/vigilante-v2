@@ -3,6 +3,8 @@
 /public/build
 /public/hot
 /public/storage
+/public/uploads/avatars/*
+!/public/uploads/avatars/.gitkeep
 /storage/*.key
 /vendor
 .env

@@ -132,7 +132,7 @@ return [
     'usermenu_enabled' => true,
     'usermenu_header' => false,
     'usermenu_header_class' => 'bg-primary',
-    'usermenu_image' => false,
+    'usermenu_image' => true,
     'usermenu_desc' => false,
     'usermenu_profile_url' => true,
 
@@ -259,7 +259,7 @@ return [
     'register_url' => 'register',
     'password_reset_url' => 'password/reset',
     'password_email_url' => 'password/email',
-    'profile_url' => false,
+    'profile_url' => 'admin/profile',
 
     /*
     |--------------------------------------------------------------------------
@@ -327,13 +327,13 @@ return [
                     'can'   =>  'empleados.index',
                     'icon' => 'fas fa-fw fa-users'
                 ],
-                 [
+                [
                     'text'  =>  'Control Asistencias',
                     'route' =>  'rrhhctrlasistencias',
                     'icon'  =>  'fas fa-user-clock',
                     'can'   =>  'rrhhctrlasistencias',
                 ],
-                 [
+                [
                     'text'  =>  'Asistencias Web',
                     'route' =>  'admin.asistencias',
                     'icon'  =>  'fas fa-mobile-alt',
@@ -345,7 +345,7 @@ return [
             'text'    => 'Registros',
             'icon'    => 'fas fa-fw fa-folder-open',
             'submenu' => [
-               
+
                 [
                     'text'  =>  'Pánico',
                     'route' =>  'admin.regactividad',
@@ -419,29 +419,37 @@ return [
 
         ['header' => 'Mantenimiento'],
         [
-            'text' => 'Clientes',
-            'url'  => 'admin/clientes',
-            'can'   =>  'clientes.index',
-            'icon' => 'fas fa-fw fa-address-book'
-        ],
-
-        [
-            'text'    => 'Configuraciones',
+            'text'    => 'Administración',
             'icon'    => 'fas fa-fw fa-cog',
             'submenu' => [
+                [
+                    'text' => 'Clientes',
+                    'url'  => 'admin/clientes',
+                    'can'   =>  'clientes.index',
+                    'icon' => 'fas fa-fw fa-address-book'
+                ],
                 [
                     'text' => 'Oficinas',
                     'url'  => 'admin/oficinas',
                     'can'   =>  'oficinas.index',
                     'icon' => 'fas fa-fw fa-list'
                 ],
-
                 [
                     'text' => 'Cargos',
                     'route'  => 'rrhhcargos.index',
                     'can'   =>  'rrhhcargos.index',
                     'icon' => 'fas fa-user-graduate'
                 ],
+
+            ]
+        ],
+
+
+        [
+            'text'    => 'Configuraciones',
+            'icon'    => 'fas fa-fw fa-cog',
+            'submenu' => [
+
                 [
                     'text' => 'Tipo Contratos',
                     'route'  => 'rrhhtipocontratos.index',
@@ -454,6 +462,8 @@ return [
                     'can'   =>  'rrhhtipopermisos.index',
                     'icon' => 'fas fa-folder-plus'
                 ],
+
+
                 [
                     'text' => 'Tipo de Bonos',
                     'route'  => 'rrhhtipobonos.index',

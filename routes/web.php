@@ -117,6 +117,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('admin/roles', RoleController::class)->names('admin.roles');
     // Route::get('/home/marcacion/{id}', [HomeController::class, 'marcar'])->name('marcacion');
     Route::get('admin/profile', [UserController::class, 'profile'])->name('profile');
+    Route::put('admin/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
+    Route::put('admin/profile/password', [UserController::class, 'updatePassword'])->name('profile.password');
+    Route::post('admin/profile/avatar', [UserController::class, 'updateAvatar'])->name('profile.avatar');
     Route::get('admin/users', [UserController::class, 'index'])->name('users');
 
     Route::get('vigilancia/panico', Panico::class)->name('vigilancia.panico');
