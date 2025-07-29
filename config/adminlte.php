@@ -446,7 +446,7 @@ return [
 
 
         [
-            'text'    => 'Configuraciones',
+            'text'    => 'Config. Inicial',
             'icon'    => 'fas fa-fw fa-cog',
             'submenu' => [
 
@@ -488,6 +488,13 @@ return [
                     'can'   =>  'areas.index',
                     'icon' => 'fas fa-fw fa-warehouse'
                 ],
+
+            ],
+        ],
+        [
+            'text'    => 'Config. Sistema',
+            'icon'    => 'fas fa-fw fa-cog',
+            'submenu' => [
                 [
                     'text' => 'Usuarios Sistema',
                     'url'  => 'admin/users',
@@ -500,8 +507,8 @@ return [
                     'can'  => 'admin.roles.index',
                     'icon' => 'fas fa-fw fa-shield-alt',
                 ],
-            ],
-        ],
+            ]
+        ]
 
     ],
 

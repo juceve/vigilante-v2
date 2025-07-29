@@ -23,7 +23,7 @@
 
     <div class="row">
         <!-- Información Personal -->
-        <div class="col-md-6">
+        <div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
@@ -86,7 +86,7 @@
         </div>
 
         <!-- Avatar -->
-        <div class="col-md-6">
+        <div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
@@ -134,7 +134,7 @@
 
     <!-- Cambio de Contraseña -->
     <div class="row">
-        <div class="col-md-8 offset-md-2">
+        <div class="col-12 col-md-6">
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title">
@@ -147,39 +147,53 @@
                         @csrf
                         @method('PUT')
                         
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="current_password">Contraseña Actual</label>
-                                    <input type="password" class="form-control @error('current_password') is-invalid @enderror" 
-                                           id="current_password" name="current_password" required>
-                                    @error('current_password')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
+                        <div class="form-group">
+                            <label for="current_password">Contraseña Actual</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control @error('current_password') is-invalid @enderror" 
+                                       id="current_password" name="current_password" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-eye" id="toggle-current-password" style="cursor: pointer;"></i>
+                                    </span>
                                 </div>
+                                @error('current_password')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                @enderror
                             </div>
-                            
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="password">Nueva Contraseña</label>
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror" 
-                                           id="password" name="password" required>
-                                    @error('password')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Nueva Contraseña</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control @error('password') is-invalid @enderror" 
+                                       id="password" name="password" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-eye" id="toggle-new-password" style="cursor: pointer;"></i>
+                                    </span>
                                 </div>
+                                @error('password')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                @enderror
                             </div>
-                            
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="password_confirmation">Confirmar Contraseña</label>
-                                    <input type="password" class="form-control" 
-                                           id="password_confirmation" name="password_confirmation" required>
+                            <small class="form-text text-muted">Mínimo 8 caracteres</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password_confirmation">Confirmar Nueva Contraseña</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" 
+                                       id="password_confirmation" name="password_confirmation" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-eye" id="toggle-confirm-password" style="cursor: pointer;"></i>
+                                    </span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="text-center">
+                        <div class="text-center mt-4">
                             <button type="submit" class="btn btn-danger">
                                 <i class="fas fa-key mr-1"></i>
                                 Cambiar Contraseña
@@ -218,5 +232,30 @@
     setTimeout(function() {
         $('.alert').fadeOut('slow');
     }, 5000);
+
+    // Toggle password visibility
+    function togglePassword(toggleId, inputId) {
+        const toggle = document.getElementById(toggleId);
+        const input = document.getElementById(inputId);
+        
+        toggle.addEventListener('click', function() {
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggle.classList.remove('fa-eye');
+                toggle.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                toggle.classList.remove('fa-eye-slash');
+                toggle.classList.add('fa-eye');
+            }
+        });
+    }
+
+    // Initialize password toggles
+    document.addEventListener('DOMContentLoaded', function() {
+        togglePassword('toggle-current-password', 'current_password');
+        togglePassword('toggle-new-password', 'password');
+        togglePassword('toggle-confirm-password', 'password_confirmation');
+    });
 </script>
 @endsection
