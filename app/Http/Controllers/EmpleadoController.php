@@ -28,6 +28,32 @@ class EmpleadoController extends Controller
         $this->middleware('can:empleados.destroy')->only('destroy');
     }
 
+    /**
+     * Guarda una imagen en base64 en el storage
+     */
+    private function saveBase64Image($base64Data, $empleadoId, $prefix)
+    {
+        $imageData = explode(';base64,', $base64Data);
+        
+        if (count($imageData) == 2) {
+            $image = base64_decode($imageData[1]);
+            $filename = $prefix . $empleadoId . '.png';
+            $directory = storage_path('app/public/images/empleados');
+            
+            // Crear directorio si no existe
+            if (!file_exists($directory)) {
+                mkdir($directory, 0755, true);
+            }
+            
+            $path = $directory . DIRECTORY_SEPARATOR . $filename;
+            Image::make($image)->save($path);
+            
+            return 'images/empleados/' . $filename;
+        }
+        
+        return null;
+    }
+
     public function index()
     {
 
@@ -75,32 +101,25 @@ class EmpleadoController extends Controller
 
 
         //CONVERSION DE IMG64
-        $perfilData = explode(';base64,', $request->perfil64);
-
-        if (count($perfilData) == 2) {
-            $image = base64_decode($perfilData[1]);
-            $filename = 'perfil' . $empleado->id . '.png';
-            $path = storage_path('app/public/images/empleados/' . $filename);
-            $img = Image::make($image)->save($path);
-            $empleado->imgperfil = 'images/empleados/' . $filename;
+        if ($request->perfil64) {
+            $imgPath = $this->saveBase64Image($request->perfil64, $empleado->id, 'perfil');
+            if ($imgPath) {
+                $empleado->imgperfil = $imgPath;
+            }
         }
 
-        $perfilData = explode(';base64,', $request->anverso64);
-        if (count($perfilData) == 2) {
-            $image = base64_decode($perfilData[1]);
-            $filename = 'anverso' . $empleado->id . '.png';
-            $path = storage_path('app/public/images/empleados/' . $filename);
-            $img = Image::make($image)->save($path);
-            $empleado->cedulaanverso = 'images/empleados/' . $filename;
+        if ($request->anverso64) {
+            $imgPath = $this->saveBase64Image($request->anverso64, $empleado->id, 'anverso');
+            if ($imgPath) {
+                $empleado->cedulaanverso = $imgPath;
+            }
         }
 
-        $perfilData = explode(';base64,', $request->reverso64);
-        if (count($perfilData) == 2) {
-            $image = base64_decode($perfilData[1]);
-            $filename = 'reverso' . $empleado->id . '.png';
-            $path = storage_path('app/public/images/empleados/' . $filename);
-            $img = Image::make($image)->save($path);
-            $empleado->cedulareverso = 'images/empleados/' . $filename;
+        if ($request->reverso64) {
+            $imgPath = $this->saveBase64Image($request->reverso64, $empleado->id, 'reverso');
+            if ($imgPath) {
+                $empleado->cedulareverso = $imgPath;
+            }
         }
 
         $empleado->save();
@@ -177,32 +196,25 @@ class EmpleadoController extends Controller
 
 
         //CONVERSION DE IMG64
-        $perfilData = explode(';base64,', $request->perfil64);
-
-        if (count($perfilData) == 2) {
-            $image = base64_decode($perfilData[1]);
-            $filename = 'perfil' . $empleado->id . '.png';
-            $path = storage_path('app/public/images/empleados/' . $filename);
-            $img = Image::make($image)->save($path);
-            $empleado->imgperfil = 'images/empleados/' . $filename;
+        if ($request->perfil64) {
+            $imgPath = $this->saveBase64Image($request->perfil64, $empleado->id, 'perfil');
+            if ($imgPath) {
+                $empleado->imgperfil = $imgPath;
+            }
         }
 
-        $perfilData = explode(';base64,', $request->anverso64);
-        if (count($perfilData) == 2) {
-            $image = base64_decode($perfilData[1]);
-            $filename = 'anverso' . $empleado->id . '.png';
-            $path = storage_path('app/public/images/empleados/' . $filename);
-            $img = Image::make($image)->save($path);
-            $empleado->cedulaanverso = 'images/empleados/' . $filename;
+        if ($request->anverso64) {
+            $imgPath = $this->saveBase64Image($request->anverso64, $empleado->id, 'anverso');
+            if ($imgPath) {
+                $empleado->cedulaanverso = $imgPath;
+            }
         }
 
-        $perfilData = explode(';base64,', $request->reverso64);
-        if (count($perfilData) == 2) {
-            $image = base64_decode($perfilData[1]);
-            $filename = 'reverso' . $empleado->id . '.png';
-            $path = storage_path('app/public/images/empleados/' . $filename);
-            $img = Image::make($image)->save($path);
-            $empleado->cedulareverso = 'images/empleados/' . $filename;
+        if ($request->reverso64) {
+            $imgPath = $this->saveBase64Image($request->reverso64, $empleado->id, 'reverso');
+            if ($imgPath) {
+                $empleado->cedulareverso = $imgPath;
+            }
         }
 
         $empleado->save();

@@ -210,13 +210,12 @@
             </div>
             <div class="col-12 border mt-3 mb-3">
                 <label class="mt-2">Ubicación del Domicilio</label>
-                <div id="mi_mapa" class="border border-dark rounded-lg" style="width: 100%; height: 400px;"
+                {{-- SOLO CAMBIO: div de Leaflet por Google Maps --}}
+                <div id="google_map_empleado" class="border border-dark rounded-lg" style="width: 100%; height: 400px;"
                     class="mb-3">
                 </div>
-
             </div>
         </div>
-
 
     </div>
 
@@ -227,35 +226,89 @@
 </div>
 </div>
 
-@section('plugins.OpenStreetMap', true)
+{{-- SOLO CAMBIO: JavaScript de Leaflet por Google Maps --}}
 @section('js')
+<script async defer 
+    src="https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.api_key') }}&callback=initMapEmpleado&loading=async">
+</script>
 <script>
-    let map = L.map('mi_mapa').setView([{{ $empleado->direccionlat?$empleado->direccionlat:-17.7817999 }}, {{ $empleado->direccionlng?$empleado->direccionlng:-63.1825485 }}], 14)
+    let mapEmpleado;
+    let markerEmpleado;
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy;'
-        }).addTo(map);
-
-
-        var myIcon = L.icon({
-            iconUrl: "{{ asset('images/punt.png') }}",
-            iconSize: [35, 35],
-            iconAnchor: [35, 35],
-            popupAnchor: [-15, -30],
+    function initMapEmpleado() {
+        // Mismas coordenadas que tenías en Leaflet (usar existentes o coordenadas por defecto de Santa Cruz)
+        const initialLat = {{ $empleado->direccionlat ? $empleado->direccionlat : -17.7817999 }};
+        const initialLng = {{ $empleado->direccionlng ? $empleado->direccionlng : -63.1825485 }};
+        
+        const initialPosition = { 
+            lat: initialLat, 
+            lng: initialLng 
+        };
+        
+        // Crear mapa con mismo zoom que tenías (14)
+        mapEmpleado = new google.maps.Map(document.getElementById("google_map_empleado"), {
+            zoom: 14,
+            center: initialPosition,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
         });
 
-        var marker = L.marker([{{ $empleado->direccionlat?$empleado->direccionlat:-17.7817999 }}, {{ $empleado->direccionlng?$empleado->direccionlng:-63.1825485 }}], {
-            "draggable": true
-        }).addTo(map);
-
-        marker.on('dragend', function(event) {
-            var position = marker.getLatLng();
-            marker.setLatLng(position, {
-                draggable: 'true'
-            }).bindPopup(position).update();
-            $("#direccionlat").val(position.lat);
-            $("#direccionlng").val(position.lng).keyup();
+        // Crear marcador ARRASTRABLE (igual que en Leaflet)
+        markerEmpleado = new google.maps.Marker({
+            position: initialPosition,
+            map: mapEmpleado,
+            title: "Arrastra para ajustar ubicación del domicilio",
+            draggable: true, // ¡IMPORTANTE! - Igual que en Leaflet
+            icon: {
+                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
+                        <defs>
+                            <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+                            </filter>
+                        </defs>
+                        <path d="M17.5 3 C24 3 29 8 29 14.5 C29 21 17.5 32 17.5 32 C17.5 32 6 21 6 14.5 C6 8 11 3 17.5 3 Z" 
+                              fill="#E74C3C" filter="url(#shadow)"/>
+                        <circle cx="17.5" cy="14.5" r="6" fill="#FFFFFF"/>
+                        <circle cx="17.5" cy="14.5" r="4" fill="#C0392B"/>
+                    </svg>
+                `),
+                scaledSize: new google.maps.Size(35, 35),
+                anchor: new google.maps.Point(17.5, 35)
+            }
         });
+
+        // Evento cuando se termina de arrastrar el marcador (igual funcionalidad que Leaflet)
+        markerEmpleado.addListener('dragend', function(event) {
+            const position = markerEmpleado.getPosition();
+            const lat = position.lat();
+            const lng = position.lng();
+            
+            // Actualizar los campos ocultos (igual que en Leaflet)
+            document.getElementById('direccionlat').value = lat;
+            document.getElementById('direccionlng').value = lng;
+            
+            // Disparar evento keyup para cualquier validación (igual que tenías)
+            const lngInput = document.getElementById('direccionlng');
+            const event_keyup = new Event('keyup');
+            lngInput.dispatchEvent(event_keyup);
+            
+            // Mostrar popup con nueva ubicación (opcional)
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                    <div style="padding: 10px;">
+                        <strong>Nueva ubicación del domicilio:</strong><br>
+                        <small>Lat: ${lat.toFixed(6)}<br>Lng: ${lng.toFixed(6)}</small>
+                    </div>
+                `
+            });
+            infoWindow.open(mapEmpleado, markerEmpleado);
+            
+            // Cerrar popup después de 3 segundos
+            setTimeout(() => {
+                infoWindow.close();
+            }, 3000);
+        });
+    }
 </script>
 
 <script>

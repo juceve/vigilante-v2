@@ -21,6 +21,7 @@ use App\Models\Vwnovedade;
 use App\Models\Vwpanico;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 function tablaRondas($designacione_id)
 {
@@ -158,29 +159,21 @@ function hayRetraso($hora_marcado, $hora_programada)
 
 function esDiaLibre($designacione_id)
 {
-    $dia = Dialibre::where([
+    // Optimización: usar exists() en lugar de get() y count()
+    return Dialibre::where([
         ['fecha', date('Y-m-d')],
         ['designacione_id', $designacione_id]
-    ])->get();
-    if ($dia->count() > 0) {
-        return true;
-    } else {
-        return false;
-    }
+    ])->exists();
 }
 
 
 function esDiaLibre2($designacione_id, $fecha)
 {
-    $dia = Dialibre::where([
+    // Optimización: usar exists() en lugar de get() y count()
+    return Dialibre::where([
         ['fecha', $fecha],
         ['designacione_id', $designacione_id]
-    ])->get();
-    if ($dia->count() > 0) {
-        return true;
-    } else {
-        return false;
-    }
+    ])->exists();
 }
 
 function traeDesignacionActiva($empleado_id){
@@ -192,62 +185,75 @@ function traeDesignacionActiva($empleado_id){
 
 function yaMarque($designacione_id)
 {
-    $designacione = Designacione::find($designacione_id);
-    $hoy = date('Y-m-d');
-    $horaingreso = new DateTime($hoy . " " . $designacione->turno->horainicio);
-    $horaingreso = $horaingreso->modify('-1 hours');
-    $horaingreso = $horaingreso->format('H:i');
-    $horaactual = date('H:i');
+    try {
+        $designacione = Designacione::find($designacione_id);
+        
+        // Validar que existe la designación y el turno
+        if (!$designacione || !$designacione->turno) {
+            return 2; // Por seguridad, asumir que ya marcó todo
+        }
+        
+        $hoy = date('Y-m-d');
+        $horaingreso = new DateTime($hoy . " " . $designacione->turno->horainicio);
+        $horaingreso = $horaingreso->modify('-1 hours');
+        $horaingreso = $horaingreso->format('H:i');
+        $horaactual = date('H:i');
 
-    if ($designacione->turno->horainicio < $designacione->turno->horafin) {
-        // DIURNO
-        $marcacion = Asistencia::where([
-            ['designacione_id', $designacione_id],
-            ['fecha', $hoy],
-        ])->first();
+        if ($designacione->turno->horainicio < $designacione->turno->horafin) {
+            // DIURNO
+            $marcacion = Asistencia::where([
+                ['designacione_id', $designacione_id],
+                ['fecha', $hoy],
+            ])->first();
 
-        if ($marcacion) {
-            if ($marcacion->ingreso && $marcacion->salida) {
-                return 2;
+            if ($marcacion) {
+                if ($marcacion->ingreso && $marcacion->salida) {
+                    return 2; // Ya marcó ingreso y salida
+                } else {
+                    return 1; // Solo marcó ingreso
+                }
             } else {
-                return 1;
+                if ($horaactual >= $horaingreso) {
+                    return 0; // Puede marcar ingreso
+                } else {
+                    return 2; // Fuera de horario
+                }
             }
         } else {
-            if ($horaactual >= $horaingreso) {
-                return 0;
-            } else {
-                return 2;
-            }
-        }
-    } else {
-        // NOCTURNO
-        $ayer = new DateTime($hoy);
-        $ayer = $ayer->modify('-1 days');
-        $ayer = $ayer->format('Y-m-d');
+            // NOCTURNO
+            $ayer = new DateTime($hoy);
+            $ayer = $ayer->modify('-1 days');
+            $ayer = $ayer->format('Y-m-d');
 
-        $marcacion = [];
-        if ($horaactual > $horaingreso) {
-            $marcacion = Asistencia::where('designacione_id', $designacione_id)
-                ->where('fecha', $hoy)
-                ->first();
-        } else {
-            $marcacion = Asistencia::where('designacione_id', $designacione_id)
-                ->where('fecha', $ayer)
-                ->first();
-        }
-        if ($marcacion) {
-            if ($marcacion->ingreso && $marcacion->salida) {
-                return 2;
+            $marcacion = null;
+            if ($horaactual > $horaingreso) {
+                $marcacion = Asistencia::where('designacione_id', $designacione_id)
+                    ->where('fecha', $hoy)
+                    ->first();
             } else {
-                return 1; //MARCO INGRESO
+                $marcacion = Asistencia::where('designacione_id', $designacione_id)
+                    ->where('fecha', $ayer)
+                    ->first();
             }
-        } else {
-            if ($horaactual >= $horaingreso) {
-                return 0; //NO MARCO INGRESO
+            
+            if ($marcacion) {
+                if ($marcacion->ingreso && $marcacion->salida) {
+                    return 2; // Ya marcó ingreso y salida
+                } else {
+                    return 1; // Solo marcó ingreso
+                }
             } else {
-                return 2; //MARCO INGRESO Y SALIDA
+                if ($horaactual >= $horaingreso) {
+                    return 0; // Puede marcar ingreso
+                } else {
+                    return 2; // Fuera de horario
+                }
             }
         }
+    } catch (Exception $e) {
+        // En caso de error, log y retornar valor seguro
+        Log::error('Error en yaMarque: ' . $e->getMessage());
+        return 2; // Por seguridad, asumir que ya marcó todo
     }
 }
 
@@ -284,39 +290,54 @@ function crearIntervalo($horaI, $horaF, $intervalo)
 
 function verificaHV($designacione_id)
 {
-    $designacione = Designacione::find($designacione_id);
-    $hora = date('H:') . '00';
-    $intervalo = Intervalo::where([
-        ['designacione_id', $designacione->id],
-        ['hora', $hora],
-    ])->first();
-    if ($intervalo) {
-        $marcado = ModelsHombrevivo::where([
-            ['intervalo_id', $intervalo->id],
-            ['fecha', date('Y-m-d')]
-        ])->first();
-        if ($marcado) {
+    try {
+        $designacione = Designacione::find($designacione_id);
+        
+        if (!$designacione) {
             return false;
-        } else {
-            return $intervalo;
         }
-    } else {
+        
+        $hora = date('H:') . '00';
+        $intervalo = Intervalo::where([
+            ['designacione_id', $designacione->id],
+            ['hora', $hora],
+        ])->first();
+        
+        if ($intervalo) {
+            // Optimización: usar exists() en lugar de first()
+            $yaReportado = ModelsHombrevivo::where([
+                ['intervalo_id', $intervalo->id],
+                ['fecha', date('Y-m-d')]
+            ])->exists();
+            
+            return $yaReportado ? false : $intervalo;
+        }
+        
+        return false;
+    } catch (Exception $e) {
+        Log::error('Error en verificaHV: ' . $e->getMessage());
         return false;
     }
 }
 
 function verificaTareas($designacione_id)
 {
-    $designacione = Designacione::find($designacione_id);
-    $tareas = Tarea::where([
-        ["cliente_id", $designacione->turno->cliente_id],
-        ["empleado_id", $designacione->empleado_id],
-        ["fecha", date('Y-m-d')],
-        ["estado", 1],
-    ])->get();
-    if ($tareas->count() > 0) {
-        return true;
-    } else {
+    try {
+        $designacione = Designacione::find($designacione_id);
+        
+        if (!$designacione || !$designacione->turno) {
+            return false;
+        }
+        
+        // Optimización: usar exists() en lugar de get() y count()
+        return Tarea::where([
+            ["cliente_id", $designacione->turno->cliente_id],
+            ["empleado_id", $designacione->empleado_id],
+            ["fecha", date('Y-m-d')],
+            ["estado", 1],
+        ])->exists();
+    } catch (Exception $e) {
+        Log::error('Error en verificaTareas: ' . $e->getMessage());
         return false;
     }
 }

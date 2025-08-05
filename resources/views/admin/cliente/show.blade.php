@@ -94,10 +94,10 @@
                         <hr>
                         <div class="form-group">
                             <label for="mapa">Ubicación del Domicilio:</label>
-                            <div id="mi_mapa" class="border" style="width: 100%; height: 500px;"></div>
+                            {{-- SOLO CAMBIO: div de Leaflet por Google Maps --}}
+                            <div id="google_map" class="border" style="width: 100%; height: 500px;"></div>
                         </div>
                     </div>
-
 
                 </div>
             </div>
@@ -105,28 +105,54 @@
     </section>
 @endsection
 
-@section('plugins.OpenStreetMap', true)
+{{-- SOLO CAMBIO: JavaScript de Leaflet por Google Maps --}}
 @section('js')
-    <script>
-        let map = L.map('mi_mapa').setView([{{ $cliente->latitud }}, {{ $cliente->longitud }}], 17)
+<script async defer 
+    src="https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.api_key') }}&callback=initMap&loading=async">
+</script>
+<script>
+    let map;
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy;'
-        }).addTo(map);
-
-
-        var myIcon = L.icon({
-            iconUrl: "{{ asset('images/punt.png') }}",
-            iconSize: [35, 35],
-            iconAnchor: [35, 35],
-            popupAnchor: [-15, -30],
+    function initMap() {
+        // Mismas coordenadas del cliente que tenías en Leaflet
+        const clientePosition = { 
+            lat: {{ $cliente->latitud }}, 
+            lng: {{ $cliente->longitud }} 
+        };
+        
+        map = new google.maps.Map(document.getElementById("google_map"), {
+            zoom: 17, // Mismo zoom que tenías en Leaflet
+            center: clientePosition,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
         });
 
-        L.marker([{{ $cliente->latitud }}, {{ $cliente->longitud }}]).addTo(map);
-        // map.on('click', onMapClick)
+        // Crear marcador con el mismo icono que tenías
+        const marker = new google.maps.Marker({
+            position: clientePosition,
+            map: map,
+            title: "{{ $cliente->nombre }}", // Título del marcador
+            icon: {
+                url: "{{ asset('images/punt.png') }}", // Mismo icono que tenías
+                scaledSize: new google.maps.Size(39, 39), // Mismo tamaño (35x35)
+                anchor: new google.maps.Point(17, 35) // Ajuste del anclaje
+            }
+        });
 
-        // function onMapClick(e) {
-        //     alert("Posición: " + e.latlng)
-        // }
-    </script>
+        // Popup opcional con información del cliente
+        const infoWindow = new google.maps.InfoWindow({
+            content: `
+                <div style="max-width: 200px;">
+                    <h6>{{ $cliente->nombre }}</h6>
+                    <p><strong>Dirección:</strong><br>{{ $cliente->direccion }}</p>
+                    <p><strong>Contacto:</strong><br>{{ $cliente->personacontacto }}</p>
+                </div>
+            `
+        });
+
+        // Mostrar popup al hacer clic en el marcador
+        marker.addListener('click', () => {
+            infoWindow.open(map, marker);
+        });
+    }
+</script>
 @endsection

@@ -23,7 +23,7 @@
         </div>
 
     </div>
-    <div class="table-responsive">
+    <div class="table">
         <table class="table table-striped table-hover">
             <thead class="thead">
                 <tr class="table-info">
@@ -50,7 +50,7 @@
                         <span class="badge badge-pill badge-secondary">Inactivo</span>
                         @endif
                     </td>
-                    <td align="right">
+                    <td align="center">
                         <div class="btn-group">
                             <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
                                 data-toggle="dropdown">Opciones</button>
@@ -65,6 +65,8 @@
                                 @can('clientes.edit')
                                 <a class="dropdown-item" href="{{ route('clientes.edit', $cliente->id) }}"><i
                                         class="fa fa-fw fa-edit text-secondary"></i> Editar</a>
+                                <a class="dropdown-item" href="{{ route('admin.residencias', $cliente->id) }}">
+                                    <i class="fas fa-home text-secondary"></i> Residencias</a>
                                 <a class="dropdown-item" href="{{ route('usuariocliente', $cliente->id) }}">
                                     <i class="fas fa-user-plus text-secondary"></i> Usuario externo</a>
                                 @endcan

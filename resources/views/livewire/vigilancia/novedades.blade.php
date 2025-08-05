@@ -1,80 +1,151 @@
 <div>
     @section('title')
-    Novedades
+        Novedades
     @endsection
-    <div class="row mb-3">
-        <div class="col-1">
-            <a href="{{ route('home') }}" class="text-silver"><i class="fas fa-arrow-circle-left fa-2x"></i></a>
+    
+    <!-- Header Corporativo -->
+    <div style="margin-top: 85px; background: linear-gradient(135deg, #1e3a8a, #1e293b); padding: 1rem 0; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(30, 41, 59, 0.1);">
+        <div class="container">
+            <div style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 12px; padding: 1rem; box-shadow: 0 2px 8px rgba(30, 41, 59, 0.1);">
+                <a href="{{ route('home') }}" style="width: 50px; height: 50px; background: linear-gradient(135deg, #1e3a8a, #1e293b); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 1.2rem; margin-right: 1rem;">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <div style="flex: 1; text-align: center;">
+                    <h1 style="font-size: 1.3rem; font-weight: 700; color: #1e293b; margin: 0; letter-spacing: 0.5px;">NOVEDADES</h1>
+                    <p style="font-size: 0.85rem; color: #64748b; margin: 0.2rem 0 0 0; font-weight: 500;">Reporte de Incidentes</p>
+                </div>
+            </div>
         </div>
-        <div class="col-10">
-            <h4 class="text-secondary text-center">NOVEDADES</h4>
-        </div>
-        <div class="col-1"></div>
-
     </div>
-    <div class="row">
-        <h6 class="text-center text-primary">NUEVO REGISTRO</h6>
 
-        <div class="col-12 col-md-6 d-grid mb-3">
-            <div class="mb-3">
-                <label for="txtinforme" class="form-label text-primary"><strong>Anotaciones:</strong></label>
-                <textarea class="form-control" id="txtinforme" wire:model.lazy='informe' rows="4"></textarea>
+    <div class="container px-3">
+        <!-- Título de Sección -->
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: linear-gradient(135deg, #334155, #1e293b); color: white; padding: 0.8rem 1.5rem; border-radius: 25px; box-shadow: 0 4px 12px rgba(51, 65, 85, 0.3);">
+                <i class="fas fa-plus-circle"></i>
+                <span style="font-weight: 600; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">NUEVO REGISTRO</span>
             </div>
         </div>
 
-        <div class="col-12 col-md-6 d-grid mb-3">
-            <label for="txtinforme" class="form-label text-primary"><strong>Capturas:</strong></label>
-            <div class="container-fluid mt-1" wire:ignore>
-                <form id="uploadForm">
-                    <div class="row mb-3 input-row" id="inputRow0">
-                        <div class="col">
-                            {{-- <label for="fileInput0" class="form-label">Upload Image</label> --}}
-                            <input type="file" class="form-control" id="fileInput0" name="fileInput0"
-                                onchange="CARGAFOTO('fileInput0')" accept="image/*,audio/*" capture="camera">
-                        </div>
-                        <div class="col-auto" id="thumbnailContainer0"></div>
-                        <div class="col-auto d-none" id="deleteButtonContainer0">
-                            <button type="button" class="btn btn-danger"
-                                onclick="deleteInput('inputRow0');remArray(0)">x</button>
+        <div class="row">
+            <!-- Sección de Anotaciones -->
+            <div class="col-12 col-md-6 mb-4">
+                <div style="background: white; border-radius: 16px; box-shadow: 0 4px 16px rgba(30, 41, 59, 0.15); overflow: hidden; border: 2px solid #0891b2;">
+                    <div style="background: linear-gradient(135deg, #0891b2, #0e7490); color: white; padding: 1rem; text-align: center;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                            <i class="fas fa-edit" style="font-size: 1.2rem;"></i>
+                            <h6 style="margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Anotaciones</h6>
                         </div>
                     </div>
-                </form>
+                    <div style="padding: 1.5rem;">
+                        <textarea class="form-control" id="txtinforme" wire:model.lazy='informe' rows="6"
+                                placeholder="Describa detalladamente la novedad o incidente observado..."
+                                style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 0.8rem 1rem; font-size: 0.9rem; transition: all 0.3s ease; background: white; min-height: 150px; resize: vertical; font-family: inherit; line-height: 1.5;"
+                                onfocus="this.style.borderColor='#0891b2'; this.style.boxShadow='0 0 0 3px rgba(8, 145, 178, 0.1)'"
+                                onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Capturas -->
+            <div class="col-12 col-md-6 mb-4">
+                <div style="background: white; border-radius: 16px; box-shadow: 0 4px 16px rgba(30, 41, 59, 0.15); overflow: hidden; border: 2px solid #d97706;">
+                    <div style="background: linear-gradient(135deg, #d97706, #f59e0b); color: white; padding: 1rem; text-align: center;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                            <i class="fas fa-camera" style="font-size: 1.2rem;"></i>
+                            <h6 style="margin: 0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Capturas</h6>
+                        </div>
+                    </div>
+                    <div style="padding: 1.5rem;">
+                        <div class="container-fluid" wire:ignore>
+                            <form id="uploadForm">
+                                <div class="row mb-3 input-row" id="inputRow0">
+                                    <div class="col">
+                                        <input type="file" class="form-control" id="fileInput0" name="fileInput0"
+                                            onchange="CARGAFOTO('fileInput0')" accept="image/*,audio/*" capture="camera"
+                                            style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 0.8rem; background: #f8fafc; transition: all 0.3s ease;"
+                                            onfocus="this.style.borderColor='#d97706'; this.style.background='rgba(217, 119, 6, 0.05)'"
+                                            onblur="this.style.borderColor='#cbd5e1'; this.style.background='#f8fafc'">
+                                    </div>
+                                    <div class="col-auto" id="thumbnailContainer0"></div>
+                                    <div class="col-auto d-none" id="deleteButtonContainer0">
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            onclick="deleteInput('inputRow0');remArray(0)"
+                                            style="border-radius: 8px; font-size: 0.8rem; padding: 0.4rem 0.8rem;">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        {{-- <div class="col-12 col-md-6 d-grid mb-3">
-            <div class="mb-3">
-                <label for="files" class="form-label text-primary"><strong>Imagenes:</strong></label>
-                <input class="form-control" type="file" id="files" multiple accept="image/*,audio/*,video/*"
-                    wire:model='files'>
-                @foreach ($files as $file)
-                @error('file')
-                <span class="error">{{ $message }}</span>
-                @enderror
-                @endforeach
-            </div>
-            @if ($files)
-            <small><i>Vista previa:</i></small>
-            <div class="row">
-                @foreach ($files as $file)
-                <div class="col-4">
-                    <img src="{{ $file->temporaryUrl() }}" class="img-thumbnail">
-                </div>
-                @endforeach
-            </div>
-            @endif
-        </div> --}}
+        <!-- Botón de Envío -->
+        <div class="d-grid mt-4">
+            <button class="btn" id="enviar" onclick="activarGeolocalizacionYEnviar()"
+                    style="background: linear-gradient(135deg, #059669, #047857); color: white; border: none; border-radius: 12px; padding: 1rem 2rem; font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.8rem; box-shadow: 0 4px 16px rgba(5, 150, 105, 0.3); min-height: 60px;"
+                    onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 24px rgba(5, 150, 105, 0.4)'"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 16px rgba(5, 150, 105, 0.3)'"
+                    onmousedown="this.style.transform='translateY(0)'"
+                    onmouseup="this.style.transform='translateY(-2px)'">
+                <span>ENVIAR REPORTE</span>
+                <i class="fas fa-paper-plane" style="font-size: 1.1rem;"></i>
+            </button>
+        </div>
     </div>
-    <div class="d-grid">
-        <button class="btn btn-primary py-3" id="enviar" wire:click='enviar'>ENVIAR <i
-                class="fas fa-paper-plane"></i></button>
-    </div>
+
+    <style>
+        .form-control::placeholder {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        
+        .img-thumbnail {
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.25rem;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 0.5rem !important;
+                padding-right: 0.5rem !important;
+            }
+            
+            .col-12.col-md-6 {
+                margin-bottom: 1.5rem;
+            }
+        }
+        
+        /* Mejorar la apariencia de los inputs de archivo */
+        input[type="file"]::-webkit-file-upload-button {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+        
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+    </style>
+</div>
 </div>
 @section('js')
 <script>
     let inputCount = 1;
     function remArray(id){
-        Livewire.emit('deleteInput',id);
+        @this.call('deleteInput', id);
     }
 
     function CARGAFOTO(inputId) {
@@ -200,19 +271,41 @@
     }
 </script>
 <script>
-    if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(success2);
-        }else{
+    // Función que se ejecuta cuando el usuario hace clic en "ENVIAR"
+    function activarGeolocalizacionYEnviar() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(success2, function(error) {
+                console.error('Error obteniendo ubicación:', error);
+                // Enviar sin ubicación si falla la geolocalización
+                enviarNovedad();
+            });
+        } else {
             console.log('No tiene acceso a Ubicacion.');
+            // Enviar sin ubicación si no hay soporte
+            enviarNovedad();
         }
+    }
 
-        function success2(geoLocationPosition) {
-            // console.log(geoLocationPosition.timestamp);
-            let data = [
-                geoLocationPosition.coords.latitude,
-                geoLocationPosition.coords.longitude,
-            ];
-            Livewire.emit('ubicacionAprox', data);
-        }
+    function success2(geoLocationPosition) {
+        // console.log(geoLocationPosition.timestamp);
+        let data = [
+            geoLocationPosition.coords.latitude,
+            geoLocationPosition.coords.longitude,
+        ];
+        
+        // Usar la sintaxis moderna de Livewire para enviar las coordenadas
+        @this.call('ubicacionAprox', data).then(() => {
+            // Después de enviar la ubicación, ejecutar el envío
+            enviarNovedad();
+        }).catch((error) => {
+            console.error('Error enviando ubicación:', error);
+            // Enviar sin ubicación si falla
+            enviarNovedad();
+        });
+    }
+    
+    function enviarNovedad() {
+        @this.enviar();
+    }
 </script>
 @endsection

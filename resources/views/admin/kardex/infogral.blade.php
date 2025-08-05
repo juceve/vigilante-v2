@@ -74,29 +74,41 @@
           </div>
       </div>
   @endif
-  @section('plugins.OpenStreetMap', true)
   @section('js')
         <script>
-      let map = L.map('mi_mapa').setView([{{ $empleado->direccionlat }}, {{ $empleado->direccionlng }}], 17)
-
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy;'
-      }).addTo(map);
-
-
-      var myIcon = L.icon({
-          iconUrl: "{{ asset('images/punt.png') }}",
-          iconSize: [35, 35],
-          iconAnchor: [35, 35],
-          popupAnchor: [-15, -30],
-      });
-
-      L.marker([{{ $empleado->direccionlat }}, {{ $empleado->direccionlng }}]).addTo(map);
-      // map.on('click', onMapClick)
-
-      // function onMapClick(e) {
-      //     alert("Posición: " + e.latlng)
-      // }
+      function initMap() {
+          const ubicacion = { lat: {{ $empleado->direccionlat }}, lng: {{ $empleado->direccionlng }} };
+          
+          const map = new google.maps.Map(document.getElementById("mi_mapa"), {
+              zoom: 17,
+              center: ubicacion,
+              mapId: "DEMO_MAP_ID" // Necesario para AdvancedMarkerElement
+          });
+          
+          // Usar el nuevo AdvancedMarkerElement en lugar del Marker deprecado
+          const marker = new google.maps.marker.AdvancedMarkerElement({
+              position: ubicacion,
+              map: map,
+              content: createCustomMarker()
+          });
+      }
+      
+      function createCustomMarker() {
+          const img = document.createElement('img');
+          img.src = "{{ asset('images/punt.png') }}";
+          img.style.width = '35px';
+          img.style.height = '35px';
+          return img;
+      }
+      
+      // Cargar Google Maps de forma asíncrona
+      (function() {
+          const script = document.createElement('script');
+          script.src = 'https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.api_key') }}&loading=async&libraries=marker&callback=initMap';
+          script.async = true;
+          script.defer = true;
+          document.head.appendChild(script);
+      })();
   </script>
   @endsection
 

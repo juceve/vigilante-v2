@@ -89,10 +89,15 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = User::find($id)->delete();
-
-        return redirect()->route('users.index')
-            ->with('success', 'Usuario eliminado correctamente');
+        $user = User::find($id);
+        if ($user) {
+            $user->delete();
+            return redirect()->route('users.index')
+                ->with('success', 'Usuario eliminado correctamente');
+        } else {
+            return redirect()->route('users.index')
+                ->with('error', 'Usuario no encontrado');
+        }
     }
 
     public function profile()
@@ -110,29 +115,37 @@ class UserController extends Controller
         
         $request->validate($rules);
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
+        if ($user && $user instanceof \App\Models\User) {
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->save();
 
-        return redirect()->route('profile')
-            ->with('success', 'Perfil actualizado correctamente');
+            return redirect()->route('profile')
+                ->with('success', 'Perfil actualizado correctamente');
+        } else {
+            return redirect()->route('profile')
+                ->with('error', 'Usuario no encontrado');
+        }
     }
 
     public function updatePassword(Request $request)
     {
-        $user = auth()->user();
+        $user = User::find(auth()->id());
         
         $request->validate(User::$rulesPassword);
+
+        if (!$user) {
+            return redirect()->route('profile')
+                ->with('error', 'Usuario no encontrado');
+        }
 
         if (!Hash::check($request->current_password, $user->password)) {
             return redirect()->route('profile')
                 ->with('error', 'La contraseña actual no es correcta');
         }
 
-        $user->update([
-            'password' => Hash::make($request->password),
-        ]);
+        $user->password = Hash::make($request->password);
+        $user->save();
 
         return redirect()->route('profile')
             ->with('success', 'Contraseña actualizada correctamente');
@@ -160,9 +173,10 @@ class UserController extends Controller
             
             $file->move(public_path('uploads/avatars'), $filename);
 
-            $user->update([
-                'avatar' => $filename,
-            ]);
+            $user->avatar = $filename;
+            if ($user instanceof \App\Models\User) {
+                $user->save();
+            }
 
             return redirect()->route('profile')
                 ->with('success', 'Avatar actualizado correctamente');
@@ -184,16 +198,6 @@ class UserController extends Controller
         $user->roles()->sync($request->roles);
 
         return redirect()->route('users.asignaRol', $user)
-            ->with('success', 'Roles asignados correctamente');
-    }
-
-    public function cambiaestado($id)
-    {
-        $user = User::find($id);
-        $user->update([
-            'status' => !$user->status
-        ]);
-
-        return redirect()->route('users')->with('success', 'Usuario modificado correctamente');
+            ->with('success', 'Rol actualizado correctamente');
     }
 }

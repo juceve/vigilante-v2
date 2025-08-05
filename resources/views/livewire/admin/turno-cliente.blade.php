@@ -67,7 +67,7 @@
                                         wire:click='cargaTurno({{$turno->id}})'><i class="fas fa-edit"></i></button>
                                     @endcan
                                     @can('turnos.ctrlpuntos')
-                                    <a href="{{route('puntoscontrol',$turno->id)}}"
+                                    <a href="{{route('puntoscontrolv2',$turno->id)}}"
                                         class="btn btn-outline-success btn-sm" title="Puntos de Control"><i
                                             class="fas fa-map-marked-alt"></i></a>
                                     @endcan

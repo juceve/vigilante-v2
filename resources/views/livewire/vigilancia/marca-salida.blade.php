@@ -1,7 +1,7 @@
 <div class="container mt-3">
     <div class="row">
         <div class="col-12 text-center d-grid">
-            <button class="btn btn-secondary  btn-sm d-grid py-4" onclick="marcar()">
+            <button class="btn btn-secondary  btn-sm d-grid py-4" onclick="prepararMarcado()">
                 <div class="row">
                     <div class="col-6 text-start">Marcar Salida</div>
                     <div class="col-6 text-end">
@@ -14,13 +14,16 @@
 </div>
 @section('js')
 <script>
-    localize();
-
         function localize() {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(enviar);
+                navigator.geolocation.getCurrentPosition(enviar, function(error) {
+                    console.error('Error obteniendo ubicación:', error);
+                    Swal.fire('Advertencia', 'No se pudo obtener la ubicación. Se marcará sin coordenadas.', 'warning');
+                    marcar(); // Marcar sin coordenadas si falla la geolocalización
+                });
             } else {
-                alert('Tu navegador no soporta geolocalizacion.');
+                Swal.fire('Error', 'Tu navegador no soporta geolocalización.', 'error');
+                marcar(); // Marcar sin coordenadas si no hay soporte
             }
         }
 
@@ -33,24 +36,31 @@
                 longitud,
             ];
             Livewire.emit('cargaPosicion', data);
+            // Ejecutar el marcado después de cargar la posición
+            marcar();
         }
 </script>
 <script>
+    function prepararMarcado() {
+        Swal.fire({
+            title: "FINALIZAR TURNO",
+            text: "Esta seguro de realizar el marcado de salida? Se obtendrá su ubicación actual.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "SI, marcar",
+            cancelButtonText: "Cancelar",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Obtener ubicación después de la confirmación del usuario
+                localize();
+            }
+        });
+    }
+    
     function marcar() {
-            Swal.fire({
-                title: "FINALIZAR TURNO",
-                text: "Esta seguro de realizar el marcado de salida?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "SI, marcar",
-                cancelButtonText: "Cancelar",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Livewire.emit('marcar');
-                }
-            });
-        }
+        Livewire.emit('marcar');
+    }
 </script>
 @endsection

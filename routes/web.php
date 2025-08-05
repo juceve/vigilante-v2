@@ -46,9 +46,11 @@ use App\Http\Livewire\Admin\ListadoCiteCotizacion;
 use App\Http\Livewire\Admin\ListadoCiteInforme;
 use App\Http\Livewire\Admin\ListadoCiteMemorandum;
 use App\Http\Livewire\Admin\ListadoCiteRecibo;
+use App\Http\Livewire\Admin\ListadoResidencias;
 use App\Http\Livewire\Admin\Nuevoptctrl;
 
 use App\Http\Livewire\Admin\PuntosControl;
+use App\Http\Livewire\Admin\PuntosControlV2;
 use App\Http\Livewire\Admin\Regactividad;
 use App\Http\Livewire\Admin\Registroasistencias;
 use App\Http\Livewire\Admin\Registroshv;
@@ -141,6 +143,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/rondas', Registrosronda::class)->middleware('can:admin.registros.rondas')->name('admin.rondas');
     Route::get('admin/novedades', Registrosnovedades::class)->middleware('can:admin.registros.novedades')->name('admin.novedades');
     Route::get('admin/asistencias', Registroasistencias::class)->name('admin.asistencias');
+    Route::get('admin/{cliente_id}/residencias', ListadoResidencias::class)->name('admin.residencias');
 
     Route::post('/designaciones-historial/exportar', [DesignacioneController::class, 'exportar'])->name('designaciones-historial.exportar');
 
@@ -168,6 +171,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/registro-actividad/{cliente_id?}', Regactividad::class)->middleware('can:admin.registros.panico')->name('admin.regactividad');
     Route::get('admin/turnos-cliente/{cliente_id}', TurnoCliente::class)->middleware('can:turnos.index')->name('admin.turnos-cliente');
     Route::get('admin/puntos-control/{turno_id}', PuntosControl::class)->name(('puntoscontrol'));
+
+
+    Route::get('/admin/puntos-control-v2/{turnoId}', PuntosControlV2::class)->name('puntoscontrolv2');
+
     Route::get('admin/control-rondas', Admrondas::class)->name('control.rondas');
     Route::get('admin/designaciones/pdfRondas/{id}', [DesignacioneController::class, 'pdfRondas'])->name('admin.designaciones.pdfRondas');
     Route::get('admin/designaciones/pdfNovedades/{id}', [DesignacioneController::class, 'pdfNovedades'])->name('pdfNovedades');
