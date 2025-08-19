@@ -328,6 +328,12 @@ return [
                     'icon' => 'fas fa-fw fa-users'
                 ],
                 [
+                    'text' => 'Sueldos',
+                    'route'  => 'admin.sueldos',
+                    'can'   =>  'rrhhsueldos.index',
+                    'icon' => 'fas fa-fw fa-dollar-sign'
+                ],
+                [
                     'text'  =>  'Control Asistencias',
                     'route' =>  'rrhhctrlasistencias',
                     'icon'  =>  'fas fa-user-clock',

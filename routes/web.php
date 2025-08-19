@@ -30,6 +30,7 @@ use App\Http\Controllers\RrhhpermisoController;
 use App\Http\Controllers\RrhhtipobonoController;
 use App\Http\Controllers\RrhhtipocontratoController;
 use App\Http\Controllers\RrhhtipopermisoController;
+use App\Http\Controllers\SueldoController;
 use App\Http\Controllers\TareaController;
 use App\Http\Controllers\UbicacionController;
 use App\Http\Controllers\UploadsController;
@@ -47,8 +48,9 @@ use App\Http\Livewire\Admin\ListadoCiteInforme;
 use App\Http\Livewire\Admin\ListadoCiteMemorandum;
 use App\Http\Livewire\Admin\ListadoCiteRecibo;
 use App\Http\Livewire\Admin\ListadoResidencias;
+use App\Http\Livewire\Admin\ManageSueldos;
 use App\Http\Livewire\Admin\Nuevoptctrl;
-
+use App\Http\Livewire\Admin\ProcesarSueldo;
 use App\Http\Livewire\Admin\PuntosControl;
 use App\Http\Livewire\Admin\PuntosControlV2;
 use App\Http\Livewire\Admin\Regactividad;
@@ -143,6 +145,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/rondas', Registrosronda::class)->middleware('can:admin.registros.rondas')->name('admin.rondas');
     Route::get('admin/novedades', Registrosnovedades::class)->middleware('can:admin.registros.novedades')->name('admin.novedades');
     Route::get('admin/asistencias', Registroasistencias::class)->name('admin.asistencias');
+    Route::get('admin/sueldos', ManageSueldos::class)->middleware('can:rrhhsueldos.index')->name('admin.sueldos');
+    Route::get('admin/{rrhhsueldo_id}/procesar-sueldos', ProcesarSueldo::class)->middleware('can:rrhhsueldos.procesar')->name('admin.procesarsueldos');
     Route::get('admin/{cliente_id}/residencias', ListadoResidencias::class)->name('admin.residencias');
 
     Route::post('/designaciones-historial/exportar', [DesignacioneController::class, 'exportar'])->name('designaciones-historial.exportar');
@@ -215,6 +219,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('pdf/novedades/', [NovedadeController::class, 'pdfNovedades'])->name('pdf.novedades');
     Route::get('pdf/tareas/', [TareaController::class, 'pdfTareas'])->name('pdf.tareas');
     Route::get('pdf/asistencias/', [AsistenciaController::class, 'pdfAsistencia'])->name('pdf.asistencias');
+    Route::get('admin/pdf/sueldos/{id}', [SueldoController::class, 'previsualizacion'])->name('pdf.sueldos');
+    Route::get('admin/pdf/boletas-sueldo/{id}', [SueldoController::class, 'boletas'])->name('pdf.boletas');
 
 
     Route::get('pdf/informe/{data}', [CiteinformeController::class, 'previsualizacion'])->name('pdf.informe');

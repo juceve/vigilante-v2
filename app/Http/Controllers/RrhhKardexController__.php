@@ -19,31 +19,20 @@ class RrhhKardexController extends Controller
     {
         $empleado = Empleado::find($empleado_id);
 
-        $hoy = Carbon::now()->toDateString();
-
-        // 1. Actualiza contratos vencidos a estado 0
-        Rrhhcontrato::where('empleado_id', $empleado_id)
-            ->whereNotNull('fecha_fin')
-            ->whereDate('fecha_fin', '<', $hoy)
-            ->where('activo', true)
-            ->update(['activo' => false]);
-
-        // 2. Busca el contrato activo
-        $contratoActivo = Rrhhcontrato::where('empleado_id', $empleado_id)
-            ->whereDate('fecha_inicio', '<=', $hoy)
+        $hoy = Carbon::now();
+        $contratoActivo = RRHHContrato::where('empleado_id', $empleado_id)
+            ->where('fecha_inicio', '<=', $hoy)
             ->where(function ($query) use ($hoy) {
                 $query->whereNull('fecha_fin')
-                    ->orWhereDate('fecha_fin', '>=', $hoy);
+                    ->orWhere('fecha_fin', '>=', $hoy);
             })
-            ->where('activo', true)
-            ->orderBy('fecha_inicio', 'asc')
+            ->where('activo', true) // Si decidís usar esto como flag de validez
+            ->orderBy('fecha_inicio', 'asc') // más antiguo primero si hay solapamiento
             ->first();
-
         $tipopermisos = Rrhhtipopermiso::all();
         $optionsAdelantos = Rrhhadelanto::estadoOptions();
         $tipobonos = Rrhhtipobono::all();
         $estadoDots = Rrhhestadodotacion::all();
-
         return view('admin.kardex.kardex', compact('empleado',  'contratoActivo', 'tipopermisos', 'optionsAdelantos', 'tipobonos', 'estadoDots'));
     }
 }
