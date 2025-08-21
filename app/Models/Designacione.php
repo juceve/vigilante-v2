@@ -49,7 +49,7 @@ class Designacione extends Model
      */
     public function designaciondias()
     {
-        return $this->hasMany('App\Models\Designaciondia', 'designacione_id', 'id');
+        return $this->hasOne(Designaciondia::class,'designacione_id','id');
     }
 
     /**
@@ -91,5 +91,9 @@ class Designacione extends Model
     public function novedades()
     {
         return $this->hasMany('App\Models\Novedade', 'designacione_id', 'id');
+    }
+    public function dialibres()
+    {
+        return $this->hasMany(DiaLibre::class);
     }
 }

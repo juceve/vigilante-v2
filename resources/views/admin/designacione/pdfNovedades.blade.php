@@ -14,9 +14,9 @@
     <table class="table" style="width: 100%">
         <tr class="text-center">
             <td style="width: 20%">
-                <img class="img-responsive" src="{{ asset('images/blackbird1.png') }}" style="width: 80px;">
+                <img class="img-responsive" src="{{ asset(config('adminlte.auth_logo.img.path')) }}" style="width: 80px;">
                 <p>
-                    BLACK BIRD <br>
+                    {{env('APP_NAME')}} <br>
                     <small>Seguridad y Vigilancia</small>
                 </p>
             </td>

@@ -31,12 +31,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Rrhhcontrato extends Model
 {
-    
+
     static $rules = [
-		'fecha_inicio' => 'required',
-		'salario_basico' => 'required',
-		'moneda' => 'required',
-		'activo' => 'required',
+        'fecha_inicio' => 'required',
+        'salario_basico' => 'required',
+        'moneda' => 'required',
+        'activo' => 'required',
     ];
 
     protected $perPage = 20;
@@ -46,7 +46,7 @@ class Rrhhcontrato extends Model
      *
      * @var array
      */
-    protected $fillable = ['empleado_id','rrhhtipocontrato_id','fecha_inicio','fecha_fin','salario_basico','rrhhcargo_id','moneda','motivo_fin','activo'];
+    protected $fillable = ['empleado_id', 'rrhhtipocontrato_id', 'fecha_inicio', 'fecha_fin', 'salario_basico', 'rrhhcargo_id', 'moneda', 'motivo_fin', 'activo'];
 
 
     /**
@@ -56,7 +56,7 @@ class Rrhhcontrato extends Model
     {
         return $this->hasOne('App\Models\Empleado', 'id', 'empleado_id');
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -64,7 +64,7 @@ class Rrhhcontrato extends Model
     {
         return $this->hasMany('App\Models\Rrhhadelanto', 'rrhhcontrato_id', 'id');
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -72,7 +72,7 @@ class Rrhhcontrato extends Model
     {
         return $this->hasOne('App\Models\Rrhhcargo', 'id', 'rrhhcargo_id');
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -80,7 +80,7 @@ class Rrhhcontrato extends Model
     {
         return $this->hasMany('App\Models\Rrhhdocscontrato', 'rrhhcontrato_id', 'id');
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -88,14 +88,12 @@ class Rrhhcontrato extends Model
     {
         return $this->hasMany('App\Models\Rrhhpermiso', 'rrhhcontrato_id', 'id');
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function rrhhtipocontrato()
     {
-        return $this->hasOne('App\Models\Rrhhtipocontrato', 'id', 'rrhhtipocontrato_id');
+        return $this->belongsTo(Rrhhtipocontrato::class, 'rrhhtipocontrato_id');
     }
-    
-
 }

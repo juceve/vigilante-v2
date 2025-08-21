@@ -446,6 +446,12 @@ return [
                     'can'   =>  'rrhhcargos.index',
                     'icon' => 'fas fa-user-graduate'
                 ],
+                [
+                    'text' => 'Feriados',
+                    'route'  => 'feriados',
+                    // 'can'   =>  'rrhhcargos.index',
+                    'icon' => 'fas fa-birthday-cake'
+                ],
 
             ]
         ],
@@ -471,7 +477,7 @@ return [
 
 
                 [
-                    'text' => 'Tipo de Bonos',
+                    'text' => 'Tipo Bonos-Descuentos',
                     'route'  => 'rrhhtipobonos.index',
                     'can'   =>  'rrhhtipobonos.index',
                     'icon' => 'fas fa-funnel-dollar'

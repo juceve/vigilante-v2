@@ -1,10 +1,10 @@
 @extends('adminlte::page')
 
 @section('title')
-    Tipo de Bonos
+    Tipo de Bonos-Descuentos
 @endsection
 @section('content_header')
-    <h4>Tipo de Bonos</h4>
+    <h4>Tipo de Bonos-Descuentos</h4>
 @endsection
 @section('content')
     <div class="container-fluid">
@@ -15,7 +15,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
-                                Listado de Tipos de Bono
+                                Listado de Tipos de Bono - Descuentos
                             </span>
 
                             <div class="float-right">

@@ -2,119 +2,216 @@
 
 namespace App\Http\Livewire\Admin;
 
-use App\Exports\AsistenciasExport;
-use App\Exports\ContactosExport;
 use App\Models\Asistencia;
+use App\Models\Designacione;
 use App\Models\Cliente;
-use App\Models\Vwasistencia;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
+use Carbon\Carbon;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Maatwebsite\Excel\Facades\Excel;
 
 class Registroasistencias extends Component
 {
-
     use WithPagination;
+
+    public $cliente_id = '';
+    public $fechaInicio;
+    public $fechaFin;
+    public $empleado = '';
+
+    public $clientes;
+    public $dias = [];
+
+    // Marcado manual
+    public $marcadoEmpleado = null;
+    public $marcadoTipo = null; // 'ingreso' o 'salida'
+    public $marcadoHora = '';
+    public $marcadoDesignacione = null;
+
+    // Paginación
+    public $perPage = 5;
     protected $paginationTheme = 'bootstrap';
-    public $clientes, $cliente_id = "",  $inicio, $final, $search = "",  $empleado_id = "", $auxcliente = "";
-    public $asistencia = null;
 
     public function mount()
     {
-        $this->inicio = date('Y-m-d');
-        $this->final = date('Y-m-d');
-        $this->clientes = Cliente::all()->pluck('nombre', 'id');
-        $this->asistencia = new Asistencia();
+        $this->clientes = Cliente::all();
+        $hoy = Carbon::now()->toDateString();
+        $this->fechaInicio = $hoy;
+        $this->fechaFin = $hoy;
+    }
+
+    public function updating($field)
+    {
+        if (in_array($field, ['cliente_id', 'empleado', 'fechaInicio', 'fechaFin', 'perPage'])) {
+            $this->resetPage();
+        }
+    }
+
+    public function loadData()
+    {
+        $this->dias = $this->getDiasRango($this->fechaInicio, $this->fechaFin);
+
+        $query = Designacione::with(['empleado', 'turno.cliente', 'dialibres'])
+            ->where('estado', true)
+            ->whereDate('fechaInicio', '<=', $this->fechaFin)
+            ->whereDate('fechaFin', '>=', $this->fechaInicio);
+
+        if ($this->cliente_id) {
+            $query->whereHas('turno', function ($q) {
+                $q->where('cliente_id', $this->cliente_id);
+            });
+        }
+
+        if ($this->empleado) {
+            $query->whereHas('empleado', function ($q) {
+                $q->where('nombres', 'like', '%' . $this->empleado . '%')
+                  ->orWhere('apellidos', 'like', '%' . $this->empleado . '%');
+            });
+        }
+
+        return $query->paginate($this->perPage);
+    }
+
+    private function getDiasRango($start, $end)
+    {
+        $fechas = [];
+        $inicio = Carbon::parse($start);
+        $fin = Carbon::parse($end);
+
+        while ($inicio <= $fin) {
+            $fechas[] = $inicio->copy();
+            $inicio->addDay();
+        }
+
+        return $fechas;
+    }
+
+    // MARCADO MANUAL
+    public function abrirMarcadoManual($desigId, $tipo)
+    {
+        $this->marcadoDesignacione = Designacione::find($desigId);
+        $this->marcadoEmpleado = $this->marcadoDesignacione->empleado;
+        $this->marcadoTipo = $tipo;
+        $this->marcadoHora = now()->format('H:i');
+
+        $this->dispatchBrowserEvent('mostrar-modal');
+    }
+
+    public function guardarMarcadoManual()
+    {
+        if (!$this->marcadoDesignacione || !$this->marcadoTipo) return;
+
+        $hoy = now()->toDateString();
+
+        $asistencia = Asistencia::firstOrCreate(
+            ['designacione_id' => $this->marcadoDesignacione->id, 'fecha' => $hoy],
+            ['ingreso' => null, 'salida' => null]
+        );
+
+        $horaCompleta = $hoy . ' ' . $this->marcadoHora . ':00';
+
+        if ($this->marcadoTipo === 'ingreso') {
+            $asistencia->ingreso = $horaCompleta;
+        } elseif ($this->marcadoTipo === 'salida') {
+            $asistencia->salida = $horaCompleta;
+        }
+
+        $asistencia->save();
+
+        session()->flash('success', 'Marcado guardado correctamente.');
+        $this->dispatchBrowserEvent('cerrar-modal');
+    }
+
+    public function puedeMarcarSalida($desig, $asis)
+    {
+        if (!$asis || !$asis->ingreso) return false;
+
+        $horaIngreso = Carbon::parse($asis->ingreso);
+        $horaSalidaTurno = $desig->turno && $desig->turno->horafin ? Carbon::parse($desig->turno->horafin) : null;
+        $ahora = now();
+
+        if (!$horaSalidaTurno) return true;
+
+        if ($horaSalidaTurno->lt(Carbon::parse($desig->turno->horainicio))) {
+            $horaSalidaTurno->addDay();
+        }
+
+        return $ahora->gte($horaSalidaTurno);
     }
 
     public function render()
     {
-        $resultados = NULL;
-        $empleados = [];
-        $sql = "";
-        if ($this->cliente_id != "") {
-            $empleados = DB::select("SELECT DISTINCT(empleado_id) id,empleado nombre FROM vwasistencias WHERE cliente_id=" . $this->cliente_id);
-            if ($this->auxcliente != $this->cliente_id) {
-                $this->auxcliente = $this->cliente_id;
-                $this->empleado_id = "";
-            }
+        $designaciones = $this->loadData();
+        return view('livewire.admin.registroasistencias', compact('designaciones'))
+            ->extends('adminlte::page');
+    }
 
-            if ($this->empleado_id == "") {
-                $resultados = Vwasistencia::where([
-                    ["fecha", ">=", $this->inicio],
-                    ["fecha", "<=", $this->final],
-                    ["cliente_id", $this->cliente_id],
-                    ['empleado', 'LIKE', '%' . $this->search . '%']
-                ])->orWhere(
-                    [
-                        ["fecha", ">=", $this->inicio],
-                        ["fecha", "<=", $this->final],
-                        ["cliente_id", $this->cliente_id],
-                        ['turno', 'LIKE', '%' . $this->search . '%']
-                    ]
-                )
-                    ->orderBy('empleado_id', 'ASC')
-                    ->orderBy('fecha', 'ASC')
-                    ->paginate(10);
-                $this->empleado_id = "";
-            } else {
-                $resultados = Vwasistencia::where([
-                    ["fecha", ">=", $this->inicio],
-                    ["fecha", "<=", $this->final],
-                    ["cliente_id", $this->cliente_id],
-                    ['empleado_id', $this->empleado_id]
-                ])->orWhere(
-                    [
-                        ["fecha", ">=", $this->inicio],
-                        ["fecha", "<=", $this->final],
-                        ["cliente_id", $this->cliente_id],
-                        ['turno', 'LIKE', '%' . $this->search . '%'],
-                        ['empleado_id', $this->empleado_id]
-                    ]
-                )
-                    ->orderBy('empleado_id', 'ASC')
-                    ->orderBy('fecha', 'ASC')
-                    ->paginate(10);
-            }
+    public function getAllData()
+    {
+        $dias = $this->getDiasRango($this->fechaInicio, $this->fechaFin);
+
+        $query = Designacione::with(['empleado', 'turno.cliente', 'dialibres'])
+            ->where('estado', true)
+            ->whereDate('fechaInicio', '<=', $this->fechaFin)
+            ->whereDate('fechaFin', '>=', $this->fechaInicio);
+
+        if ($this->cliente_id) {
+            $query->whereHas('turno', function ($q) {
+                $q->where('cliente_id', $this->cliente_id);
+            });
         }
-        // $this->resetPage();
-        $parametros = array($this->cliente_id, $this->inicio, $this->final, $this->search, $this->empleado_id);
-        Session::put('param-asistencias', $parametros);
 
-        return view('livewire.admin.registroasistencias', compact('resultados', 'empleados'))->extends('adminlte::page');
+        if ($this->empleado) {
+            $query->whereHas('empleado', function ($q) {
+                $q->where('nombres', 'like', '%' . $this->empleado . '%')
+                  ->orWhere('apellidos', 'like', '%' . $this->empleado . '%');
+            });
+        }
+
+        $designaciones = $query->get();
+
+        $data = [];
+
+        foreach ($designaciones as $desig) {
+            $empleadoData = [
+                'empleado' => $desig->empleado->nombres . ' ' . $desig->empleado->apellidos,
+                'turno' => $desig->turno->nombre ?? '',
+                'horario' => ($desig->turno->horainicio ?? '') . ' - ' . ($desig->turno->horafin ?? ''),
+                'empresa' => $desig->turno->cliente->nombre ?? 'Sin empresa',
+                'asistencias' => []
+            ];
+
+            foreach ($dias as $dia) {
+                $asis = Asistencia::where('designacione_id', $desig->id)
+                    ->whereDate('fecha', $dia->toDateString())
+                    ->first();
+
+                // Verificar si el día es libre
+                $diaLibre = $desig->dialibres->firstWhere('fecha', $dia->toDateString());
+
+                // Si fuera del rango de la designación
+                $fueraRango = $dia->lt(Carbon::parse($desig->fechaInicio)) || $dia->gt(Carbon::parse($desig->fechaFin));
+
+                $empleadoData['asistencias'][] = [
+                    'fecha' => $dia->toDateString(),
+                    'ingreso' => $asis && $asis->ingreso ? Carbon::parse($asis->ingreso)->format('H:i') : null,
+                    'salida' => $asis && $asis->salida ? Carbon::parse($asis->salida)->format('H:i') : null,
+                    'sin_marcacion' => !$asis && !$diaLibre && !$fueraRango,
+                    'fuera_rango' => $fueraRango,
+                    'dia_libre' => $diaLibre ? true : false,
+                    'observaciones_libre' => $diaLibre->observaciones ?? ''
+                ];
+            }
+
+            $data[] = $empleadoData;
+        }
+
+        return $data;
     }
 
-    public function verInfo($id)
+    public function pdf()
     {
-        $this->asistencia = Vwasistencia::find($id);
-    }
-
-    public function exporExcel()
-    {
-
-        return Excel::download(new ContactosExport(), 'Contactos' . '_' . date('His') . '.xlsx');
-    }
-
-    public function updatedCliente_id()
-    {
-        $this->resetPage();
-    }
-    public function updatedEmpleado_id()
-    {
-        $this->resetPage();
-    }
-    public function updatedInicio()
-    {
-        $this->resetPage();
-    }
-    public function updatedFinal()
-    {
-        $this->resetPage();
-    }
-    public function updatedSearch()
-    {
-        $this->resetPage();
+        $datos = $this->getAllData();
+        request()->session()->put('data-asistencias', $datos);
+        $this->emit('renderizarpdf');
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Rrhhcargo;
 use App\Models\Rrhhcontrato;
 use App\Models\Rrhhdocscontrato;
 use App\Models\Rrhhtipocontrato;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -19,6 +20,7 @@ class Contratos extends Component
     public $empleado, $procesando = false, $edit = false, $show = false, $selContrato;
     public $rrhhtipocontratoid = "", $fecha_inicio = "", $fecha_fin = "", $salario_basico = "", $rrhhcargo_id = "", $moneda = "", $motivo_fin = "", $activo = '';
     public $referencia = "";
+    public $cantidad_dias = 0;
 
     public function mount($empleado_id)
     {
@@ -52,13 +54,13 @@ class Contratos extends Component
     {
         DB::beginTransaction();
         try {
-            $referencia = str_replace(' ','_',$referencia);
+            $referencia = str_replace(' ', '_', $referencia);
             $documento = Rrhhdocscontrato::create([
                 'rrhhcontrato_id' => $this->selContrato->id,
                 'referencia' => $referencia,
                 'url' => $url,
             ]);
-            
+
             DB::commit();
             $this->selContrato->refresh();
             $this->emit('toast-success', 'Documento registrado correctamente.');
@@ -70,7 +72,6 @@ class Contratos extends Component
 
             Storage::disk('public')->delete($rutaRelativa);
             Log::info($th->getMessage());
-            
         }
     }
 
@@ -133,11 +134,23 @@ class Contratos extends Component
     }
     public function registrarContrato()
     {
+
         if ($this->procesando) {
             return;
         } else {
             $this->validate();
 
+            if ($this->cantidad_dias <= 30) {
+                $fechaInicio = Carbon::parse($this->fecha_inicio);
+
+                // Cantidad de días a sumar
+                $cantidadDias = $this->cantidad_dias;
+
+                // Fecha final
+                $fechaFin = $fechaInicio->copy()->addDays($cantidadDias - 1);
+
+                $this->fecha_fin = $fechaFin->toDateString(); // Ej: 2025-08-14
+            }
             $this->procesando = true;
             DB::beginTransaction();
             try {
@@ -166,5 +179,6 @@ class Contratos extends Component
     {
         $tipocontrato = Rrhhtipocontrato::find($this->rrhhtipocontratoid);
         $this->salario_basico = $tipocontrato->sueldo_referencial;
+        $this->cantidad_dias = $tipocontrato->cantidad_dias;
     }
 }

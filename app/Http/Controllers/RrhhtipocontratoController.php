@@ -43,9 +43,20 @@ class RrhhtipocontratoController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate(Rrhhtipocontrato::$rules);
+        request()->validate([
+            'nombre' => 'required',
+            'cantidad_dias' => 'required',
+            'activo' => 'required',
+        ]);
 
-        $rrhhtipocontrato = Rrhhtipocontrato::create($request->all());
+        $rrhhtipocontrato = Rrhhtipocontrato::create([
+            'codigo' => rand(1, 100) . '-' . date('YmdHis'),
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'cantidad_dias' => $request->cantidad_dias,
+            'horas_dia' => $request->horas_dia ?? '0',
+            'sueldo_referencial' => $request->sueldo_referencial,
+        ]);
 
         return redirect()->route('rrhhtipocontratos.index')
             ->with('success', 'Tipo de contrato creado correctamente.');

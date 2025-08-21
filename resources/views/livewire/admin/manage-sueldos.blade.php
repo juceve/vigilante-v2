@@ -81,7 +81,7 @@
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover table-striped">
                         <thead class="table-info">
-                            <tr>
+                            <tr class="text-center">
                                 <th style="cursor:pointer" wire:click="sortBy('id')">
                                     ID
                                     @if ($sortField === 'id')
@@ -123,7 +123,7 @@
                         </thead>
                         <tbody>
                             @forelse($sueldos as $sueldo)
-                                <tr>
+                                <tr class="text-center">
                                     <td>{{ $sueldo->id }}</td>
                                     <td>{{ $sueldo->gestion }}</td>
                                     <td>{{ $meses_es[$sueldo->mes] ?? $sueldo->mes }}</td>

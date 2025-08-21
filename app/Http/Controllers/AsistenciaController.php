@@ -163,6 +163,15 @@ class AsistenciaController extends Controller
 
         return $pdf->stream();
     }
+    public function pdfPlanillaAsistencia()
+    {
+        $data = request()->session()->get('data-asistencias');
+
+        $pdf = Pdf::loadView('tempdocs.planilla-asistencias', compact('data'))
+            ->setPaper('letter', 'portrait');
+
+        return $pdf->stream();
+    }
 
   
 }

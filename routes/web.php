@@ -48,6 +48,7 @@ use App\Http\Livewire\Admin\ListadoCiteInforme;
 use App\Http\Livewire\Admin\ListadoCiteMemorandum;
 use App\Http\Livewire\Admin\ListadoCiteRecibo;
 use App\Http\Livewire\Admin\ListadoResidencias;
+use App\Http\Livewire\Admin\ManageFeriados;
 use App\Http\Livewire\Admin\ManageSueldos;
 use App\Http\Livewire\Admin\Nuevoptctrl;
 use App\Http\Livewire\Admin\ProcesarSueldo;
@@ -175,6 +176,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/registro-actividad/{cliente_id?}', Regactividad::class)->middleware('can:admin.registros.panico')->name('admin.regactividad');
     Route::get('admin/turnos-cliente/{cliente_id}', TurnoCliente::class)->middleware('can:turnos.index')->name('admin.turnos-cliente');
     Route::get('admin/puntos-control/{turno_id}', PuntosControl::class)->name(('puntoscontrol'));
+    Route::get('admin/feriados', ManageFeriados::class)->name(('feriados'));
 
 
     Route::get('/admin/puntos-control-v2/{turnoId}', PuntosControlV2::class)->name('puntoscontrolv2');
@@ -219,6 +221,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('pdf/novedades/', [NovedadeController::class, 'pdfNovedades'])->name('pdf.novedades');
     Route::get('pdf/tareas/', [TareaController::class, 'pdfTareas'])->name('pdf.tareas');
     Route::get('pdf/asistencias/', [AsistenciaController::class, 'pdfAsistencia'])->name('pdf.asistencias');
+    Route::get('pdf/planilla-asistencias/', [AsistenciaController::class, 'pdfPlanillaAsistencia'])->name('pdf.planillaasistencias');
     Route::get('admin/pdf/sueldos/{id}', [SueldoController::class, 'previsualizacion'])->name('pdf.sueldos');
     Route::get('admin/pdf/boletas-sueldo/{id}', [SueldoController::class, 'boletas'])->name('pdf.boletas');
 

@@ -36,7 +36,7 @@ Tipo Contrato
                                     <tr>
                                         <th>No</th>
                                         
-										<th>Codigo</th>
+										{{-- <th>Codigo</th> --}}
 										<th>Nombre</th>
 									
 										<th>Activo</th>
@@ -49,7 +49,7 @@ Tipo Contrato
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             
-											<td>{{ $rrhhtipocontrato->codigo }}</td>
+											{{-- <td>{{ $rrhhtipocontrato->codigo }}</td> --}}
 											<td>{{ $rrhhtipocontrato->nombre }}</td>
 											
 											<td>

@@ -128,9 +128,9 @@
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
                                             <td>{{ $doc->referencia }}</td>
-                                            <td>{{ substr($doc->url,21,-1) }}</td>
-                                            <td>{{ substr($doc->created_at,0,10) }}</td>
-                                            <td class="text-right"> 
+                                            <td>{{ substr($doc->url, 21, -1) }}</td>
+                                            <td>{{ substr($doc->created_at, 0, 10) }}</td>
+                                            <td class="text-right">
                                                 <a href="{{ asset('storage/' . $doc->url) }}"
                                                     class="btn btn-sm btn-primary" target="_blank" title="Ver online">
                                                     <i class="fas fa-eye"></i>
@@ -140,7 +140,7 @@
                                                     <i class="fas fa-cloud-download-alt"></i>
                                                 </a>
 
-                                               
+
                                             </td>
                                         </tr>
                                     @endforeach
@@ -229,16 +229,19 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Fecha Fin</span>
-                                    </div>
-                                    <input type="date" @if ($show) disabled @endif
-                                        class="form-control @error('fecha_fin')
+                                @if ($cantidad_dias >= 30)
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Fecha Fin</span>
+                                        </div>
+                                        <input type="date" @if ($show) disabled @endif
+                                            class="form-control @error('fecha_fin')
                                     is-invalid
                                 @enderror"
-                                        wire:model.defer="fecha_fin">
-                                </div>
+                                            wire:model.defer="fecha_fin">
+                                    </div>
+                                @endif
+
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="input-group input-group-sm mb-3">

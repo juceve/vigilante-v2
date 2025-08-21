@@ -1,220 +1,298 @@
 <div>
     @section('title')
-    Registro de Asistencias
+        Asistencias Web
     @endsection
     @section('content_header')
-    <div class="container-fluid">
-        <h4>Registro de Asistencias</h4>
-    </div>
+        <h4>Asistencias Web</h4>
     @endsection
 
-    <div class="container-fluid">
-        <div class="card">
-
-            <div class="card-body">
-                <label for="">Filtrar:</label>
-                <div class="row">
-                    <div class="col-12 col-md-3 mb-3">
-                        {!! Form::select('cliente_id', $clientes, null,
-                        ['class'=>'form-control','placeholder'=>'Seleccione un cliente','wire:model'=>'cliente_id']) !!}
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Desde</span>
-                            </div>
-                            <input type="date" class="form-control" wire:model='inicio' aria-label="inicio"
-                                aria-describedby="basic-addon1">
-                        </div>
-
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Hasta</span>
-                            </div>
-                            <input type="date" class="form-control" wire:model='final' aria-label="final"
-                                aria-describedby="basic-addon1">
-                        </div>
-
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <select name="empleado_id" class="form-control" wire:model='empleado_id'>
+    <!-- Tabla -->
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3 class="card-title">Registro de Asistencias</h3>
+        </div>
+        <div class="card-body table-responsive">
+            <div class="row">
+                <!-- Cliente -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Cliente</label>
+                        <select wire:model="cliente_id" class="form-control">
                             <option value="">Todos</option>
-                            @foreach ($empleados as $item)
-                            <option value="{{$item->id}}">{{$item->nombre}}</option>
+                            @foreach ($clientes as $cliente)
+                                <option value="{{ $cliente->id }}">{{ $cliente->nombre }}</option>
                             @endforeach
-
                         </select>
                     </div>
                 </div>
-                <hr>
-                <div class="table-responsive">
-                    @if (!is_null($resultados))
-                    <div class="row w-100">
-                        <div class="col-12 col-md-8 mb-3">
-                            <div class="input-group ">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="basic-addon1"><i
-                                            class="fas fa-search"></i></span>
-                                </div>
-                                <input type="search" class="form-control" placeholder="Busqueda..."
-                                    aria-label="Busqueda..." aria-describedby="basic-addon1"
-                                    wire:model.debounce.500ms='search'>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-2 mb-3">
-                            <button class="btn btn-success btn-block" wire:click='exporExcel'><i
-                                    class="fas fa-file-excel"></i>
-                                Exportar</button>
-                        </div>
-                        <div class="col-12 col-md-2 mb-3">
-                            <a href="{{route('pdf.asistencias')}}" class="btn btn-danger btn-block" target="_blank"><i
-                                    class="fas fa-file-pdf"></i> Exportar</a>
-                        </div>
+
+                <!-- Fecha Inicio -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Fecha Inicio</label>
+                        <input type="date" wire:model="fechaInicio" class="form-control">
                     </div>
-
                 </div>
 
-                @endif
-
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped" style="vertical-align: middle">
-                        <thead>
-                            <tr class="table-info">
-                                <th>ID</th>
-                                <th>CLIENTE</th>
-                                <th>GUARDIA</th>
-                                <th>TURNO</th>
-                                <th class="text-center">FECHA</th>
-                                <th class="text-center">INGRESO</th>
-                                <th class="text-center">SALIDA</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (!is_null($resultados))
-                            @forelse ($resultados as $item)
-                            <tr>
-                                <td>{{$item->id}}</td>
-                                <td>{{$item->cliente}}</td>
-                                <td>{{$item->empleado}}</td>
-                                <td>{{$item->turno}}</td>
-                                <td class="text-center">{{$item->fecha}}</td>
-                                <td class="text-center">{{$item->ingreso}}</td>
-                                <td class="text-center">{{$item->salida}}</td>
-
-                                <td>
-                                    <button class="btn btn-info btn-sm" title="Ver info"
-                                        wire:click='verInfo({{$item->id}})' data-toggle='modal'
-                                        data-target='#modalInfo'>
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td class="text-center" colspan="8">No se econtraron resultados.</td>
-                            </tr>
-                            @endforelse
-                            @else
-                            <tr>
-                                <td class="text-center" colspan="8">No se econtraron resultados.</td>
-                            </tr>
-                            @endif
-                        </tbody>
-                    </table>
+                <!-- Fecha Fin -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Fecha Fin</label>
+                        <input type="date" wire:model="fechaFin" class="form-control">
+                    </div>
                 </div>
-                <div class="d-flex justify-content-end">
-                    @if (!is_null($resultados))
-                    {{ $resultados->links() }}
-                    @endif
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-9">
+                    <!-- Buscador -->
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        </div>
+                        <input type="search" class="form-control" wire:model.debounce.500ms="empleado"
+                            placeholder="Buscar por empleado">
+                    </div>
+                </div>
+                <div class="col-12 col-md-3">
+                    <!-- Controles de paginación -->
+                    <div class="d-flex justify-content-between align-items-center float-left float-md-right mb-3">
+
+                        Mostrar &nbsp;
+                        <select wire:model="perPage" class="form-control form-control-sm d-inline-block"
+                            style="width: auto;">
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        &nbsp;filas
+
+                    </div>
                 </div>
             </div>
 
+
+            <table class="table table-bordered table-hover text-center">
+                <thead class="table-info">
+                    <tr>
+                        <th class="text-left" style="width: 250px; vertical-align: middle;">EMPLEADO</th>
+                        @foreach ($dias as $dia)
+                            <th style="font-size: 12px; vertical-align: middle;">
+                                {{ strtoupper(str_replace('.', '', $dia->locale('es')->isoFormat('ddd DD MMM YY'))) }}
+                            </th>
+                        @endforeach
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($designaciones as $desig)
+                        <tr>
+                            <td class="text-left">
+                                <b>{{ $desig->empleado->nombres . ' ' . $desig->empleado->apellidos }}</b><br>
+                                <small class="text-success"><strong>Empresa:
+                                    {{ $desig->turno->cliente->nombre ?? 'Sin empresa' }}</strong></small> <br>
+                                @php
+                                    $dl = $desig->designaciondias;
+                                @endphp
+                                <small><span class="text-primary">Días Laborales:</span> [
+                                    {{ $dl->lunes ? 'Lu ' : '' }}
+                                    {{ $dl->martes ? 'Ma ' : '' }}
+                                    {{ $dl->miercoles ? 'Mi ' : '' }}
+                                    {{ $dl->jueves ? 'Ju ' : '' }}
+                                    {{ $dl->viernes ? 'Vi ' : '' }}
+                                    {{ $dl->sabado ? 'Sa ' : '' }}
+                                    {{ $dl->domingo ? 'Do ' : '' }}
+                                    ]
+                                </small> <br>
+                                <small class="text-info">Turno: {{ $desig->turno->nombre ?? '' }}</small>
+                                <small>[{{ $desig->turno->horainicio ?? '' }} -
+                                    {{ $desig->turno->horafin ?? '' }}]</small>
+
+
+
+                                
+                            </td>
+
+                            @foreach ($dias as $dia)
+                                @php
+                                    $asis = \App\Models\Asistencia::where('designacione_id', $desig->id)
+                                        ->whereDate('fecha', $dia->toDateString())
+                                        ->first();
+
+                                    $diaLibre = $desig->dialibres->firstWhere('fecha', $dia->toDateString());
+                                    $fueraRango =
+                                        $dia->lt(Carbon\Carbon::parse($desig->fechaInicio)) ||
+                                        $dia->gt(Carbon\Carbon::parse($desig->fechaFin));
+
+                                    $horaActual = \Carbon\Carbon::now();
+                                    $horaInicioTurno = \Carbon\Carbon::parse($desig->turno->horainicio ?? '00:00');
+                                    $horaFinTurno = \Carbon\Carbon::parse($desig->turno->horafin ?? '23:59');
+
+                                    $badges = [];
+                                    $toleranciaIngreso = $horaInicioTurno->copy()->addMinutes(5); // 5 min de tolerancia
+
+                                    if ($fueraRango) {
+                                        $badges[] = [
+                                            'class' => 'badge-secondary',
+                                            'texto' => 'S/D',
+                                            'tooltip' => 'Sin Designación',
+                                        ];
+                                    } elseif ($diaLibre) {
+                                        $badges[] = [
+                                            'class' => 'badge-info',
+                                            'texto' => 'Libre',
+                                            'tooltip' => 'Día Libre: ' . ($diaLibre->observaciones ?? ''),
+                                        ];
+                                    } elseif ($asis) {
+                                        // Ingreso
+                                        if ($asis->ingreso) {
+                                            $horaIngreso = Carbon\Carbon::parse($asis->ingreso);
+                                            if ($horaIngreso->lte($toleranciaIngreso)) {
+                                                $badgeClass = 'badge-success';
+                                                $tooltip = 'Ingreso a tiempo (' . $horaIngreso->format('H:i') . ')';
+                                            } else {
+                                                $badgeClass = 'badge-warning';
+                                                $tooltip = 'Ingreso tarde (' . $horaIngreso->format('H:i') . ')';
+                                            }
+                                            $badges[] = [
+                                                'class' => $badgeClass,
+                                                'texto' => 'I: ' . $horaIngreso->format('H:i'),
+                                                'tooltip' => $tooltip,
+                                            ];
+                                        }
+
+                                        // Salida
+                                        if ($asis->salida) {
+                                            $horaSalida = Carbon\Carbon::parse($asis->salida);
+
+                                            // Comparar solo la hora del turno con la hora de salida
+                                            $horaFinTurnoSoloHora = $horaFinTurno->format('H:i');
+                                            $horaSalidaSoloHora = $horaSalida->format('H:i');
+
+                                            if ($horaSalidaSoloHora >= $horaFinTurnoSoloHora) {
+                                                $badgeClass = 'badge-info';
+                                                $tooltip = 'Salida correcta (' . $horaSalida->format('H:i') . ')';
+                                            } else {
+                                                $badgeClass = 'badge-warning';
+                                                $tooltip =
+                                                    'Salida antes de tiempo (' . $horaSalida->format('H:i') . ')';
+                                            }
+
+                                            $badges[] = [
+                                                'class' => $badgeClass,
+                                                'texto' => 'S: ' . $horaSalida->format('H:i'),
+                                                'tooltip' => $tooltip,
+                                            ];
+                                        }
+                                    } else {
+                                        // Sin marcación
+                                        if ($dia->isToday() && $horaActual->lt($horaInicioTurno)) {
+                                            $badges[] = [
+                                                'class' => 'badge-secondary',
+                                                'texto' => 'S/M',
+                                                'tooltip' => 'Aún no ha comenzado su horario laboral',
+                                            ];
+                                        } elseif ($dia->lt($horaActual) || $dia->eq($horaActual->toDateString())) {
+                                            // Día activo pasado o día actual después de hora de inicio
+                                            $badges[] = [
+                                                'class' => 'badge-danger',
+                                                'texto' => 'S/M',
+                                                'tooltip' => 'Sin marcación',
+                                            ];
+                                        } else {
+                                            // Días futuros
+                                            $badges[] = ['class' => '', 'texto' => '-', 'tooltip' => ''];
+                                        }
+                                    }
+                                @endphp
+
+                                <td style="vertical-align: middle;">
+                                    @foreach ($badges as $b)
+                                        <span class="badge {{ $b['class'] }}" data-toggle="tooltip"
+                                            title="{{ $b['tooltip'] }}">
+                                            {{ $b['texto'] }}
+                                        </span>
+                                    @endforeach
+
+                                    {{-- Botón marcado manual --}}
+                                    @if ($dia->isToday() && !$fueraRango && !$diaLibre)
+                                        <div class="mt-1">
+                                            @if (!$asis || !$asis->ingreso)
+                                                @if ($horaActual->gte($horaInicioTurno))
+                                                    <button class="btn btn-sm btn-primary"
+                                                        wire:click="abrirMarcadoManual({{ $desig->id }}, 'ingreso')">Marcar
+                                                        Ingreso</button>
+                                                @endif
+                                            @elseif (!$asis->salida && $this->puedeMarcarSalida($desig, $asis))
+                                                @if ($horaActual->gte($horaFinTurno))
+                                                    <button class="btn btn-sm btn-secondary"
+                                                        wire:click="abrirMarcadoManual({{ $desig->id }}, 'salida')">Marcar
+                                                        Salida</button>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    @endif
+                                </td>
+                            @endforeach
+
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="{{ count($dias) + 1 }}" class="text-center text-muted">No se encontraron
+                                registros</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+
+            <div class="float-left mt-3">
+                <button class="btn btn-danger" wire:click='pdf'>Exportar <i class="fas fa-file-pdf"></i></button>
+            </div>
+            <div class="float-right mt-3">
+                {{ $designaciones->links() }}
+            </div>
         </div>
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="modalInfo" tabindex="-1" aria-labelledby="modalInfoLabel" aria-hidden="true"
-        wire:ignore.self>
-        <div class="modal-dialog modal-lg">
+    <!-- Modal marcado manual -->
+    <div wire:ignore.self class="modal fade" id="marcadoModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalInfoLabel"><strong>INFO ASISTENCIA - ID:
-                            {{$asistencia->id}}</strong>
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <h5 class="modal-title">Marcado Manual: {{ $marcadoEmpleado->nombres ?? '' }}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div wire:loading>
-
-                        <div class="spinner-border text-success" role="status">
-                            <span class="sr-only">Cargando...</span>
-                        </div>
-
-                    </div>
-                    <div wire:loading.remove>
-                        <div class="row">
-                            <div class="col-12 col-md-12">
-
-                                <table class="table table-bordered table-striped">
-                                    <tr>
-                                        <td><strong>CLIENTE:</strong></td>
-                                        <td>{{$asistencia->cliente}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>GUARDIA:</strong></td>
-                                        <td>{{$asistencia->empleado}}</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><strong>TURNO:</strong></td>
-                                        <td>{{$asistencia->turno}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>FECHA:</strong></td>
-                                        <td>{{$asistencia->fecha}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>INGRESO:</strong></td>
-                                        <td>{{$asistencia->ingreso}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>SALIDA:</strong></td>
-                                        <td>{{$asistencia->salida}}</td>
-                                    </tr>
-                                    {{-- <tr>
-                                        <td><strong>CONTENIDO:</strong></td>
-                                        <td>{{$novedade->contenido}}</td>
-                                    </tr> --}}
-
-
-                                </table>
-                            </div>
-                            {{-- <div class="col-12 col-md-6">
-                                @if ($novedade->imgnovedades->count()>0)
-                                <h6>CAPTURA:</h6>
-                                @foreach ($novedade->imgnovedades as $item)
-                                <img src="{{asset('storage/'.$item->url)}}" class="img-fluid img-thumbnail">
-                                @endforeach
-
-                                @else
-                                <img src="{{asset('images/sinimagen.jpg')}}" class="img-fluid img-thumbnail"
-                                    style="max-height: 400px;">
-                                @endif
-                            </div> --}}
-                        </div>
-                    </div>
-
-
+                    <label>Hora {{ ucfirst($marcadoTipo) }}</label>
+                    <input type="time" class="form-control" wire:model="marcadoHora">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">CERRAR</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" wire:click="guardarMarcadoManual">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section('js')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            window.addEventListener('mostrar-modal', event => {
+                $('#marcadoModal').modal('show');
+            });
+            window.addEventListener('cerrar-modal', event => {
+                $('#marcadoModal').modal('hide');
+            });
+
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+    <script>
+        Livewire.on('renderizarpdf', () => {
+            var win = window.open("../pdf/planilla-asistencias", '_blank');
+            win.focus();
+        });
+    </script>
+@endsection

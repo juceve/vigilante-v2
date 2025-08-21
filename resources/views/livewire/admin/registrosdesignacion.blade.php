@@ -26,50 +26,32 @@
             <div class="card-body">
                 <label for="">Filtrar:</label>
                 <div class="row">
-                    <div class="col-12 col-md-3 mb-3">
-                        {!! Form::select('cliente_id', $clientes, null,
-                        ['class'=>'form-control','placeholder'=>'Seleccione un cliente','wire:model'=>'cliente_id']) !!}
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Desde</span>
-                            </div>
-                            <input type="date" class="form-control" wire:model='inicio' aria-label="inicio"
-                                aria-describedby="basic-addon1">
-                        </div>
-
-                    </div>
-                    <div class="col-12 col-md-3">
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Hasta</span>
-                            </div>
-                            <input type="date" class="form-control" wire:model='final' aria-label="final"
-                                aria-describedby="basic-addon1">
-                        </div>
-
-                    </div>
-                    <div class="col-12 col-md-3">
-                        {!! Form::select('estado', [''=>'Todos','1'=>'Activo','0'=>'Finalizado'],
-                        null, ['class'=>'form-control','wire:model'=>'estado']) !!}
-                    </div>
-                </div>
-                <hr>
-                <div class="table-responsive">
-                    @if (!is_null($resultados))
-                    <div class="row w-100">
-                        <div class="col-12 mb-3">
+                    <div class="col-md-6 mb-3">
                             <div class="input-group ">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1"><i
                                             class="fas fa-search"></i></span>
                                 </div>
-                                <input type="search" class="form-control" placeholder="Busqueda..."
+                                <input type="search" class="form-control" placeholder="Busqueda por empleado"
                                     aria-label="Busqueda..." aria-describedby="basic-addon1"
                                     wire:model.debounce.500ms='search'>
                             </div>
                         </div>
+                    <div class="col-12 col-md-3 mb-3">
+                        {!! Form::select('cliente_id', $clientes, null,
+                        ['class'=>'form-control','placeholder'=>'Todos los Clientes','wire:model'=>'cliente_id']) !!}
+                    </div>
+                  
+                    <div class="col-12 col-md-3">
+                        {!! Form::select('estado', [''=>'Todos los estados','1'=>'Activo','0'=>'Finalizado'],
+                        null, ['class'=>'form-control','wire:model'=>'estado']) !!}
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    @if (!is_null($resultados))
+                    <div class="row w-100">
+                        
 
                     </div>
 
@@ -78,15 +60,15 @@
                 @endif
 
                 <div class="">
-                    <table class="table table-bordered table-striped dataTableLiv" style="vertical-align: middle">
+                    <table class="table table-bordered table-striped" style="vertical-align: middle; font-size: 13px;">
                         <thead>
-                            <tr class="table-info">
+                            <tr class="table-info text-center">
                                 <th>No</th>
-                                <th>EMPLEADO</th>
-                                <th>CLIENTE</th>
+                                <th class="text-left">EMPLEADO</th>
+                                <th >CLIENTE</th>
                                 <th>TURNO</th>
-                                <th style="width: 45px;">INICIO</th>
-                                <th style="width: 45px;">FINAL</th>
+                                <th >INICIO</th>
+                                <th >FINAL</th>
                                 <th>ESTADO</th>
                                 <th></th>
                             </tr>
@@ -94,24 +76,24 @@
                         <tbody>
                             @if (!is_null($resultados))
                             @foreach ($resultados as $designacione)
-                            <tr>
+                            <tr class="text-center">
                                 {{-- <td>{{ ++$i }}</td> --}}
                                 
                                 <td>{{ $designacione->id}}</td>
-                                <td>{{ $designacione->empleado}}</td>
+                                <td class="text-left">{{ $designacione->empleado}}</td>
                                 <td>{{ $designacione->cliente }}
                                 <td>{{ $designacione->turno }}</td>
                                 <td>{{ $designacione->fechaInicio }}</td>
                                 <td>{{ $designacione->fechaFin }}</td>
-                                <td class="text-center">
+                                <td >
                                     @if (!$designacione->estado) <span
                                         class="badge badge-pill badge-warning">Finalizado</span>
                                     @else
                                     <span class="badge badge-pill badge-success">Activo</span>
                                     @endif
                                 </td>
-                                <td class="text-right">
-                                    <div class="btn-group">
+                                <td class="text-right" style="width: 100px">
+                                    <div class="btn-group dropleft">
                                         <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
                                             data-toggle="dropdown">Opciones</button>
                                         <span class="sr-only">Toggle Dropdown</span>
@@ -132,13 +114,13 @@
                                                 Hombre Vivo
                                             </a>
                                             @endcan
-                                            @can('admin.registros.asistencia')
+                                            {{-- @can('admin.registros.asistencia')
                                             <a class="dropdown-item"
                                                 href="{{ route('marcaciones', $designacione->id) }}" title="">
                                                 <i class="fas fa-user-clock text-secondary"></i>
                                                 Asistencias
                                             </a>
-                                            @endcan
+                                            @endcan --}}
                                             @can('admin.registros.novedades')
                                             <a class="dropdown-item"
                                                 href="{{ route('regnovedades', $designacione->id) }}" title="">
@@ -187,101 +169,15 @@
                             @endif
                         </tbody>
                     </table>
+                    <div class="float-right">
+                        {{ $resultados->links() }}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal -->
-    {{-- <div class="modal fade" id="modalInfo" tabindex="-1" aria-labelledby="modalInfoLabel" aria-hidden="true"
-        wire:ignore.self>
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalInfoLabel"><strong>INFO VISITA - ID: {{$visita->id}}</strong></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div wire:loading>
-
-                        <div class="spinner-border text-success" role="status">
-                            <span class="sr-only">Cargando...</span>
-                        </div>
-
-                    </div>
-                    <div wire:loading.remove>
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-
-                                <table class="table table-bordered table-striped">
-                                    <tr>
-                                        <td><strong>CLIENTE:</strong></td>
-                                        <td>{{$visita->cliente}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>VISITANTE:</strong></td>
-                                        <td>{{$visita->visitante}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>DOC. IDENTIDAD:</strong></td>
-                                        <td>{{$visita->docidentidad}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>RESIDENTE:</strong></td>
-                                        <td>{{$visita->residente}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>NRO. VIVIENDA:</strong></td>
-                                        <td>{{$visita->nrovivienda}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>INGRESO:</strong></td>
-                                        <td>{{$visita->fechaingreso." ".$visita->horaingreso}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>SALIDA:</strong></td>
-                                        <td>{{$visita->fechaSALIMOTIVO." ".$visita->horaSALIMOTIVO}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>MOTIVO:</strong></td>
-                                        <td>{{$visita->motivo}}</td>
-                                    </tr>
-                                    @if ($visita->motivo =="Otros")
-                                    <tr>
-                                        <td><strong>OTROS:</strong></td>
-                                        <td>{{$visita->otros}}</td>
-                                    </tr>
-                                    @endif
-                                    <tr>
-                                        <td><strong>OBSERVACIONES:</strong></td>
-                                        <td>{{$visita->observaciones}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>ESTADO:</strong></td>
-                                        <td>
-                                            @if ($visita->estado)
-                                            <span class="badge badge-pill badge-success">Activo</span>
-                                            @else
-                                            <span class="badge badge-pill badge-warning">Finalizado</span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-
-                        </div>
-                    </div>
-
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">CERRAR</button>
-                </div>
-            </div>
-        </div>
-    </div> --}}
+  
 </div>
 @section('js')
 

@@ -8,60 +8,67 @@ use App\Models\Vwdesignacione;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Registrosdesignacion extends Component
 {
-    public $clientes, $cliente_id = "", $estado = "1", $inicio, $final, $search = "";
+    use WithPagination;
+
+    public $clientes, $cliente_id = "", $estado = "1", $search = "";
+    protected $paginationTheme = 'bootstrap'; // Activamos Bootstrap 4 para Livewire
+
+    // Evitar reset de página al cambiar filtros
+    protected $updatesQueryString = ['cliente_id', 'estado', 'search'];
 
     public function mount()
     {
-        $this->inicio = date('Y-m-d');
-        $this->final = date('Y-m-d');
         $this->clientes = Cliente::all()->pluck('nombre', 'id');
-        // $this->visita = new Visita();
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingClienteId()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingEstado()
+    {
+        $this->resetPage();
     }
 
     public function render()
     {
-        $resultados = NULL;
-        $sql = "";
+        $query = Vwdesignacione::query();
+
+        // Filtro por cliente si se selecciona
         if ($this->cliente_id != "") {
-
-            if ($this->estado == "") {
-
-                $resultados = Vwdesignacione::where([
-                    ["fechaInicio", ">=", $this->inicio],
-                    ["fechaInicio", "<=", $this->final],
-                    ["cliente_id", $this->cliente_id],
-                    ['empleado', 'LIKE', '%' . $this->search . '%']
-                ])->orWhere([
-                    ["fechaInicio", ">=", $this->inicio],
-                    ["fechaInicio", "<=", $this->final],
-                    ["cliente_id", $this->cliente_id],
-                    ['turno', 'LIKE', '%' . $this->search . '%']
-                ])->orderBy('id', 'ASC')
-                    ->get();
-            } else {
-                $resultados = Vwdesignacione::where([
-                    ["fechaInicio", ">=", $this->inicio],
-                    ["fechaInicio", "<=", $this->final],
-                    ["cliente_id", $this->cliente_id],
-                    ['empleado', 'LIKE', '%' . $this->search . '%'],
-                    ["estado", $this->estado],
-                ])->orWhere([
-                    ["fechaInicio", ">=", $this->inicio],
-                    ["fechaInicio", "<=", $this->final],
-                    ["cliente_id", $this->cliente_id],
-                    ['turno', 'LIKE', '%' . $this->search . '%'],
-                    ["estado", $this->estado],
-                ])->orderBy('id', 'ASC')
-                    ->get();
-            }
-
-            $parametros = array($this->cliente_id, $this->estado, $this->inicio, $this->final, $this->search);
-            Session::put('param-designacione', $parametros);
-            $this->emit('dataTableRenderDes');
+            $query->where('cliente_id', $this->cliente_id);
         }
+
+        // Filtro por estado si se selecciona
+        if ($this->estado !== "") {
+            $query->where('estado', $this->estado);
+        }
+
+        // Filtro por búsqueda en empleado o turno
+        if ($this->search != "") {
+            $query->where(function ($q) {
+                $q->where('empleado', 'LIKE', '%' . $this->search . '%')
+                  ->orWhere('turno', 'LIKE', '%' . $this->search . '%');
+            });
+        }
+
+        $resultados = $query->orderBy('id', 'ASC')->paginate(5); // Paginación 10 por página
+
+        // Guardar parámetros en sesión
+        $parametros = [$this->cliente_id, $this->estado, $this->search];
+        Session::put('param-designacione', $parametros);
+
+        $this->emit('dataTableRenderDes');
 
         return view('livewire.admin.registrosdesignacion', compact('resultados'))->with('i', 0);
     }
@@ -76,11 +83,9 @@ class Registrosdesignacion extends Component
         } else {
             DB::beginTransaction();
             try {
-
                 $designacione->fechaFin = date('Y-m-d');
                 $designacione->estado = false;
                 $designacione->save();
-
                 DB::commit();
                 $this->emit('success', 'Designación finalizada correctamente');
             } catch (\Throwable $th) {
@@ -92,7 +97,6 @@ class Registrosdesignacion extends Component
 
     public function exporExcel()
     {
-        // $cliente = Cliente::find($this->cliente_id);
-        // return Excel::download(new VisitasExport(), 'Visitas_' . $cliente->nombre . '_' . date('His') . '.xlsx');
+        // Exportar Excel
     }
 }

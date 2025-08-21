@@ -25,8 +25,7 @@ use Illuminate\Database\Eloquent\Model;
 class Rrhhtipocontrato extends Model
 {
     
-    static $rules = [
-		'codigo' => 'required',
+    static $rules = [		
 		'nombre' => 'required',
 		'cantidad_dias' => 'required',
 		'horas_dia' => 'required',
