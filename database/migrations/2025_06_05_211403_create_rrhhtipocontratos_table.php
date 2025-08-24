@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rrhhtipocontratos', function (Blueprint $table) {
-            $table->id();
+            $table->id();            
             $table->string('codigo',30);
             $table->string('nombre',100);
             $table->string('descripcion')->nullable();
+            $table->boolean('indefinido')->default(true);
             $table->integer('cantidad_dias');
             $table->integer('horas_dia');
             $table->float('sueldo_referencial',10,2)->nullable();

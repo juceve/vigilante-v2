@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('rrhhcontratos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('empleado_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('rrhhtipocontrato_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('rrhhtipocontrato_id')->nullable()->constrained()->nullOnDelete();            
             $table->date('fecha_inicio');
             $table->date('fecha_fin')->nullable();
             $table->float('salario_basico',10,2);

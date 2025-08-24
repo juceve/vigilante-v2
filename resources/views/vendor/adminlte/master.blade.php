@@ -584,7 +584,11 @@
             });
         });
     </script>
-
+    <script>
+        Livewire.on('consoleLog', msg => {
+            console.log(msg);
+        });
+    </script>
     <script>
         Livewire.on('toast-success', msg => {
             Swal.fire({
@@ -620,12 +624,12 @@
             });
         });
     </script>
-@yield('js2')
-@yield('js3')
-@yield('js4')
-@yield('js5')
-@yield('js6')
-@yield('js7')
+    @yield('js2')
+    @yield('js3')
+    @yield('js4')
+    @yield('js5')
+    @yield('js6')
+    @yield('js7')
 </body>
 
 </html>

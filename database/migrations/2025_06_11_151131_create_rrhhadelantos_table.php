@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('motivo')->nullable();
             $table->float('monto',10,2);
             $table->string('documento_adjunto')->nullable();
-            $table->enum('estado',['SOLICITADO','APROBADO','ANULADO'])->default('SOLICITADO');
+            $table->enum('estado',['SOLICITADO','APROBADO','ANULADO'])->default('APROBADO');
             $table->timestamps();
         });
     }

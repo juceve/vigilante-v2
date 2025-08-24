@@ -105,10 +105,6 @@
                         <td>Contrato ID</td>
                         <td>: {{ str_pad($b->rrhhcontrato_id, 5, '0', STR_PAD_LEFT) }}</td>
                     </tr>
-                    <tr>
-                        <td>Cant. Permisos</td>
-                        <td>: {{ $b->total_permisos }}</td>
-                    </tr>
                 </table>
 
 
@@ -118,6 +114,10 @@
                     <tr>
                         <td>Salario Base Bs.:</td>
                         <td>{{ number_format($b->salario_mes, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Permisos:</td>
+                        <td>{{ number_format($b->total_permisos, 2) }}</td>
                     </tr>
                     <tr>
                         <td>Adelantos:</td>

@@ -140,7 +140,7 @@ class Contratos extends Component
         } else {
             $this->validate();
 
-            if ($this->cantidad_dias <= 30) {
+            if ($this->cantidad_dias < 30) {
                 $fechaInicio = Carbon::parse($this->fecha_inicio);
 
                 // Cantidad de días a sumar

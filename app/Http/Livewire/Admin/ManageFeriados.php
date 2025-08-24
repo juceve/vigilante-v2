@@ -28,7 +28,7 @@ class ManageFeriados extends Component
         'recurrente' => 'boolean',
     ];
 
-   
+
 
     public function updatingBusqueda()
     {
@@ -60,12 +60,18 @@ class ManageFeriados extends Component
         }
 
         if (!$this->fecha && !$this->fecha_inicio) {
-            $this->addError('fecha', 'Debe indicar una fecha o un rango.');
+            $this->addError('fecha_inicio', 'Debe indicar una fecha o un rango.');
             return;
         }
-        $fecha = $this->fecha ?: null;
-        $fecha_inicio = $this->fecha_inicio ?: null;
-        $fecha_fin = $this->fecha_fin ?: null;
+
+        // Validar que si escogió rango, estén ambos campos llenos
+        if (!$this->fecha && ($this->fecha_inicio xor $this->fecha_fin)) {
+            $this->addError('fecha_fin', 'Debe completar tanto la fecha inicio como la fecha fin del rango.');
+            return;
+        }
+        $fecha = $this->fecha ?: NULL;
+        $fecha_inicio = $this->fecha_inicio ?: NULL;
+        $fecha_fin = $this->fecha_fin ?: NULL;
         Rrhhferiado::create([
             'nombre' => $this->nombre,
             'fecha' => $fecha,

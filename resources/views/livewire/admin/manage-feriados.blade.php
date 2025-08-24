@@ -1,5 +1,5 @@
 <div>
-      @section('title')
+    @section('title')
         Feriados
     @endsection
     @section('content_header')
@@ -7,11 +7,11 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h4>Feriados</h4>
                 <div class="">
-                    {{-- @can('rrhhsueldos.procesar') --}}
+                    @can('rrhhferiados.create')
                         <button class="btn btn-primary" wwire:click="resetInput" data-toggle="modal" data-target="#diaModal">
                             <i class="fa fa-plus"></i> Nuevo
                         </button>
-                    {{-- @endcan --}}
+                    @endcan
 
                 </div>
             </div>
@@ -20,7 +20,7 @@
     <div class="card">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h3 class="card-title mb-0">Listado de Días Feriados</h3>
-          
+
         </div>
 
         <div class="card-body">
@@ -37,7 +37,7 @@
                 <div class="col-md-2">
                     <div class="d-flex justify-content-right align-items-center">
                         <span>Ver</span>&nbsp;
-                        <select class="form-control"  wire:model="perPage">
+                        <select class="form-control" wire:model="perPage">
                             @foreach ($perPageOptions as $opcion)
                                 <option value="{{ $opcion }}">{{ $opcion }} filas</option>
                             @endforeach
@@ -72,13 +72,18 @@
                             <td>{{ $dia->factor }}</td>
                             <td>{{ $dia->activo ? 'Sí' : 'No' }}</td>
                             <td>
-                                <button class="btn btn-primary btn-sm" wire:click="edit({{ $dia->id }})"
-                                    data-toggle="modal" data-target="#diaModal">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-danger btn-sm" wire:click="delete({{ $dia->id }})">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+                                @can('rrhhferiados.edit')
+                                    <button class="btn btn-primary btn-sm" wire:click="edit({{ $dia->id }})"
+                                        data-toggle="modal" data-target="#diaModal">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                @endcan
+                                @can('rrhhferiados.destroy')
+                                    <button class="btn btn-danger btn-sm" wire:click="delete({{ $dia->id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                @endcan
+
                             </td>
                         </tr>
                     @empty
@@ -113,18 +118,25 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Fecha única</label>
-                        <input type="date" class="form-control" wire:model.defer="fecha">
+                        <div class="d-flex align-items-center mb-2">
+                            <input type="radio" name="tipo_fecha" id="radio_fecha_unica" class="mr-2" checked>
+                            <label for="radio_fecha_unica" class="mb-0">Fecha única</label>
+                        </div>
+                        <input type="date" id="input_fecha_unica" class="form-control" wire:model.defer="fecha">
                         @error('fecha')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
                     </div>
 
                     <div class="form-group">
-                        <label>Rango de fechas</label>
-                        <input type="date" class="form-control mb-2" wire:model.defer="fecha_inicio"
-                            placeholder="Inicio">
-                        <input type="date" class="form-control" wire:model.defer="fecha_fin" placeholder="Fin">
+                        <div class="d-flex align-items-center mb-2">
+                            <input type="radio" name="tipo_fecha" id="radio_rango" class="mr-2">
+                            <label for="radio_rango" class="mb-0">Rango de fechas</label>
+                        </div>
+                        <input type="date" id="input_fecha_inicio" class="form-control mb-2"
+                            wire:model.defer="fecha_inicio" placeholder="Inicio" disabled>
+                        <input type="date" id="input_fecha_fin" class="form-control" wire:model.defer="fecha_fin"
+                            placeholder="Fin" disabled>
                         @error('fecha_inicio')
                             <span class="text-danger">{{ $message }}</span>
                         @enderror
@@ -162,11 +174,43 @@
         </div>
     </div>
 
+
+
 </div>
 @section('js')
     <script>
         window.addEventListener('close-modal', event => {
             $('#diaModal').modal('hide');
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const radioFechaUnica = document.getElementById("radio_fecha_unica");
+            const radioRango = document.getElementById("radio_rango");
+            const inputFechaUnica = document.getElementById("input_fecha_unica");
+            const inputFechaInicio = document.getElementById("input_fecha_inicio");
+            const inputFechaFin = document.getElementById("input_fecha_fin");
+
+            function toggleFechas() {
+                if (radioFechaUnica.checked) {
+                    inputFechaUnica.disabled = false;
+                    inputFechaInicio.disabled = true;
+                    inputFechaFin.disabled = true;
+                    inputFechaInicio.value = null;
+                    inputFechaFin.value = null;
+                } else {
+                    inputFechaUnica.disabled = true;
+                    inputFechaInicio.disabled = false;
+                    inputFechaFin.disabled = false;
+                    inputFechaUnica.value = null;
+                }
+            }
+
+            radioFechaUnica.addEventListener("change", toggleFechas);
+            radioRango.addEventListener("change", toggleFechas);
+
+            // Inicializar estado
+            toggleFechas();
         });
     </script>
 @endsection

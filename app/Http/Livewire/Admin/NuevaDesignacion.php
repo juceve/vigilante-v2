@@ -7,7 +7,9 @@ use App\Models\Designaciondia;
 use App\Models\Designacione;
 use App\Models\Empleado;
 use App\Models\Intervalo;
+use App\Models\Rrhhcontrato;
 use App\Models\Turno;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -17,6 +19,7 @@ class NuevaDesignacion extends Component
     public $empleadoid = "", $empleado = null, $nombres = "",  $clienteid = "", $clienteSeleccionado = null;
     public $turnoid = "", $fechaInicio = "", $fechaFin = "", $intervalo_hv = 0, $observaciones = "";
     public $lunes = false, $martes = false, $miercoles = false, $jueves = false, $viernes = false, $sabado = false, $domingo = false;
+    public $contrato = NULL;
 
     protected $rules = [
         'empleadoid' => 'required',
@@ -26,17 +29,44 @@ class NuevaDesignacion extends Component
         'fechaFin' => 'required',
     ];
 
+    public function updatedFechaInicio()
+    {
+        if (
+            $this->fechaInicio >= $this->contrato->fecha_inicio
+            && (is_null($this->contrato->fecha_fin) || $this->fechaInicio <= $this->contrato->fecha_fin)
+        ) {
+            
+        } else {
+            $this->fechaInicio = "";
+            $this->emit('error', 'Fecha fuera del rango de su Contrato.');
+        }
+    }
+    public function updatedFechaFin()
+    {
+        if (
+            $this->fechaFin >= $this->contrato->fecha_inicio            
+            && (is_null($this->contrato->fecha_fin) || $this->fechaFin <= $this->contrato->fecha_fin)
+        ) {
+            
+        } else {
+            $this->fechaFin = "";
+            $this->emit('error', 'Fecha fuera del rango de su Contrato.');
+        }
+    }
+
     public function mount($designacione)
     {
         $this->designacione = $designacione;
         // $this->empleado = new Empleado();
     }
 
-    public function seleccionaEmpleado($id)
+    public function seleccionaEmpleado($id, $contrato_id)
     {
         $this->empleadoid = $id;
         $this->empleado = Empleado::find($id);
         $this->nombres = $this->empleado->nombres . " " . $this->empleado->apellidos;
+
+        $this->contrato = Rrhhcontrato::find($contrato_id);
     }
 
     public function updatedClienteid()
@@ -46,13 +76,43 @@ class NuevaDesignacion extends Component
 
     public function render()
     {
-        $empleados = DB::table('empleados')
-            ->join('areas', 'areas.id', '=', 'empleados.area_id')
-            ->join('oficinas', 'oficinas.id', '=', 'empleados.oficina_id')
-            ->join('users', 'users.id', '=', 'empleados.user_id')
-            ->where('areas.template', '=', 'OPER')
-            ->where('users.status', '=', 1)
-            ->select('empleados.*', 'oficinas.nombre as oficina')->get();
+        // $empleados = DB::table('empleados')
+        //     ->join('areas', 'areas.id', '=', 'empleados.area_id')
+        //     ->join('oficinas', 'oficinas.id', '=', 'empleados.oficina_id')
+        //     ->join('users', 'users.id', '=', 'empleados.user_id')
+        //     ->where('areas.template', '=', 'OPER')
+        //     ->where('users.status', '=', 1)
+        //     ->select('empleados.*', 'oficinas.nombre as oficina')->get();
+
+
+
+        $empleados = DB::table('empleados as e')
+            ->join('rrhhcontratos as c', 'c.empleado_id', '=', 'e.id')
+            ->where('c.activo', true) // contrato activo
+            ->whereDate('c.fecha_inicio', '<=', now()) // ya comenzó
+            ->where(function ($q) {
+                $q->whereNull('c.fecha_fin') // sin fecha de fin
+                    ->orWhere('c.fecha_fin', '>=', now()); // o aún no terminó
+            })
+            ->select(
+                'e.id as empleado_id',
+                'e.nombres',
+                'e.apellidos',
+                'e.cedula',
+                'e.email',
+                'e.telefono',
+                'c.id as contrato_id',
+                'c.fecha_inicio',
+                'c.fecha_fin',
+                'c.salario_basico',
+                'c.moneda',
+                'c.rrhhcargo_id',
+                'c.rrhhtipocontrato_id'
+            )
+            ->orderBy('e.apellidos')
+            ->get();
+
+
         $clientes = Cliente::all();
         $clientes->pluck('nombre', 'id');
 

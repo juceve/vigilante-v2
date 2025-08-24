@@ -1,6 +1,6 @@
 <div class="box box-info padding-1">
     <div class="box-body">
-        
+
         {{-- <div class="form-group">
             {{ Form::label('codigo') }}
             {{ Form::text('codigo', $rrhhtipocontrato->codigo, ['class' => 'form-control' . ($errors->has('codigo') ? ' is-invalid' : ''), 'placeholder' => 'Codigo']) }}
@@ -16,9 +16,14 @@
             {{ Form::text('descripcion', $rrhhtipocontrato->descripcion, ['class' => 'form-control' . ($errors->has('descripcion') ? ' is-invalid' : ''), 'placeholder' => 'Descripcion']) }}
             {!! $errors->first('descripcion', '<div class="invalid-feedback">:message</div>') !!}
         </div>
-        <div class="form-group">
+        <div class="form-group form-check">
+            <input type="checkbox" name="indefinido" id="indefinidoCheckbox" class="form-check-input" value="1"
+                {{ isset($rrhhtipocontrato->indefinido) ? ($rrhhtipocontrato->indefinido ? 'checked' : '') : 'checked' }}>
+            <label class="form-check-label" for="indefinidoCheckbox">Indefinido</label>
+        </div>
+        <div class="form-group" id="cantidad_dias_div">
             {{ Form::label('cantidad_dias') }}
-            {{ Form::number('cantidad_dias', $rrhhtipocontrato->cantidad_dias, ['class' => 'form-control' . ($errors->has('cantidad_dias') ? ' is-invalid' : ''), 'placeholder' => '0']) }}
+            {{ Form::number('cantidad_dias', $rrhhtipocontrato->cantidad_dias, ['class' => 'form-control' . ($errors->has('cantidad_dias') ? ' is-invalid' : ''), 'placeholder' => '0', 'id' => 'cantidad_dias']) }}
             {!! $errors->first('cantidad_dias', '<div class="invalid-feedback">:message</div>') !!}
         </div>
         <div class="form-group">
@@ -32,15 +37,43 @@
             {!! $errors->first('sueldo_referencial', '<div class="invalid-feedback">:message</div>') !!}
         </div>
         <div class="form-group">
-            {{ Form::label('activo') }}            
-            {!! Form::select('activo', ['1'=>'SI','0'=>'NO'], $rrhhtipocontrato->activo, ['class' => 'form-control'. ($errors->has('sueldo_referencial') ? ' is-invalid' : '')]) !!}
+            {{ Form::label('activo') }}
+            {!! Form::select('activo', ['1' => 'SI', '0' => 'NO'], $rrhhtipocontrato->activo, [
+                'class' => 'form-control' . ($errors->has('sueldo_referencial') ? ' is-invalid' : ''),
+            ]) !!}
             {!! $errors->first('activo', '<div class="invalid-feedback">:message</div>') !!}
         </div>
 
     </div>
     <div class="box-footer mt20">
-        <button type="submit" class="btn btn-primary btn-block col-12 col-md-4">Guardar <i class="fas fa-save"></i></button>
+        <button type="submit" class="btn btn-primary btn-block col-12 col-md-4">Guardar <i
+                class="fas fa-save"></i></button>
     </div>
 
- 
+
 </div>
+@section('js')
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkbox = document.getElementById('indefinidoCheckbox');
+        const cantidadDiasDiv = document.getElementById('cantidad_dias_div');
+        const cantidadDiasInput = document.getElementById('cantidad_dias');
+
+        function toggleCantidadDias() {
+            if (checkbox.checked) {
+                cantidadDiasDiv.style.display = 'none';
+                cantidadDiasInput.value = 30;
+            } else {
+                cantidadDiasDiv.style.display = 'block';
+                cantidadDiasInput.value = '';
+            }
+        }
+
+        // Inicializar al cargar la página
+        toggleCantidadDias();
+
+        // Escuchar cambios en el checkbox
+        checkbox.addEventListener('change', toggleCantidadDias);
+    });
+</script>
+@endsection

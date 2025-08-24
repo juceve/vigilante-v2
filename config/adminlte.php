@@ -449,7 +449,7 @@ return [
                 [
                     'text' => 'Feriados',
                     'route'  => 'feriados',
-                    // 'can'   =>  'rrhhcargos.index',
+                    'can'   =>  'rrhhferiados.index',
                     'icon' => 'fas fa-birthday-cake'
                 ],
 

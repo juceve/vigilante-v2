@@ -89,7 +89,7 @@
                 <tr>
                     <td>{{ $i+1 }}</td>
                     <td style="text-align:left">{{ $sueldo->nombreempleado }}</td>
-                    <td>{{ $sueldo->total_permisos }}</td>
+                    <td style="color:{{ $sueldo->total_bonosdescuentos < 0 ? '#dc3545' : '#28a745' }}">{{ number_format($sueldo->total_permisos, 2) }}</td>
                     <td style="color:{{ $sueldo->total_adelantos < 0 ? '#dc3545' : '#28a745' }}">
                         {{ $sueldo->total_adelantos < 0 ? $sueldo->total_adelantos : '+' . $sueldo->total_adelantos }}
                     </td>
@@ -99,8 +99,8 @@
                     <td style="color:{{ $sueldo->total_ctrlasistencias < 0 ? '#dc3545' : '#28a745' }}">
                         {{ $sueldo->total_ctrlasistencias < 0 ? $sueldo->total_ctrlasistencias : '+' . $sueldo->total_ctrlasistencias }}
                     </td>
-                    <td>{{ number_format($sueldo->salario_mes, 2) }}</td>
-                    <td style="font-weight:bold; color:#007bff">{{ number_format($sueldo->liquido_pagable, 2) }}</td>
+                    <td style="text-align: right">{{ number_format($sueldo->salario_mes, 2) }}</td>
+                    <td style="font-weight:bold; color:#007bff; text-align: right">{{ number_format($sueldo->liquido_pagable, 2) }}</td>
                 </tr>
                 @php
                     $total += $sueldo->liquido_pagable;

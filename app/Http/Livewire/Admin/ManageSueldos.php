@@ -5,9 +5,7 @@ namespace App\Http\Livewire\Admin;
 use Livewire\WithPagination;
 use Livewire\Component;
 use App\Models\Rrhhsueldo;
-
-
-
+use App\Models\Rrhhsueldoempleado;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -57,7 +55,8 @@ class ManageSueldos extends Component
         // 'estado' => 'required|in:CREADO,PROCESADO,ANULADO',
     ];
 
-    public function mount()  {
+    public function mount()
+    {
         $this->gestion = date('Y');
     }
 
@@ -112,17 +111,19 @@ class ManageSueldos extends Component
         if ($this->editMode && $this->sueldo_id) {
             $sueldo = Rrhhsueldo::findOrFail($this->sueldo_id);
             $sueldo->estado = $this->estado;
+
+            $sueldoempleados = Rrhhsueldoempleado::where('rrhhsueldo_id', $this->sueldo_id)->delete();
         } else {
             $sueldo = new Rrhhsueldo();
             $sueldo->user_id = Auth::id();
             $sueldo->fecha = date('Y-m-d');
-            $sueldo->hora = date('H:i:s');            
+            $sueldo->hora = date('H:i:s');
         }
         $sueldo->gestion = $this->gestion;
         $sueldo->mes = $this->mes;
 
         // $sueldo->user_id = $this->user_id; // Solo editable en creación
-        
+
         $sueldo->save();
         $this->dispatchBrowserEvent('hide-modal-sueldo');
         $this->resetForm();

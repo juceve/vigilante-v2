@@ -229,7 +229,7 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
-                                @if ($cantidad_dias >= 30)
+                                @if ($cantidad_dias < 30)
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text">Fecha Fin</span>
