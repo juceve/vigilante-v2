@@ -14,7 +14,7 @@ use App\Http\Controllers\FormularioAirbnbController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NovedadeController;
 use App\Http\Controllers\OficinaController;
-
+use App\Http\Controllers\PropietarioController;
 use App\Http\Controllers\RegistroguardiaController;
 use App\Http\Controllers\RegrondaController;
 use App\Http\Controllers\RoleController;
@@ -56,6 +56,7 @@ use App\Http\Livewire\Admin\PuntosControl;
 use App\Http\Livewire\Admin\PuntosControlV2;
 use App\Http\Livewire\Admin\Regactividad;
 use App\Http\Livewire\Admin\Registroasistencias;
+use App\Http\Livewire\Admin\RegistroPropietario;
 use App\Http\Livewire\Admin\Registroshv;
 use App\Http\Livewire\Admin\Registrosnovedades;
 use App\Http\Livewire\Admin\Registrosronda;
@@ -147,7 +148,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/novedades', Registrosnovedades::class)->middleware('can:admin.registros.novedades')->name('admin.novedades');
     Route::get('admin/asistencias', Registroasistencias::class)->name('admin.asistencias');
     Route::get('admin/sueldos', ManageSueldos::class)->middleware('can:rrhhsueldos.index')->name('admin.sueldos');
-    Route::get('admin/{rrhhsueldo_id}/procesar-sueldos', ProcesarSueldo::class)->middleware('can:rrhhsueldos.procesar')->name('admin.procesarsueldos');
+    Route::get('admin/{rrhhsueldo_id}/procesar-sueldos', ProcesarSueldo::class)->middleware('can:rrhhsueldos.create')->name('admin.procesarsueldos');
     Route::get('admin/{cliente_id}/residencias', ListadoResidencias::class)->name('admin.residencias');
 
     Route::post('/designaciones-historial/exportar', [DesignacioneController::class, 'exportar'])->name('designaciones-historial.exportar');
@@ -269,7 +270,13 @@ Route::middleware('throttle:10,1')->get('formulario-cobro/{link_id}', [Formulari
 Route::middleware('throttle:10,1')->get('formulario-recibo/{link_id}', [FormularioAirbnbController::class, 'recibo'])->name('formrecibo');
 Route::middleware('throttle:10,1')->get('formulario-informe/{link_id}', [FormularioAirbnbController::class, 'informe'])->name('forminforme');
 
+Route::middleware('throttle:5,1')->get('formulario-propietarios/{clienteId}', RegistroPropietario::class)->name('regpropietario');
+Route::get('propietario/resumen/{id}', [PropietarioController::class, 'resumen'])
+    ->name('propietario.resumen');
+
 Route::middleware('throttle:10,1')->get('formulario-airbnb/{link_id}', [FormularioAirbnbController::class, 'index'])->name('formairbnb');
 Route::middleware('throttle:10,1')->get('register-success/{registro_id}', [FormularioAirbnbController::class, 'regsuccess'])->name('regsuccess');
 Route::middleware('throttle:10,1')->get('downloadqr/{contenido}', [FormularioAirbnbController::class, 'descargarQr'])->name('downloadqr');
 Route::middleware('throttle:10,1')->get('downloadpdf/{id}', [FormularioAirbnbController::class, 'descargarPdf'])->name('downloadpdf');
+
+

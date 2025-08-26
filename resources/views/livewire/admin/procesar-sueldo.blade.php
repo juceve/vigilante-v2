@@ -345,7 +345,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6">No hay contratos activos para este mes</td>
+                                <td colspan="9">No hay contratos activos para este mes</td>
                             </tr>
                         @endforelse
                     </tbody>

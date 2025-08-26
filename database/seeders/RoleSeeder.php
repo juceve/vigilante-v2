@@ -112,6 +112,11 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'rrhhtipobonos.create',  'grupo' => 'TIPO BONOS', 'descripcion' => 'Crear'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhtipobonos.edit',  'grupo' => 'TIPO BONOS', 'descripcion' => 'Editar'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhtipobonos.destroy',  'grupo' => 'TIPO BONOS', 'descripcion' => 'Eliminar'])->assignRole([$role]);
+       
+        Permission::create(['name' => 'rrhhsueldos.index',  'grupo' => 'SUELDOS', 'descripcion' => 'Ver listado'])->assignRole([$role]);
+        Permission::create(['name' => 'rrhhsueldos.create',  'grupo' => 'SUELDOS', 'descripcion' => 'Crear'])->assignRole([$role]);
+        Permission::create(['name' => 'rrhhsueldos.edit',  'grupo' => 'SUELDOS', 'descripcion' => 'Editar'])->assignRole([$role]);
+        Permission::create(['name' => 'rrhhsueldos.destroy',  'grupo' => 'SUELDOS', 'descripcion' => 'Eliminar'])->assignRole([$role]);
 
         Permission::create(['name' => 'rrhhferiados.index',  'grupo' => 'FERIADOS', 'descripcion' => 'Ver listado'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhferiados.create',  'grupo' => 'FERIADOS', 'descripcion' => 'Crear'])->assignRole([$role]);

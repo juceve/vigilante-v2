@@ -47,8 +47,8 @@ class Propietario extends Model
      */
     public function residencias()
     {
-        return $this->hasMany('App\Models\Residencia', 'propietario_id', 'id');
+        return $this->hasMany('App\Models\Residencia', 'cliente_id', 'id');
     }
     
-
+    
 }

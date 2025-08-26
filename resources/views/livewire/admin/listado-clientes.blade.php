@@ -65,8 +65,8 @@
                                 @can('clientes.edit')
                                 <a class="dropdown-item" href="{{ route('clientes.edit', $cliente->id) }}"><i
                                         class="fa fa-fw fa-edit text-secondary"></i> Editar</a>
-                                {{-- <a class="dropdown-item" href="{{ route('admin.residencias', $cliente->id) }}">
-                                    <i class="fas fa-home text-secondary"></i> Residencias</a> --}}
+                                <a class="dropdown-item" href="{{ route('admin.residencias', $cliente->id) }}">
+                                    <i class="fas fa-home text-secondary"></i> Residencias</a>
                                 <a class="dropdown-item" href="{{ route('usuariocliente', $cliente->id) }}">
                                     <i class="fas fa-user-plus text-secondary"></i> Usuario externo</a>
                                 @endcan

@@ -12,10 +12,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property $propietario_id
  * @property $cedula_propietario
  * @property $numeropuerta
+ * @property $piso
  * @property $calle
  * @property $nrolote
  * @property $manzano
  * @property $notas
+ * @property $estado
  * @property $created_at
  * @property $updated_at
  *
@@ -37,23 +39,19 @@ class Residencia extends Model
      *
      * @var array
      */
-    protected $fillable = ['cliente_id','propietario_id','cedula_propietario','numeropuerta','calle','nrolote','manzano','notas'];
+    protected $fillable = ['cliente_id','propietario_id','cedula_propietario','numeropuerta','piso','calle','nrolote','manzano','notas','estado'];
 
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function cliente()
-    {
-        return $this->belongsTo('App\Models\Cliente', 'cliente_id', 'id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function propietario()
     {
-        return $this->belongsTo('App\Models\Propietario', 'propietario_id', 'id');
+        return $this->hasOne('App\Models\Propietario', 'id', 'propietario_id');
+    }
+
+    public function cliente(){
+        return $this->hasOne('App\Models\Cliente', 'id', 'cliente_id');
     }
     
 

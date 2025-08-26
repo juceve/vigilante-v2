@@ -7,7 +7,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h4>Sueldos</h4>
                 <div class="">
-                    @can('rrhhsueldos.procesar')
+                    @can('rrhhsueldos.create')
                         <button class="btn btn-primary" wire:click="openCreateModal" data-toggle="modal" data-target="#modalSueldo">
                             <i class="fa fa-plus"></i> Nuevo
                         </button>
@@ -143,7 +143,7 @@
                                     </td>
                                     <td class="text-right">
                                         @if ($sueldo->estado === 'CREADO')
-                                            @can('rrhhsueldos.procesar')
+                                            @can('rrhhsueldos.create')
                                                 <a href="{{ route('admin.procesarsueldos', $sueldo->id) }}"
                                                     class="btn btn-info btn-sm" title="Procesar">
                                                     <i class="fa fa-cogs"></i>
