@@ -122,5 +122,17 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'rrhhferiados.create',  'grupo' => 'FERIADOS', 'descripcion' => 'Crear'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhferiados.edit',  'grupo' => 'FERIADOS', 'descripcion' => 'Editar'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhferiados.destroy',  'grupo' => 'FERIADOS', 'descripcion' => 'Eliminar'])->assignRole([$role]);
+
+        Permission::create(['name' => 'residencias.index',  'grupo' => 'RESIDENCIAS', 'descripcion' => 'Ver listado'])->assignRole([$role]);
+        Permission::create(['name' => 'residencias.solicitudes',  'grupo' => 'RESIDENCIAS', 'descripcion' => 'Solicitudes'])->assignRole([$role]);
+        Permission::create(['name' => 'residencias.aprobaciones',  'grupo' => 'RESIDENCIAS', 'descripcion' => 'Aprobaciones'])->assignRole([$role]);
+        Permission::create(['name' => 'residencias.create',  'grupo' => 'RESIDENCIAS', 'descripcion' => 'Crear'])->assignRole([$role]);
+        Permission::create(['name' => 'residencias.edit',  'grupo' => 'RESIDENCIAS', 'descripcion' => 'Editar'])->assignRole([$role]);
+        Permission::create(['name' => 'residencias.destroy',  'grupo' => 'RESIDENCIAS', 'descripcion' => 'Eliminar'])->assignRole([$role]);
+       
+        Permission::create(['name' => 'propietarios.index',  'grupo' => 'PROPIETARIOS', 'descripcion' => 'Ver listado'])->assignRole([$role]);       
+        Permission::create(['name' => 'propietarios.create',  'grupo' => 'PROPIETARIOS', 'descripcion' => 'Crear'])->assignRole([$role]);
+        Permission::create(['name' => 'propietarios.edit',  'grupo' => 'PROPIETARIOS', 'descripcion' => 'Editar'])->assignRole([$role]);
+        Permission::create(['name' => 'propietarios.destroy',  'grupo' => 'PROPIETARIOS', 'descripcion' => 'Eliminar'])->assignRole([$role]);
     }
 }

@@ -17,9 +17,11 @@
         <div class="card-header bg-info">
             Residencias Registradas - {{ $cliente->nombre }}
             <div class="float-right">
-                <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalResidencia">
-                    <i class="fa fa-plus"></i> Nuevo
-                </button>
+                @can('residencias.create')
+                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#modalResidencia">
+                        <i class="fa fa-plus"></i> Nuevo
+                    </button>
+                @endcan
             </div>
         </div>
         <div class="card-body">
@@ -103,15 +105,21 @@
                                 <td>{{ $residencia->estado }}</td>
 
                                 <td class="text-right">
+
                                     <button class="btn btn-sm btn-warning"
                                         wire:click="edit({{ $residencia->id }}, 'view')" title="Ver Info">
                                         <i class="fa fa-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-info"
-                                        wire:click="edit({{ $residencia->id }}, 'edit')" title="Editar">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
+                                    @can('residencias.edit')
+                                        <button class="btn btn-sm btn-info"
+                                            wire:click="edit({{ $residencia->id }}, 'edit')" title="Editar">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
 
+                                        <button class="btn btn-primary btn-sm" title="Asignar Propietario"
+                                            data-toggle="modal" data-target="#modalAsignacionPropietario" wire:click="$set('residenciaSel', {{ $residencia->id }})"><i
+                                                class="fas fa-user-tag"></i></button>
+                                    @endcan
                                 </td>
                             </tr>
                         @endforeach
@@ -223,6 +231,98 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" data-backdrop="static" data-keyboard="false" id="modalAsignacionPropietario"
+        tabindex="-1" aria-labelledby="modalAsignacionPropietarioLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title" id="modalAsignacionPropietarioLabel">Asignación de Propietario</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        wire:click='resetPropietario'>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 col-md-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">Cedula</span>
+                                </div>
+                                <input type="search" class="form-control" placeholder="Cedula Propietario"
+                                    wire:model.lazy='searchCedula'>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-primary" type="button"
+                                        wire:click='buscarPropietario'><i class="fas fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @if ($propietario)
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">Nombre</span>
+                                    </div>
+                                    <input type="text" class="form-control" value="{{ $propietario->nombre }}"
+                                        disabled>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">Telefono</span>
+                                    </div>
+                                    <input type="text" class="form-control" value="{{ $propietario->telefono }}"
+                                        disabled>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">Email</span>
+                                    </div>
+                                    <input type="text" class="form-control" value="{{ $propietario->email }}"
+                                        disabled>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">Direccion</span>
+                                    </div>
+                                    <input type="text" class="form-control" value="{{ $propietario->direccion }}"
+                                        disabled>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1">Ciudad</span>
+                                    </div>
+                                    <input type="text" class="form-control" value="{{ $propietario->ciudad }}"
+                                        disabled>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        wire:click='resetPropietario'><i class="fas fa-ban"></i> Cerrar</button>
+                    @if ($propietario)
+                        <button type="button" class="btn btn-primary" onclick="reasignar()">Reasignar Propietario <i
+                                class="fas fa-user-check"></i></button>
+                    @endif
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 </div>
@@ -235,5 +335,25 @@
         Livewire.on('closeModal', () => {
             $('#modalResidencia').modal('hide');
         });
+
+        Livewire.on('cerrarReasignacion', () => {
+            $('#modalAsignacionPropietario').modal('hide');
+        });
+    </script>
+    <script>
+        function reasignar() {
+            swal.fire({
+                title: 'Reasignar Propietario',
+                text: '¿Estás seguro de que deseas reasignar al propietario?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, reasignar',
+                cancelButtonText: 'No, cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Livewire.emit('reasignarPropietario');
+                }
+            });
+        }
     </script>
 @endsection

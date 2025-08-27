@@ -1,9 +1,10 @@
 <div class="container-fluid py-3">
+       
     <div class="row justify-content-center">
         <div class="col-12 col-xl-10 col-xxl-8">
             <div class="card shadow-sm border-0 rounded-4">
                 <div class="card-header text-white rounded-top-4"
-                     style="background: linear-gradient(90deg, #0d6efd, #0dcaf0);">
+                    style="background: linear-gradient(90deg, #0d6efd, #0dcaf0);">
                     <div class="d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">Registro de Propietario</h5>
                         <div wire:loading>
@@ -27,85 +28,104 @@
                     <form wire:submit.prevent="save" novalidate id="form-propietario">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Nombre *</label>
-                                <input type="text"
-                                       class="form-control text-uppercase @error('nombre') is-invalid @enderror"
-                                       style="text-transform: uppercase;"
-                                       wire:model.defer="nombre"
-                                       oninput="this.value = this.value.toUpperCase()">
-                                @error('nombre') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
-
-                            <div class="col-md-6">
                                 <label class="form-label">Cédula *</label>
-                                <input type="text" class="form-control @error('cedula') is-invalid @enderror"
-                                       wire:model.defer="cedula">
-                                @error('cedula') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                            </div>
 
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control @error('cedula') is-invalid @enderror"
+                                        placeholder="Cédula" aria-label="Cédula" aria-describedby="button-addon2"
+                                        wire:model.lazy="cedula">
+                                    <button class="btn btn-outline-success" type="button" title="Buscar"
+                                        wire:click='buscarPropietario'>
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                </div>
+                                @error('cedula')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Nombre *</label>
+                                <input type="text" @if ($existePropietario) disabled @endif
+                                    class="form-control text-uppercase @error('nombre') is-invalid @enderror"
+                                    style="text-transform: uppercase;" wire:model.defer="nombre"
+                                    oninput="this.value = this.value.toUpperCase()">
+                                @error('nombre')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                             <div class="col-md-6">
                                 <label class="form-label">Teléfono</label>
-                                <input type="text" class="form-control @error('telefono') is-invalid @enderror"
-                                       wire:model.defer="telefono">
-                                @error('telefono') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                <input type="text" @if ($existePropietario) disabled @endif
+                                    class="form-control @error('telefono') is-invalid @enderror"
+                                    wire:model.defer="telefono">
+                                @error('telefono')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Email</label>
-                                <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                       wire:model.defer="email">
-                                @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                <input type="email" @if ($existePropietario) disabled @endif
+                                    class="form-control @error('email') is-invalid @enderror" wire:model.defer="email">
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-12">
                                 <label class="form-label">Dirección</label>
-                                <input type="text"
-                                       class="form-control text-uppercase @error('direccion') is-invalid @enderror"
-                                       style="text-transform: uppercase;"
-                                       wire:model.defer="direccion"
-                                       oninput="this.value = this.value.toUpperCase()">
-                                @error('direccion') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                <input type="text" @if ($existePropietario) disabled @endif
+                                    class="form-control text-uppercase @error('direccion') is-invalid @enderror"
+                                    style="text-transform: uppercase;" wire:model.defer="direccion"
+                                    oninput="this.value = this.value.toUpperCase()">
+                                @error('direccion')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Ciudad</label>
-                                <input type="text"
-                                       class="form-control text-uppercase @error('ciudad') is-invalid @enderror"
-                                       style="text-transform: uppercase;"
-                                       wire:model.defer="ciudad"
-                                       oninput="this.value = this.value.toUpperCase()">
-                                @error('ciudad') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                <input type="text" @if ($existePropietario) disabled @endif
+                                    class="form-control text-uppercase @error('ciudad') is-invalid @enderror"
+                                    style="text-transform: uppercase;" wire:model.defer="ciudad"
+                                    oninput="this.value = this.value.toUpperCase()">
+                                @error('ciudad')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
                         <hr class="my-4">
 
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h5 class="mb-0">Residencias</h5>
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="btnAddResidencia">
-                                + Agregar Residencia
-                            </button>
-                        </div>
-
-                        <div class="accordion" id="accordionResidencias"></div>
-
-                        {{-- Campo oculto para enviar residencias como JSON --}}
-                        <input type="hidden" wire:model.defer="residencias_json" id="residencias_json">
-
-                        @if($errors->has('residencias'))
-                            <div class="alert alert-danger">
-                                {{ $errors->first('residencias') }}
+                        <div wire:ignore>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="mb-0">Residencias</h5>
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="btnAddResidencia">
+                                    + Agregar Residencia
+                                </button>
                             </div>
-                        @endif
+
+                            <div class="accordion" id="accordionResidencias"></div>
+
+                            {{-- Campo oculto para enviar residencias como JSON --}}
+                            <input type="hidden" wire:model.defer="residencias_json" id="residencias_json">
+
+                            @if ($errors->has('residencias'))
+                                <div class="alert alert-danger">
+                                    {{ $errors->first('residencias') }}
+                                </div>
+                            @endif
+                        </div>
 
                         <hr class="my-4">
 
                         <div class="text-end">
-                            <button type="submit" class="btn btn-success px-4" wire:loading.attr="disabled" wire:target='save'>
-                                <span wire:loading.remove wire:target='save'>Guardar</span>
+                            <button type="submit" class="btn btn-success px-4" wire:loading.attr="disabled"
+                                wire:target='save'>
+                                <span wire:loading.remove wire:target='save'>Registrar Solicitud <i class="bi bi-floppy"></i></span>
                                 <span wire:loading wire:target='save'>
                                     <span class="spinner-border spinner-border-sm" role="status"></span>
-                                    Guardando...
+                                    Registrando...
                                 </span>
                             </button>
                         </div>
@@ -115,7 +135,7 @@
 
             {{-- Overlay global mientras Livewire procesa --}}
             <div wire:loading.flex wire:target='save'
-                 style="position: fixed; inset: 0; background: rgba(255,255,255,.6); z-index: 1050;
+                style="position: fixed; inset: 0; background: rgba(255,255,255,.6); z-index: 1050;
                         align-items:center; justify-content:center;">
                 <div class="spinner-border" role="status"></div>
             </div>
@@ -126,12 +146,26 @@
 <script>
     // Residencias dinámicas en JS
     let residencias = [];
-try {
-    const initial = document.getElementById('residencias_json').value;
-    residencias = initial ? JSON.parse(initial) : [{ numeropuerta: '', piso: '', calle: '', nrolote: '', manzano: '', notas: '' }];
-} catch(e) {
-    residencias = [{ numeropuerta: '', piso: '', calle: '', nrolote: '', manzano: '', notas: '' }];
-}
+    try {
+        const initial = document.getElementById('residencias_json').value;
+        residencias = initial ? JSON.parse(initial) : [{
+            numeropuerta: '',
+            piso: '',
+            calle: '',
+            nrolote: '',
+            manzano: '',
+            notas: ''
+        }];
+    } catch (e) {
+        residencias = [{
+            numeropuerta: '',
+            piso: '',
+            calle: '',
+            nrolote: '',
+            manzano: '',
+            notas: ''
+        }];
+    }
 
     function syncResidencias() {
         const input = document.getElementById('residencias_json');
@@ -204,16 +238,23 @@ try {
         renderResidencias();
     }
 
-    document.getElementById('btnAddResidencia').addEventListener('click', function () {
-        residencias.push({ numeropuerta: '', piso: '', calle: '', nrolote: '', manzano: '', notas: '' });
+    document.getElementById('btnAddResidencia').addEventListener('click', function() {
+        residencias.push({
+            numeropuerta: '',
+            piso: '',
+            calle: '',
+            nrolote: '',
+            manzano: '',
+            notas: ''
+        });
         renderResidencias();
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         renderResidencias();
     });
 
-    document.getElementById('form-propietario').addEventListener('submit', function () {
+    document.getElementById('form-propietario').addEventListener('submit', function() {
         syncResidencias();
     });
 </script>

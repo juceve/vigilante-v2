@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('residencias', function (Blueprint $table) {
             $table->id();
             
-            $table->foreignId('cliente_id')->nullable()->constrained('propietarios')->onDelete('cascade');
-            $table->foreignId('propietario_id')->nullable()->constrained('propietarios')->onDelete('cascade');
-            
+            $table->foreignId('cliente_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('propietario_id')->nullable()->constrained()->nullOnDelete();
+
             $table->string('cedula_propietario', 20)->nullable();
             $table->string('numeropuerta')->nullable();
             $table->string('piso')->nullable();

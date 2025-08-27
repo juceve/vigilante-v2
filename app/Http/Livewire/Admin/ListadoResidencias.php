@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Admin;
 
 use App\Models\Cliente;
+use App\Models\Propietario;
 use App\Models\Residencia;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -161,7 +162,7 @@ class ListadoResidencias extends Component
             ($this->nrolote === "") &&
             ($this->manzano === "")
         ) {
-            $this->emit('error','Debe llenar al menos un dato (N° puerta, piso, calle, lote o manzano).');
+            $this->emit('error', 'Debe llenar al menos un dato (N° puerta, piso, calle, lote o manzano).');
             return;
         }
 
@@ -189,6 +190,54 @@ class ListadoResidencias extends Component
         } catch (\Throwable $th) {
             DB::rollBack();
             $this->emit('error', 'Error al crear la residencia');
+        }
+    }
+
+    public $searchCedula = "", $propietario = NULL, $residenciaSel = "";
+
+    public function updatedSearchCedula()
+    {
+        $this->buscarPropietario();
+    }
+
+    public function buscarPropietario()
+    {
+        $this->validate([
+            'searchCedula' => 'required|string|max:255',
+        ]);
+        $this->propietario = Propietario::where('cedula', $this->searchCedula)->first();
+        if (!$this->propietario) {
+            $this->emit('toast-error', 'No se encontró el propietario con la cédula ingresada');
+        }
+    }
+
+    public function resetPropietario()
+    {
+        $this->reset('searchCedula', 'propietario','residenciaSel');
+    }
+
+    protected $listeners = ['reasignarPropietario'];
+
+    public function reasignarPropietario()
+    {
+        if ($this->propietario) {
+            DB::beginTransaction();
+            try {
+                $residencia = Residencia::find($this->residenciaSel);
+                $residencia->propietario_id = $this->propietario->id;
+                $residencia->cedula_propietario = $this->propietario->cedula;
+                $residencia->save();
+                DB::commit();
+
+                $this->emit('success', 'Propietario reasignado correctamente');
+                $this->emit('cerrarReasignacion');
+                $this->resetPropietario();
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                $this->emit('error', $th->getMessage());
+            }
+        } else {
+            $this->emit('error', 'No se encontró el propietario');
         }
     }
 }

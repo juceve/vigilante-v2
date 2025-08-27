@@ -38,6 +38,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VisitaController;
 
 use App\Http\Livewire\Admin\Admrondas;
+use App\Http\Livewire\Admin\Aprobaciones;
 use App\Http\Livewire\Admin\CtrlAllAirbnb;
 
 use App\Http\Livewire\Admin\Diaslibres;
@@ -47,7 +48,9 @@ use App\Http\Livewire\Admin\ListadoCiteCotizacion;
 use App\Http\Livewire\Admin\ListadoCiteInforme;
 use App\Http\Livewire\Admin\ListadoCiteMemorandum;
 use App\Http\Livewire\Admin\ListadoCiteRecibo;
+use App\Http\Livewire\Admin\ListadoPropietarios;
 use App\Http\Livewire\Admin\ListadoResidencias;
+use App\Http\Livewire\Admin\ListadoSolicitudes;
 use App\Http\Livewire\Admin\ManageFeriados;
 use App\Http\Livewire\Admin\ManageSueldos;
 use App\Http\Livewire\Admin\Nuevoptctrl;
@@ -149,7 +152,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/asistencias', Registroasistencias::class)->name('admin.asistencias');
     Route::get('admin/sueldos', ManageSueldos::class)->middleware('can:rrhhsueldos.index')->name('admin.sueldos');
     Route::get('admin/{rrhhsueldo_id}/procesar-sueldos', ProcesarSueldo::class)->middleware('can:rrhhsueldos.create')->name('admin.procesarsueldos');
-    Route::get('admin/{cliente_id}/residencias', ListadoResidencias::class)->name('admin.residencias');
+    Route::get('admin/{cliente_id}/residencias', ListadoResidencias::class)->middleware('can:residencias.index')->name('admin.residencias');
+    Route::get('admin/{cliente_id}/listado-solicitudes', ListadoSolicitudes::class)->middleware('can:residencias.solicitudes')->name('admin.listadosolicitudes');
+    Route::get('admin/{propietario_id}/{cliente_id}/aprobacion-solicitudes', Aprobaciones::class)->middleware('can:residencias.aprobaciones')->name('admin.aprobacionsolicitudes');
+    Route::get('admin/listado-propietarios', ListadoPropietarios::class)->middleware('can:propietarios.index')->name('admin.listadopropietarios');
 
     Route::post('/designaciones-historial/exportar', [DesignacioneController::class, 'exportar'])->name('designaciones-historial.exportar');
 
@@ -271,7 +277,7 @@ Route::middleware('throttle:10,1')->get('formulario-recibo/{link_id}', [Formular
 Route::middleware('throttle:10,1')->get('formulario-informe/{link_id}', [FormularioAirbnbController::class, 'informe'])->name('forminforme');
 
 Route::middleware('throttle:5,1')->get('formulario-propietarios/{clienteId}', RegistroPropietario::class)->name('regpropietario');
-Route::get('propietario/resumen/{id}', [PropietarioController::class, 'resumen'])
+Route::middleware('throttle:5,1')->get('propietario/resumen/{id}', [PropietarioController::class, 'resumen'])
     ->name('propietario.resumen');
 
 Route::middleware('throttle:10,1')->get('formulario-airbnb/{link_id}', [FormularioAirbnbController::class, 'index'])->name('formairbnb');
