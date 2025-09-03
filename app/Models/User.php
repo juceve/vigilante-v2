@@ -105,4 +105,9 @@ class User extends Authenticatable
     {
         return 'admin/profile';
     }
+
+    public function propietario()
+    {
+        return $this->hasOne(Propietario::class, 'user_id', 'id');
+    }
 }

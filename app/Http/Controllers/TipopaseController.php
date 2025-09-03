@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Rrhhcargo;
+use App\Models\Tipopase;
 use Illuminate\Http\Request;
 
 /**
- * Class RrhhcargoController
+ * Class TipopaseController
  * @package App\Http\Controllers
  */
-class RrhhcargoController extends Controller
+class TipopaseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,10 +18,10 @@ class RrhhcargoController extends Controller
      */
     public function index()
     {
-        $rrhhcargos = Rrhhcargo::all();
+        $tipopases = Tipopase::paginate();
 
-        return view('rrhhcargo.index', compact('rrhhcargos'))
-            ->with('i', 0);
+        return view('tipopase.index', compact('tipopases'))
+            ->with('i', (request()->input('page', 1) - 1) * $tipopases->perPage());
     }
 
     /**
@@ -31,8 +31,8 @@ class RrhhcargoController extends Controller
      */
     public function create()
     {
-        $rrhhcargo = new Rrhhcargo();
-        return view('rrhhcargo.create', compact('rrhhcargo'));
+        $tipopase = new Tipopase();
+        return view('tipopase.create', compact('tipopase'));
     }
 
     /**
@@ -43,12 +43,12 @@ class RrhhcargoController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate(Rrhhcargo::$rules);
+        request()->validate(Tipopase::$rules);
 
-        $rrhhcargo = Rrhhcargo::create($request->all());
+        $tipopase = Tipopase::create($request->all());
 
-        return redirect()->route('rrhhcargos.index')
-            ->with('success', 'Cargo creado correctamente.');
+        return redirect()->route('tipopases.index')
+            ->with('success', 'Tipopase created successfully.');
     }
 
     /**
@@ -59,9 +59,9 @@ class RrhhcargoController extends Controller
      */
     public function show($id)
     {
-        $rrhhcargo = Rrhhcargo::find($id);
+        $tipopase = Tipopase::find($id);
 
-        return view('rrhhcargo.show', compact('rrhhcargo'));
+        return view('tipopase.show', compact('tipopase'));
     }
 
     /**
@@ -72,26 +72,26 @@ class RrhhcargoController extends Controller
      */
     public function edit($id)
     {
-        $rrhhcargo = Rrhhcargo::find($id);
+        $tipopase = Tipopase::find($id);
 
-        return view('rrhhcargo.edit', compact('rrhhcargo'));
+        return view('tipopase.edit', compact('tipopase'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  Rrhhcargo $rrhhcargo
+     * @param  Tipopase $tipopase
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Rrhhcargo $rrhhcargo)
+    public function update(Request $request, Tipopase $tipopase)
     {
-        request()->validate(Rrhhcargo::$rules);
+        request()->validate(Tipopase::$rules);
 
-        $rrhhcargo->update($request->all());
+        $tipopase->update($request->all());
 
-        return redirect()->route('rrhhcargos.index')
-            ->with('success', 'Cargo actualizado correctamente.');
+        return redirect()->route('tipopases.index')
+            ->with('success', 'Tipopase updated successfully');
     }
 
     /**
@@ -101,9 +101,9 @@ class RrhhcargoController extends Controller
      */
     public function destroy($id)
     {
-        $rrhhcargo = Rrhhcargo::find($id)->delete();
+        $tipopase = Tipopase::find($id)->delete();
 
-        return redirect()->route('rrhhcargos.index')
-            ->with('success', 'Cargo eliminado correctamente.');
+        return redirect()->route('tipopases.index')
+            ->with('success', 'Tipopase deleted successfully');
     }
 }

@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('propietarios', function (Blueprint $table) {
+        Schema::create('flujopases', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre', 100);
-            $table->string('cedula', 20)->unique();
-            $table->string('telefono', 15)->nullable();
-            $table->string('email', 100)->nullable();
-            $table->string('direccion', 255)->nullable();
-            $table->string('ciudad', 100)->nullable();
-            $table->boolean('activo')->default(true);
+            $table->foreignId('paseingreso_id')->nullable()->constrained()->nullOnDelete();
+            $table->date('fecha', 12);
+            $table->enum('tipo',['INGRESO','SALIDA']);
+            $table->string('hora',10);
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
@@ -30,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('propietarios');
+        Schema::dropIfExists('flujopases');
     }
 };

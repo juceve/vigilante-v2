@@ -21,7 +21,14 @@ use App\Models\Vwnovedade;
 use App\Models\Vwpanico;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
+
+function encriptar($data)
+{
+    $encryptData = Crypt::encrypt($data);
+    return $encryptData;
+}
 
 function tablaRondas($designacione_id)
 {
@@ -176,10 +183,11 @@ function esDiaLibre2($designacione_id, $fecha)
     ])->exists();
 }
 
-function traeDesignacionActiva($empleado_id){
-    $designacione = Designacione::where('empleado_id',$empleado_id)
-    ->where('estado',1)
-    ->orderBy('id','DESC')->first();
+function traeDesignacionActiva($empleado_id)
+{
+    $designacione = Designacione::where('empleado_id', $empleado_id)
+        ->where('estado', 1)
+        ->orderBy('id', 'DESC')->first();
     dd($designacione);
 }
 
@@ -187,12 +195,12 @@ function yaMarque($designacione_id)
 {
     try {
         $designacione = Designacione::find($designacione_id);
-        
+
         // Validar que existe la designación y el turno
         if (!$designacione || !$designacione->turno) {
             return 2; // Por seguridad, asumir que ya marcó todo
         }
-        
+
         $hoy = date('Y-m-d');
         $horaingreso = new DateTime($hoy . " " . $designacione->turno->horainicio);
         $horaingreso = $horaingreso->modify('-1 hours');
@@ -235,7 +243,7 @@ function yaMarque($designacione_id)
                     ->where('fecha', $ayer)
                     ->first();
             }
-            
+
             if ($marcacion) {
                 if ($marcacion->ingreso && $marcacion->salida) {
                     return 2; // Ya marcó ingreso y salida
@@ -292,27 +300,27 @@ function verificaHV($designacione_id)
 {
     try {
         $designacione = Designacione::find($designacione_id);
-        
+
         if (!$designacione) {
             return false;
         }
-        
+
         $hora = date('H:') . '00';
         $intervalo = Intervalo::where([
             ['designacione_id', $designacione->id],
             ['hora', $hora],
         ])->first();
-        
+
         if ($intervalo) {
             // Optimización: usar exists() en lugar de first()
             $yaReportado = ModelsHombrevivo::where([
                 ['intervalo_id', $intervalo->id],
                 ['fecha', date('Y-m-d')]
             ])->exists();
-            
+
             return $yaReportado ? false : $intervalo;
         }
-        
+
         return false;
     } catch (Exception $e) {
         Log::error('Error en verificaHV: ' . $e->getMessage());
@@ -324,11 +332,11 @@ function verificaTareas($designacione_id)
 {
     try {
         $designacione = Designacione::find($designacione_id);
-        
+
         if (!$designacione || !$designacione->turno) {
             return false;
         }
-        
+
         // Optimización: usar exists() en lugar de get() y count()
         return Tarea::where([
             ["cliente_id", $designacione->turno->cliente_id],
@@ -501,6 +509,11 @@ function decodGet($myString)
 function cerosIzq($num)
 {
     $num = str_pad($num, 5, '0', STR_PAD_LEFT);
+    return $num;
+}
+function cerosIzq2($num)
+{
+    $num = str_pad($num, 4, '0', STR_PAD_LEFT);
     return $num;
 }
 

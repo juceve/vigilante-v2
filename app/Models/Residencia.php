@@ -53,6 +53,9 @@ class Residencia extends Model
     public function cliente(){
         return $this->hasOne('App\Models\Cliente', 'id', 'cliente_id');
     }
-    
 
+    public function paseingresos()
+    {
+        return $this->hasMany('App\Models\Paseingreso', 'residencia_id', 'id');
+    }
 }

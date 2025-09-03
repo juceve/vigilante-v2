@@ -1,9 +1,11 @@
-@extends('layouts.app')
+@extends('adminlte::page')
 
-@section('template_title')
-    {{ __('Create') }} Motivo
+@section('title')
+    Nuevo Motivo
 @endsection
-
+@section('content_header')
+    <h4>Nuevo Motivo</h4>
+@endsection
 @section('content')
     <section class="content container-fluid">
         <div class="row">
@@ -12,8 +14,19 @@
                 @includeif('partials.errors')
 
                 <div class="card card-default">
-                    <div class="card-header">
-                        <span class="card-title">{{ __('Create') }} Motivo</span>
+                    <div class="card-header bg-info">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+
+                            <span id="card_title">
+                                Formulario de Registro
+                            </span>
+
+                             <div class="float-right">
+                                <a href="javascript:history.back()" class="btn btn-info btn-sm float-right"  data-placement="left">
+                                  <i class="fas fa-arrow-left"></i> Volver
+                                </a>
+                              </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <form method="POST" action="{{ route('motivos.store') }}"  role="form" enctype="multipart/form-data">

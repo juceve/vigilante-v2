@@ -205,7 +205,9 @@ class ListadoResidencias extends Component
         $this->validate([
             'searchCedula' => 'required|string|max:255',
         ]);
-        $this->propietario = Propietario::where('cedula', $this->searchCedula)->first();
+        $this->propietario = Propietario::where('cedula', $this->searchCedula)
+            ->where('activo', 1)
+            ->first();
         if (!$this->propietario) {
             $this->emit('toast-error', 'No se encontró el propietario con la cédula ingresada');
         }
@@ -213,7 +215,7 @@ class ListadoResidencias extends Component
 
     public function resetPropietario()
     {
-        $this->reset('searchCedula', 'propietario','residenciaSel');
+        $this->reset('searchCedula', 'propietario', 'residenciaSel');
     }
 
     protected $listeners = ['reasignarPropietario'];

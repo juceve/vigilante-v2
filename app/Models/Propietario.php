@@ -25,30 +25,35 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Propietario extends Model
 {
-    
-    static $rules = [
-		'nombre' => 'required',
-		'cedula' => 'required',
-		'activo' => 'required',
-    ];
 
-    protected $perPage = 20;
+  static $rules = [
+    'nombre' => 'required',
+    'cedula' => 'required',
+    'activo' => 'required',
+  ];
 
-    /**
-     * Attributes that should be mass-assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['nombre','cedula','telefono','email','direccion','ciudad','activo'];
+  protected $perPage = 20;
+
+  /**
+   * Attributes that should be mass-assignable.
+   *
+   * @var array
+   */
+  protected $fillable = ['nombre', 'cedula', 'telefono', 'email', 'direccion', 'ciudad', 'activo', 'user_id'];
 
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function residencias()
-    {
-        return $this->hasMany(Residencia::class, 'propietario_id', 'id');
-    }
-    
-    
+  /**
+   * @return \Illuminate\Database\Eloquent\Relations\HasMany
+   */
+  public function residencias()
+  {
+    return $this->hasMany(Residencia::class, 'propietario_id', 'id');
+  }
+
+  public function user()
+  {
+    return $this->hasOne(User::class, 'user_id', 'id');
+  }
+
+  
 }

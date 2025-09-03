@@ -5,15 +5,16 @@ namespace App\Http\Livewire\Admin;
 use App\Models\Cliente;
 use App\Models\Propietario;
 use App\Models\Residencia;
+use App\Models\User;
 use Livewire\Component;
 
 class Aprobaciones extends Component
 {
-    public $propietario,$propietario_id,$cliente_id,$cliente;
+    public $propietario, $propietario_id, $cliente_id, $cliente;
     public $residenciaSeleccionada = null;
     public $showModal = false;
 
-    public function mount($propietario_id,$cliente_id)
+    public function mount($propietario_id, $cliente_id)
     {
         $this->propietario_id = $propietario_id;
         $this->cliente_id = $cliente_id;
@@ -42,10 +43,28 @@ class Aprobaciones extends Component
                 'cedula_propietario' => $propietario->cedula,
                 'estado' => 'VERIFICADO',
             ]);
-            
+
             $propietario->activo = true;
             $propietario->save();
+            if (is_null($propietario->user_id) || $propietario->user_id === "") {
+                if (is_null($propietario->email) || $propietario->email === "") {
+                    $email = strtolower($propietario->nombre . $propietario->id . "@" . config('app.name'));
+                    $email = str_replace(" ", "", $email);
+                    $propietario->email = $email;
+                } else {
+                    $email = strtolower($propietario->email);
+                }
 
+                $user = User::create([
+                    "name" => $propietario->nombre,
+                    "password" => bcrypt($propietario->cedula),
+                    "email" => $email,
+                    "template" => "PROPIETARIO",
+                    "status" => 1,
+                ]);
+                $propietario->user_id = $user->id;
+                $propietario->save();
+            }
             $this->emit('success', 'La residencia fue aprobada correctamente.');
         }
         $this->cerrarModal();

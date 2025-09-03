@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Rrhhcargo;
+use App\Models\Flujopase;
 use Illuminate\Http\Request;
 
 /**
- * Class RrhhcargoController
+ * Class FlujopaseController
  * @package App\Http\Controllers
  */
-class RrhhcargoController extends Controller
+class FlujopaseController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,10 +18,10 @@ class RrhhcargoController extends Controller
      */
     public function index()
     {
-        $rrhhcargos = Rrhhcargo::all();
+        $flujopases = Flujopase::paginate();
 
-        return view('rrhhcargo.index', compact('rrhhcargos'))
-            ->with('i', 0);
+        return view('flujopase.index', compact('flujopases'))
+            ->with('i', (request()->input('page', 1) - 1) * $flujopases->perPage());
     }
 
     /**
@@ -31,8 +31,8 @@ class RrhhcargoController extends Controller
      */
     public function create()
     {
-        $rrhhcargo = new Rrhhcargo();
-        return view('rrhhcargo.create', compact('rrhhcargo'));
+        $flujopase = new Flujopase();
+        return view('flujopase.create', compact('flujopase'));
     }
 
     /**
@@ -43,12 +43,12 @@ class RrhhcargoController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate(Rrhhcargo::$rules);
+        request()->validate(Flujopase::$rules);
 
-        $rrhhcargo = Rrhhcargo::create($request->all());
+        $flujopase = Flujopase::create($request->all());
 
-        return redirect()->route('rrhhcargos.index')
-            ->with('success', 'Cargo creado correctamente.');
+        return redirect()->route('flujopases.index')
+            ->with('success', 'Flujopase created successfully.');
     }
 
     /**
@@ -59,9 +59,9 @@ class RrhhcargoController extends Controller
      */
     public function show($id)
     {
-        $rrhhcargo = Rrhhcargo::find($id);
+        $flujopase = Flujopase::find($id);
 
-        return view('rrhhcargo.show', compact('rrhhcargo'));
+        return view('flujopase.show', compact('flujopase'));
     }
 
     /**
@@ -72,26 +72,26 @@ class RrhhcargoController extends Controller
      */
     public function edit($id)
     {
-        $rrhhcargo = Rrhhcargo::find($id);
+        $flujopase = Flujopase::find($id);
 
-        return view('rrhhcargo.edit', compact('rrhhcargo'));
+        return view('flujopase.edit', compact('flujopase'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  Rrhhcargo $rrhhcargo
+     * @param  Flujopase $flujopase
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Rrhhcargo $rrhhcargo)
+    public function update(Request $request, Flujopase $flujopase)
     {
-        request()->validate(Rrhhcargo::$rules);
+        request()->validate(Flujopase::$rules);
 
-        $rrhhcargo->update($request->all());
+        $flujopase->update($request->all());
 
-        return redirect()->route('rrhhcargos.index')
-            ->with('success', 'Cargo actualizado correctamente.');
+        return redirect()->route('flujopases.index')
+            ->with('success', 'Flujopase updated successfully');
     }
 
     /**
@@ -101,9 +101,9 @@ class RrhhcargoController extends Controller
      */
     public function destroy($id)
     {
-        $rrhhcargo = Rrhhcargo::find($id)->delete();
+        $flujopase = Flujopase::find($id)->delete();
 
-        return redirect()->route('rrhhcargos.index')
-            ->with('success', 'Cargo eliminado correctamente.');
+        return redirect()->route('flujopases.index')
+            ->with('success', 'Flujopase deleted successfully');
     }
 }

@@ -21,7 +21,15 @@ class RegistroPropietario extends Component
     public $email = '';
     public $direccion = '';
     public $ciudad = '';
-    public $existePropietario = false;
+    public $existePropietario = true;
+    public $residencias = [];
+    public $numeropuerta = '';
+    public $piso = '';
+    public $calle = '';
+    public $nrolote = '';
+    public $manzano = '';
+    public $notas = '';
+    public $procesando = false;
     // 'activo' no se muestra: lo seteamos en false al guardar
 
     // Residencias dinámicas (JSON desde la vista)
@@ -44,80 +52,71 @@ class RegistroPropietario extends Component
             'notas'        => '',
         ]]);
     }
-
+    protected $rules = [
+        'nombre'    => 'required|string|max:100',
+        'cedula'    => 'required|string|max:20',
+        'telefono'  => 'nullable|string|max:15',
+        'email'     => 'nullable|email|max:100',
+        'direccion' => 'nullable|string|max:255',
+        'ciudad'    => 'nullable|string|max:100',
+    ];
     public function save()
     {
-        $this->validate([
-            'nombre'    => 'required|string|max:100',
-            'cedula'    => ['required', 'string', 'max:20'],
-            'telefono'  => 'nullable|string|max:15',
-            'email'     => 'nullable|email|max:100',
-            'direccion' => 'nullable|string|max:255',
-            'ciudad'    => 'nullable|string|max:100',
-        ]);
+        if ($this->procesando === false) {
+            $this->validate();
 
-        $residencias = json_decode($this->residencias_json, true) ?? [];
-
-        $residenciasValidas = array_filter($residencias, function ($res) {
-            return !empty($res['numeropuerta']) ||
-                !empty($res['piso']) ||
-                !empty($res['calle']) ||
-                !empty($res['nrolote']) ||
-                !empty($res['manzano']) ||
-                !empty($res['notas']);
-        });
-
-        if (count($residenciasValidas) === 0) {
-            $this->addError('residencias', 'Debes llenar al menos una residencia con datos válidos.');
-            return;
-        }
-
-        DB::beginTransaction();
-        try {
-            // Verificar si ya existe un propietario con la misma cédula
-            $propietario = Propietario::where('cedula', $this->cedula)->first();
-            $clienteId = Crypt::decryptString($this->clienteIdEncrypted);
-            if (!$propietario) {
-                // Si no existe, crear nuevo propietario
-                $propietario = Propietario::create([
-                    'nombre'    => $this->nombre,
-                    'cedula'    => $this->cedula,
-                    'telefono'  => $this->telefono ?: null,
-                    'email'     => $this->email ?: null,
-                    'direccion' => $this->direccion ?: null,
-                    'ciudad'    => $this->ciudad ?: null,
-                    'activo'    => false,
-                ]);
+            if (count($this->residencias) === 0) {
+                $this->emit('toast-warning', 'Debes llenar al menos una residencia con datos válidos.');
+                return;
             }
+            $this->procesando = true;
+            DB::beginTransaction();
+            try {
+                // Verificar si ya existe un propietario con la misma cédula
+                $propietario = Propietario::where('cedula', $this->cedula)->first();
+                $clienteId = Crypt::decryptString($this->clienteIdEncrypted);
+                if (!$propietario) {
+                    // Si no existe, crear nuevo propietario
+                    $propietario = Propietario::create([
+                        'nombre'    => $this->nombre,
+                        'cedula'    => $this->cedula,
+                        'telefono'  => $this->telefono ?: null,
+                        'email'     => $this->email ?: null,
+                        'direccion' => $this->direccion ?: null,
+                        'ciudad'    => $this->ciudad ?: null,
+                        'activo'    => false,
+                    ]);
+                }
 
-            $residenciasIds = [];
-            foreach ($residenciasValidas as $r) {
-                $residencia = Residencia::create([
-                    'cliente_id'         => $clienteId,
-                    'propietario_id'     => $propietario->id,
-                    'cedula_propietario' => $this->cedula,
-                    'numeropuerta'       => $r['numeropuerta'] ?: null,
-                    'piso'               => $r['piso'] ?: null,
-                    'calle'              => $r['calle'] ?: null,
-                    'nrolote'            => $r['nrolote'] ?: null,
-                    'manzano'            => $r['manzano'] ?: null,
-                    'notas'              => $r['notas'] ?: null,
-                ]);
-                $residenciasIds[] = $residencia->id;
+                $residenciasIds = [];
+                foreach ($this->residencias as $r) {
+                    $residencia = Residencia::create([
+                        'cliente_id'         => $clienteId,
+                        'propietario_id'     => $propietario->id,
+                        'cedula_propietario' => $this->cedula,
+                        'numeropuerta'       => $r['numeropuerta'] ?: null,
+                        'piso'               => $r['piso'] ?: null,
+                        'calle'              => $r['calle'] ?: null,
+                        'nrolote'            => $r['nrolote'] ?: null,
+                        'manzano'            => $r['manzano'] ?: null,
+                        'notas'              => $r['notas'] ?: null,
+                    ]);
+                    $residenciasIds[] = $residencia->id;
+                }
+
+                DB::commit();
+
+                // Guardar los IDs en la sesión
+                Session::put('residencias_registradas', $residenciasIds);
+
+                $encryptedId = Crypt::encryptString($propietario->id);
+                // Redirigir al resumen del propietario
+                return redirect()->route('propietario.resumen', $encryptedId);
+            } catch (\Throwable $e) {
+                DB::rollBack();                
+                $this->emit('toast-error', $e->getMessage());
+                $this->procesando = false;
             }
-
-            DB::commit();
-
-            // Guardar los IDs en la sesión
-            Session::put('residencias_registradas', $residenciasIds);
-
-            $encryptedId = Crypt::encryptString($propietario->id);
-            // Redirigir al resumen del propietario
-            return redirect()->route('propietario.resumen', $encryptedId);
-        } catch (\Throwable $e) {
-            DB::rollBack();
-            report($e);
-            $this->addError('general', $e->getMessage());
         }
     }
 
@@ -137,6 +136,7 @@ class RegistroPropietario extends Component
         $this->validate([
             'cedula' => 'required|string|max:20',
         ]);
+        $this->reset('nombre', 'telefono', 'email', 'direccion', 'ciudad');
 
         $propietario = Propietario::where('cedula', $this->cedula)->first();
 
@@ -150,6 +150,30 @@ class RegistroPropietario extends Component
             $this->existePropietario = true;
         } else {
             $this->emit('toast-warning', 'Propietario nuevo.');
+            $this->existePropietario = false;
         }
+    }
+
+    public function addResidencia()
+    {
+        if ($this->numeropuerta != '' || $this->piso != '' || $this->calle != '' || $this->nrolote != '' || $this->manzano != '' || $this->notas != '') {
+            $this->residencias[] = [
+                'numeropuerta' => $this->numeropuerta,
+                'piso' => $this->piso,
+                'calle' => $this->calle,
+                'nrolote' => $this->nrolote,
+                'manzano' => $this->manzano,
+                'notas' => $this->notas,
+            ];
+            $this->reset('numeropuerta', 'piso', 'calle', 'nrolote', 'manzano', 'notas');
+        } else {
+            $this->emit('toast-warning', 'Debes llenar al menos un campo para agregar una residencia.');
+        }
+    }
+
+    public function delResidencia($index)
+    {
+        unset($this->residencias[$index]);
+        $this->residencias = array_values($this->residencias); // Reindexar el array
     }
 }

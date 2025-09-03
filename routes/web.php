@@ -12,8 +12,10 @@ use App\Http\Controllers\DesignacioneController;
 use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\FormularioAirbnbController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MotivoController;
 use App\Http\Controllers\NovedadeController;
 use App\Http\Controllers\OficinaController;
+use App\Http\Controllers\PaseingresoController;
 use App\Http\Controllers\PropietarioController;
 use App\Http\Controllers\RegistroguardiaController;
 use App\Http\Controllers\RegrondaController;
@@ -76,9 +78,13 @@ use App\Http\Livewire\Customer\Novedades as CustomerNovedades;
 use App\Http\Livewire\Customer\Recibos;
 use App\Http\Livewire\Customer\Rondas;
 use App\Http\Livewire\Customer\Visitas;
-
+use App\Http\Livewire\Propietarios\Flujopases;
+use App\Http\Livewire\Propietarios\MisResidencias;
+use App\Http\Livewire\Propietarios\Pases;
 use App\Http\Livewire\Vigilancia\Activacubrerelevos;
 use App\Http\Livewire\Vigilancia\Checkairbnb;
+use App\Http\Livewire\Vigilancia\ControlPases;
+use App\Http\Livewire\Vigilancia\DetallePase;
 use App\Http\Livewire\Vigilancia\HombreVivo;
 use App\Http\Livewire\Vigilancia\Novedades;
 use App\Http\Livewire\Vigilancia\Panelvisitas;
@@ -142,6 +148,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('vigilancia/salidavisita/{visita_id}', SalidaVisita::class)->name('salidavisita');
     Route::get('vigilancia/tareas/{designacion}', Vtareas::class)->name('vigilancia.tareas');
     Route::get('vigilancia/airbnb/{designacione_id}', Checkairbnb::class)->name('vigilancia.airbnb');
+    Route::get('vigilancia/control-pases/{designacione_id}', ControlPases::class)->name('vigilancia.controlpases');
+    Route::get('vigilancia/detalle-pase/{designacione_id}/{pase_id}', DetallePase::class)->name('vigilancia.detallepase');
     Route::get('vigilancia/controlairbnb', function () {
         return view('vigilancia.listadoairbnb');
     })->name('vigilancia.ctrlairbnb');
@@ -209,6 +217,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('admin/oficinas', OficinaController::class)->names('oficinas');
     Route::resource('admin/clientes', ClienteController::class)->names('clientes');
     Route::resource('admin/designaciones', DesignacioneController::class)->names('designaciones');
+    Route::resource('admin/motivo-visita', MotivoController::class)->names('motivos');
     Route::resource('admin/rrhh/estados', RrhhestadoController::class)->names('rrhhestados');
     Route::resource('admin/rrhh/tipo-contratos', RrhhtipocontratoController::class)->names('rrhhtipocontratos');
     Route::resource('admin/rrhh/tipo-permisos', RrhhtipopermisoController::class)->names('rrhhtipopermisos');
@@ -270,13 +279,18 @@ Route::middleware(['auth'])->group(function () {
     Route::get('customer/cobros', Cobros::class)->name('customer.cobros');
     Route::get('customer/recibos', Recibos::class)->name('customer.recibos');
     Route::get('customer/links', Links::class)->name('customer.links');
+
+    Route::get('propietarios/mis-residencias', MisResidencias::class)->name('misresidencias');
+    Route::get('propietarios/pases', Pases::class)->name('propietarios.pases');
+    Route::get('propietarios/resumen/{id}', [PaseingresoController::class, 'resumen'])->name('resumenpase');
+    Route::get('propietarios/flujo-pases', Flujopases::class)->name('flujopases');
 });
 
 Route::middleware('throttle:10,1')->get('formulario-cobro/{link_id}', [FormularioAirbnbController::class, 'cobro'])->name('formcobro');
 Route::middleware('throttle:10,1')->get('formulario-recibo/{link_id}', [FormularioAirbnbController::class, 'recibo'])->name('formrecibo');
 Route::middleware('throttle:10,1')->get('formulario-informe/{link_id}', [FormularioAirbnbController::class, 'informe'])->name('forminforme');
 
-Route::middleware('throttle:5,1')->get('formulario-propietarios/{clienteId}', RegistroPropietario::class)->name('regpropietario');
+Route::get('formulario-propietarios/{clienteId}', RegistroPropietario::class)->name('regpropietario');
 Route::middleware('throttle:5,1')->get('propietario/resumen/{id}', [PropietarioController::class, 'resumen'])
     ->name('propietario.resumen');
 
@@ -284,5 +298,3 @@ Route::middleware('throttle:10,1')->get('formulario-airbnb/{link_id}', [Formular
 Route::middleware('throttle:10,1')->get('register-success/{registro_id}', [FormularioAirbnbController::class, 'regsuccess'])->name('regsuccess');
 Route::middleware('throttle:10,1')->get('downloadqr/{contenido}', [FormularioAirbnbController::class, 'descargarQr'])->name('downloadqr');
 Route::middleware('throttle:10,1')->get('downloadpdf/{id}', [FormularioAirbnbController::class, 'descargarPdf'])->name('downloadpdf');
-
-

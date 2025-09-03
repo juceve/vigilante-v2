@@ -480,6 +480,12 @@ return [
                     'can'   =>  'rrhhtipopermisos.index',
                     'icon' => 'fas fa-folder-plus'
                 ],
+                [
+                    'text' => 'Motivo Visita',
+                    'route'  => 'motivos.index',
+                    'can'   =>  'motivos.index',
+                    'icon' => 'fas fa-glasses'
+                ],
 
 
                 [

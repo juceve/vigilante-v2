@@ -96,16 +96,16 @@
             <p class="mb-0">© {{ date('Y') }} Mi Condominio — Todos los derechos reservados</p>
         </div>
     </footer>
-
+    @livewireScripts
     {{-- Bootstrap JS --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @livewireScripts
+
     <script>
         Livewire.on('toast-success', msg => {
             Swal.fire({
                 toast: true,
-                position: 'top-end',
+                position: 'bottom-end',
                 icon: 'success',
                 title: msg,
                 showConfirmButton: false,
@@ -116,7 +116,7 @@
         Livewire.on('toast-warning', msg => {
             Swal.fire({
                 toast: true,
-                position: 'top-end',
+                position: 'bottom-end',
                 icon: 'warning',
                 title: msg,
                 showConfirmButton: false,
@@ -127,7 +127,7 @@
         Livewire.on('toast-error', msg => {
             Swal.fire({
                 toast: true,
-                position: 'top-end',
+                position: 'bottom-end',
                 icon: 'error',
                 title: msg,
                 showConfirmButton: false,

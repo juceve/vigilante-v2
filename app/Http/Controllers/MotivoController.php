@@ -11,17 +11,19 @@ use Illuminate\Http\Request;
  */
 class MotivoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+   public function __construct()
+    {
+        $this->middleware('can:motivos.index')->only('index');
+        $this->middleware('can:motivos.create')->only('create', 'store');
+        $this->middleware('can:motivos.edit')->only('edit', 'update');
+        $this->middleware('can:motivos.destroy')->only('destroy');
+    }
     public function index()
     {
-        $motivos = Motivo::paginate();
+        $motivos = Motivo::all();
 
         return view('motivo.index', compact('motivos'))
-            ->with('i', (request()->input('page', 1) - 1) * $motivos->perPage());
+            ->with('i', 0);
     }
 
     /**
@@ -48,7 +50,7 @@ class MotivoController extends Controller
         $motivo = Motivo::create($request->all());
 
         return redirect()->route('motivos.index')
-            ->with('success', 'Motivo created successfully.');
+            ->with('success', 'Motivo registrado correctamente');
     }
 
     /**
@@ -84,14 +86,17 @@ class MotivoController extends Controller
      * @param  Motivo $motivo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Motivo $motivo)
+    public function update(Request $request, $motivo_id)
     {
         request()->validate(Motivo::$rules);
+        $motivo = Motivo::find($motivo_id);
 
-        $motivo->update($request->all());
+        $motivo->nombre = $request->nombre;
+        $motivo->estado = $request->estado;
+        $motivo->save();
 
         return redirect()->route('motivos.index')
-            ->with('success', 'Motivo updated successfully');
+            ->with('success', 'Motivo actualizado correctamente');
     }
 
     /**
@@ -104,6 +109,6 @@ class MotivoController extends Controller
         $motivo = Motivo::find($id)->delete();
 
         return redirect()->route('motivos.index')
-            ->with('success', 'Motivo deleted successfully');
+            ->with('success', 'Motivo eliminado correctamennte');
     }
 }

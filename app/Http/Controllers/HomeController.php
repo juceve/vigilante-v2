@@ -74,5 +74,18 @@ class HomeController extends Controller
             Session::put('cliente_id-oper', $cliente->id);
             return view('customer.home', compact('cliente', 'designaciones'));
         }
+        if (Auth::user()->template == "PROPIETARIO") {
+            // $usuariocliente = Usercliente::where('user_id', Auth::user()->id)->first();
+            // $cliente = $usuariocliente->cliente;
+            // $hoy = date('Y-m-d');
+            // $designaciones = Vwdesignacione::where([
+            //     ['cliente_id', $cliente->id],
+            //     ['fechaInicio', '<=', $hoy],
+            //     ['fechaFin', '>=', $hoy],
+            //     ['estado', true],
+            // ])->get();
+            // Session::put('cliente_id-oper', $cliente->id);
+            return view('propietario.home');
+        }
     }
 }
