@@ -9,7 +9,7 @@
 
     <div class="card">
         <div class="card-header bg-primary text-white" style="font-size: 18px">
-            <span>Listado de Pases</span>
+            <span>Listado de Residencias Registradas</span>
 
         </div>
         <div class="card-body">
@@ -32,7 +32,21 @@
                                 <td style="vertical-align: middle">{{ $item->cliente->nombre }}</td>
                                 <td style="vertical-align: middle">{{ $item->numeropuerta }}</td>
                                 <td style="vertical-align: middle">{{ $item->calle }}</td>
-                                <td style="vertical-align: middle">{{ $item->estado }}</td>
+                                <td style="vertical-align: middle">
+                                    @switch($item->estado)
+                                        @case('VERIFICADO')
+                                            <span class="badge badge-success">VERIFICADO</span>
+                                        @break
+
+                                        @case('CREADO')
+                                            <span class="badge badge-warning">CREADO</span>
+                                        @break
+
+                                        @case('CANCELADO')
+                                            <span class="badge badge-secondary">CANCELADO</span>
+                                        @break
+                                    @endswitch
+                                </td>
                                 <td class="text-right" style="min-width: 120px; width: 125px; vertical-align: middle;">
                                     <button class="btn btn-sm btn-info" title="Mas Detalles"
                                         wire:click="verDetalles({{ $item->id }})"><i
@@ -95,13 +109,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="tipoPase" class="form-label">Tipo de Pase</label>
-                            <select class="form-control" id="tipoPase" wire:model.defer="tipopase_id" required>
+                            <select class="form-control" id="tipoPase" wire:model.defer="motivo_id" required>
                                 <option value="">Seleccione</option>
-                                @foreach ($tipopases as $item)
+                                @foreach ($motivos as $item)
                                     <option value="{{ $item->id }}">{{ $item->nombre }}</option>
                                 @endforeach
                             </select>
-                            @error('tipopase_id')
+                            @error('motivo_id')
                                 <div class="invalid-feedback">
                                     <small> {{ $message }}</small>
                                 </div>
@@ -135,7 +149,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click="resetearCampos">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                        wire:click="resetearCampos">
                         <i class="fas fa-ban"></i> Cerrar
                     </button>
                     <button type="button" class="btn btn-primary" wire:click="registrarPase">Registrar <i

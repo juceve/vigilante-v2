@@ -19,13 +19,13 @@
                         {{ $paseingreso->residencia->cliente->id . '-' . cerosIzq2($paseingreso->id) }}
                     </h1>
                     <p style="font-size: 1.1rem;  margin: 0.2rem 0 0 0; font-weight: 500;">TIPO:
-                        {{ $paseingreso->tipopase->nombre }}</p>
+                        {{ $paseingreso->motivo->nombre }}</p>
                 </div>
             </div>
         </div>
     </div>
     <h4 class="text-center text-primary">Información del Pase</h4>
-    <div class="table-responsive p-1">
+    <div class="table-responsive p-3">
         <table class="table table-bordered table-striped" style="font-size: 13px;">
             <tr>
                 <td colspan="2">
@@ -58,7 +58,7 @@
     </div>
 
     <h4 class="text-center text-blue mt-4">Datos de la Residencia</h4>
-    <div class="table-responsive p-1">
+    <div class="table-responsive p-3">
         <table class="table table-bordered table-striped" style="font-size: 13px;">
             <tr>
                 <td colspan="2">
@@ -103,7 +103,7 @@
 
         </table>
     </div>
-    <div class="row text-center px-2 mt-3">
+    <div class="row text-center px-3 mt-3">
         <div class="col-6 d-grid">
             <button class="btn btn-success" onclick='marcado("INGRESO")'>Marcar Ingreso <br><i
                     class="fas fa-sign-in-alt fs-2"></i></button>

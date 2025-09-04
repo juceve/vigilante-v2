@@ -22,7 +22,7 @@
     </div>
 
     <!-- Contenido Principal -->
-    <div class="patrol-content">
+    <div class="patrol-content px-3">
         {{-- <h2 class="text-center">Escanear Código QR</h2> --}}
         <div class="row justify-content-center" wire:ignore>
             <div id="reader" style="width: 100%; display: none;"></div>
@@ -53,8 +53,8 @@
         </div>      
        
         <div class="d-grid mt-3" wire:ignore>
-            <a href="{{ route('vigilancia.ctrlairbnb') }}" id="ctrlbutton" class="btn btn-warning"
-                style="height: 70px; align-content:center;">Control de Registros <i class="fas fa-clock"></i></a>
+            <a href="{{ route('vigilancia.flujopases',$designacione->id) }}" id="ctrlbutton" class="btn btn-warning"
+                style="height: 70px; align-content:center;">Control de Flujos <i class="fas fa-exchange-alt"></i></a>
         </div>
 
     </div> <!-- Cierre patrol-content -->

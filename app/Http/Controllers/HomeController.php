@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\Designacione;
 use App\Models\Marcacione;
+use App\Models\Residencia;
 use App\Models\Usercliente;
 use App\Models\Vwdesignacione;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -43,14 +45,12 @@ class HomeController extends Controller
                     ->where('estado', 1)
                     ->orderBy('id', 'DESC')->first();
             }
-            
+
             if ($designaciones) {
                 Session::put('designacion-oper', $designaciones->id);
                 if ($designaciones->turno) {
                     Session::put('cliente_id-oper', $designaciones->turno->cliente_id);
                 }
-               
-                
             }
 
             return view('operativo', compact('designaciones'));
@@ -59,7 +59,7 @@ class HomeController extends Controller
 
             return view('admin.home');
         }
-        
+
 
         if (Auth::user()->template == "CLIENTE") {
             $usuariocliente = Usercliente::where('user_id', Auth::user()->id)->first();
@@ -75,17 +75,19 @@ class HomeController extends Controller
             return view('customer.home', compact('cliente', 'designaciones'));
         }
         if (Auth::user()->template == "PROPIETARIO") {
-            // $usuariocliente = Usercliente::where('user_id', Auth::user()->id)->first();
-            // $cliente = $usuariocliente->cliente;
-            // $hoy = date('Y-m-d');
-            // $designaciones = Vwdesignacione::where([
-            //     ['cliente_id', $cliente->id],
-            //     ['fechaInicio', '<=', $hoy],
-            //     ['fechaFin', '>=', $hoy],
-            //     ['estado', true],
-            // ])->get();
-            // Session::put('cliente_id-oper', $cliente->id);
-            return view('propietario.home');
+
+            $paseingresos = \App\Models\Paseingreso::whereHas('residencia', function ($query) {
+                $query->where('estado', 'VERIFICADO')
+                    ->where('propietario_id', auth()->user()->propietario->id);
+            })
+                ->whereDate('fecha_inicio', '<=', Carbon::today())
+                ->whereDate('fecha_fin', '>=', Carbon::today())
+                ->get();
+
+            $residencias = Residencia::where('propietario_id', auth()->user()->propietario->id)
+                ->where('estado', 'VERIFICADO')->get();
+
+            return view('propietario.home', compact('paseingresos','residencias'));
         }
     }
 }

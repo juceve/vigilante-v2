@@ -1,17 +1,15 @@
 <?php
 
-namespace App\Http\Livewire\Propietarios;
+namespace App\Http\Livewire\Vigilancia;
 
+use App\Models\Designacione;
 use App\Models\Flujopase;
+use App\Models\Residencia;
 use Livewire\Component;
-use Livewire\WithPagination;
 
-class Flujopases extends Component
+class ControlFlujos extends Component
 {
-    use WithPagination;
-    protected $paginationTheme = 'bootstrap';
-
-    public $search = '', $inicio, $final, $flujo = '';
+    public $inicio, $final, $designacione_id, $search = '', $residencia;
 
     public function mount()
     {
@@ -21,31 +19,34 @@ class Flujopases extends Component
 
     public function render()
     {
+        $designacione = Designacione::find($this->designacione_id);
         $flujopases = Flujopase::select(
             'flujopases.*',
             'pi.nombre as pase_nombre',
-            'cl.nombre as cliente_nombre',
             'pi.residencia_id',
             'pro.nombre as propietario_nombre',
             'tp.nombre as motivo_nombre',
-            're.numeropuerta as numeropuerta',
-            're.nrolote as nrolote',
-            're.piso as piso',
-            're.calle as calle',
-            're.manzano as manzano',
         )
             ->join('paseingresos as pi', 'pi.id', '=', 'flujopases.paseingreso_id')
             ->join('residencias as re', 're.id', '=', 'pi.residencia_id')
-            ->join('clientes as cl', 'cl.id', '=', 're.cliente_id')
             ->join('propietarios as pro', 'pro.id', '=', 're.propietario_id')
             ->join('motivos as tp', 'tp.id', '=', 'pi.motivo_id')
             ->where('pi.nombre', 'LIKE', '%' . $this->search . '%')
-            ->where('flujopases.tipo', 'LIKE', '%' . $this->flujo . '%')
-            ->where('pro.id', auth()->user()->propietario->id)
+            ->where('re.cliente_id', $designacione->turno->cliente->id)
             ->whereBetween('flujopases.fecha', [$this->inicio, $this->final]) // <-- filtro de fecha
-            ->orderBy('fecha', 'desc')
+            ->orderBy('id', 'desc')
             ->get();
 
-        return view('livewire.propietarios.flujopases', compact('flujopases'))->with('i', 0);
+        return view('livewire.vigilancia.control-flujos', compact('flujopases'))->with('i', 0)->extends('layouts.app');
+    }
+
+    public function detalleResidencia($residencia_id)
+    {
+        $this->residencia = Residencia::find($residencia_id);
+        if ($this->residencia) {
+            $this->emit('abrirModal');
+        } else {
+            $this->emit('error', 'Ha ocurrido un error');
+        }
     }
 }

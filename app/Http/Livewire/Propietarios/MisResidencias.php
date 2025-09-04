@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Propietarios;
 
+use App\Models\Motivo;
 use App\Models\Residencia;
 use App\Models\Tipopase;
 use Illuminate\Support\Facades\Crypt;
@@ -13,10 +14,10 @@ class MisResidencias extends Component
     public $residencia;
 
     public function render()
-    {
-        $tipopases = Tipopase::all();
+    {        
+        $motivos = Motivo::all();
         $residencias = \App\Models\Residencia::where('propietario_id', auth()->user()->propietario->id)->get();
-        return view('livewire.propietarios.mis-residencias', compact('residencias', 'tipopases'))->extends('layouts.propietarios');
+        return view('livewire.propietarios.mis-residencias', compact('residencias', 'motivos'))->extends('layouts.propietarios');
     }
 
     public function verDetalles($id)
@@ -27,7 +28,7 @@ class MisResidencias extends Component
 
     public function resetearCampos()
     {
-        $this->reset('residencia', 'nombre', 'cedula', 'tipopase_id', 'fecha_inicio', 'fecha_fin', 'detalles');
+        $this->reset('residencia', 'nombre', 'cedula', 'motivo_id', 'fecha_inicio', 'fecha_fin', 'detalles');
     }
 
     public function nuevoPase($residencia_id)
@@ -40,7 +41,7 @@ class MisResidencias extends Component
         $this->emit('openModalNuevo');
     }
 
-    public $nombre = "", $cedula = "", $tipopase_id = "", $fecha_inicio = "", $fecha_fin = "", $detalles = "";
+    public $nombre = "", $cedula = "", $motivo_id = "", $fecha_inicio = "", $fecha_fin = "", $detalles = "";
 
     public function registrarPase()
     {
@@ -53,7 +54,7 @@ class MisResidencias extends Component
             'cedula' => 'required',
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
-            'tipopase_id' => 'required',
+            'motivo_id' => 'required',
         ]);
         DB::beginTransaction();
         try {
@@ -68,7 +69,7 @@ class MisResidencias extends Component
             $paseingreso->cedula = $this->cedula;
             $paseingreso->fecha_inicio = $this->fecha_inicio;
             $paseingreso->fecha_fin = $this->fecha_fin;
-            $paseingreso->tipopase_id = $this->tipopase_id;
+            $paseingreso->motivo_id = $this->motivo_id;
             $paseingreso->detalles = $this->detalles;
             $paseingreso->save();
 

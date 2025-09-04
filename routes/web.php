@@ -42,7 +42,6 @@ use App\Http\Controllers\VisitaController;
 use App\Http\Livewire\Admin\Admrondas;
 use App\Http\Livewire\Admin\Aprobaciones;
 use App\Http\Livewire\Admin\CtrlAllAirbnb;
-
 use App\Http\Livewire\Admin\Diaslibres;
 use App\Http\Livewire\Admin\GenDocs;
 use App\Http\Livewire\Admin\ListadoCiteCobro;
@@ -78,11 +77,11 @@ use App\Http\Livewire\Customer\Novedades as CustomerNovedades;
 use App\Http\Livewire\Customer\Recibos;
 use App\Http\Livewire\Customer\Rondas;
 use App\Http\Livewire\Customer\Visitas;
-use App\Http\Livewire\Propietarios\Flujopases;
 use App\Http\Livewire\Propietarios\MisResidencias;
 use App\Http\Livewire\Propietarios\Pases;
 use App\Http\Livewire\Vigilancia\Activacubrerelevos;
 use App\Http\Livewire\Vigilancia\Checkairbnb;
+use App\Http\Livewire\Vigilancia\ControlFlujos;
 use App\Http\Livewire\Vigilancia\ControlPases;
 use App\Http\Livewire\Vigilancia\DetallePase;
 use App\Http\Livewire\Vigilancia\HombreVivo;
@@ -180,6 +179,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('adelantos/update', [RrhhadelantoController::class, 'update'])->name('adelantos.update');
     Route::post('permisos/update', [RrhhpermisoController::class, 'update'])->name('permisos.update');
     Route::post('asistencias/guardar', [RrhhasistenciaController::class, 'guardar'])->name('asistencias.guardar');
+    Route::get('vigilancia/control-flujo/{designacione_id}', ControlFlujos::class)->name('vigilancia.flujopases');
 
     Route::get('admin/rrhh/asistencias/reporte', [RrhhasistenciaController::class, 'reporteAjax'])->name('asistencias.data');
     Route::get('dotaciones/data/{contrato_id}', [RrhhdotacionController::class, 'data'])->name('dotaciones.data');
@@ -259,10 +259,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/subir-archivo', [UploadsController::class, 'uploadFile'])->name('uploadFile');
 
-    // Route::get('pruebas/pdf', [PruebasController::class, 'generarPDF'])->name('generarpdf');
-    // Route::get('pdfprueba', function () {
-    //     return view('pdfs.pdfformularioairbnb');
-    // });
 
     ////////////////// AREA DE CLIENTES ///////////////////////
     Route::get('admin/usuariocliente/{cliente_id}', Usuariocliente::class)->name('usuariocliente');
@@ -283,7 +279,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('propietarios/mis-residencias', MisResidencias::class)->name('misresidencias');
     Route::get('propietarios/pases', Pases::class)->name('propietarios.pases');
     Route::get('propietarios/resumen/{id}', [PaseingresoController::class, 'resumen'])->name('resumenpase');
-    Route::get('propietarios/flujo-pases', Flujopases::class)->name('flujopases');
 });
 
 Route::middleware('throttle:10,1')->get('formulario-cobro/{link_id}', [FormularioAirbnbController::class, 'cobro'])->name('formcobro');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Propietarios;
 
+use App\Models\Motivo;
 use App\Models\Paseingreso;
 use App\Models\Tipopase;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +25,8 @@ class Pases extends Component
 
     public function render()
     {
-        $tipopases = Tipopase::all();
+        
+        $motivos = Motivo::all();
         $paseingresos = \App\Models\Paseingreso::whereHas('residencia', function ($query) {
             $query->where('estado', 'VERIFICADO')
                 ->where('propietario_id', auth()->user()->propietario->id);
@@ -32,7 +34,7 @@ class Pases extends Component
             ->where('nombre', 'LIKE', '%' . $this->search . '%')
             ->orderBy('id', 'DESC')
             ->paginate(7);
-        return view('livewire.propietarios.pases', compact('paseingresos', 'tipopases'))
+        return view('livewire.propietarios.pases', compact('paseingresos', 'motivos'))
             ->extends('layouts.propietarios');
     }
 

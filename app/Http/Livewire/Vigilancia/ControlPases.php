@@ -36,15 +36,18 @@ class ControlPases extends Component
 
     public function buscarCod()
     {
-        dd('Entro');
+
         if ($this->search != '') {
             $cliente_id = $this->designacione->turno->cliente_id;
-            $airbnbtraveler = Airbnbtraveler::find($this->search);
-            if ($airbnbtraveler) {
-                if ($airbnbtraveler->airbnblink->cliente_id == $cliente_id) {
-                    if ($airbnbtraveler->arrival_date <= date('Y-m-d H:i:s') && $airbnbtraveler->departure_date >= date('Y-m-d H:i:s')) {
-                        $this->airbnbtraveler = $airbnbtraveler;
-                        $this->status = $this->airbnbtraveler->status;
+            $paseingreso = Paseingreso::find($this->search);
+            if ($paseingreso) {
+                if ($paseingreso->residencia->cliente_id == $cliente_id) {
+                    if ($paseingreso->fecha_inicio <= date('Y-m-d H:i:s') && $paseingreso->fecha_fin >= date('Y-m-d H:i:s')) {
+                        if ($paseingreso->estado) {
+                            return redirect()->route('vigilancia.detallepase', ['designacione_id' => $this->designacione_id, 'pase_id' => $paseingreso->id]);
+                        } else {
+                            $this->emit('warning', 'El presente Pase se encuentra deshabilitado por el Propietario.');
+                        }
                     } else {
                         $this->emit('error', 'La fecha está fuera de los limites.');
                     }
@@ -78,7 +81,7 @@ class ControlPases extends Component
                 if ($paseingreso->fecha_inicio <= date('Y-m-d H:i:s') && $paseingreso->fecha_fin >= date('Y-m-d H:i:s')) {
 
                     if ($paseingreso->estado) {
-                        return redirect()->route('vigilancia.detallepase',['designacione_id'=> $this->designacione_id,'pase_id'=> $paseingreso_id]);
+                        return redirect()->route('vigilancia.detallepase', ['designacione_id' => $this->designacione_id, 'pase_id' => $paseingreso_id]);
                     } else {
                         $this->emit('warning', 'El presente Pase se encuentra deshabilitado por el Propietario.');
                     }

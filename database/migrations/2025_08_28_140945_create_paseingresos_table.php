@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('cedula',50);
             $table->date('fecha_inicio');
             $table->date('fecha_fin');
-            $table->foreignId('tipopase_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('motivo_id')->nullable()->constrained()->nullOnDelete();
             $table->string('detalles');
             $table->string('url_foto')->nullable();
             $table->boolean('estado')->default(true);

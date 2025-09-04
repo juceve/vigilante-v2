@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property $cedula
  * @property $fecha_inicio
  * @property $fecha_fin
- * @property $tipopase_id
+ 
  * @property $detalles
  * @property $url_foto
  * @property $created_at
@@ -42,7 +42,7 @@ class Paseingreso extends Model
      *
      * @var array
      */
-    protected $fillable = ['residencia_id','nombre','cedula','fecha_inicio','fecha_fin','tipopase_id','detalles','url_foto','estado'];
+    protected $fillable = ['residencia_id','nombre','cedula','fecha_inicio','fecha_fin','motivo_id','detalles','url_foto','estado'];
 
 
     /**
@@ -56,9 +56,9 @@ class Paseingreso extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function tipopase()
+    public function motivo()
     {
-        return $this->hasOne('App\Models\Tipopase', 'id', 'tipopase_id');
+        return $this->hasOne('App\Models\Motivo', 'id', 'motivo_id');
     }
     
 

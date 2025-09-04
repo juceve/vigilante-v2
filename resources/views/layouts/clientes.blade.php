@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>CLIENTE BLACKBIRD</title>
+    <title>Clientes - {{config('app.name')}}</title>
 
     <!-- Bootstrap -->
     <link href="{{asset('customers/vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
@@ -31,9 +31,9 @@
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
                         <a href="/" class="site_title">
-                            <img class="img-profile rounded-circle" src="{{asset('images/blackbird1.png')}}"
+                            <img class="img-profile rounded-circle" src="{{asset('images/logo_shield.png')}}"
                                 style="width: 40px;">
-                            <span>BLACKBIRD</span>
+                            <span>{{config('app.name')}}</span>
                         </a>
                     </div>
 

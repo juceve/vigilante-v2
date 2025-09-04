@@ -26,11 +26,11 @@
                 </div>
                 @if ($designaciones)
                     <div class="assignment-compact">
-                        <div class="assignment-item">
+                        <div style="font-size: 12px">
                             <i class="fas fa-building"></i>
-                            <span>{{ Str::limit($designaciones->turno->cliente->nombre ?? 'No asignada', 20) }}</span>
+                            <span>{{ $designaciones->turno->cliente->nombre ?? 'No asignada' }}</span>
                         </div>
-                        <div class="assignment-item">
+                        <div style="font-size: 12px">
                             <i class="fas fa-clock"></i>
                             <span>{{ $designaciones->turno->nombre ?? 'No asignado' }}</span>
                         </div>

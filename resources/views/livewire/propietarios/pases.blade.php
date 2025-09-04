@@ -42,24 +42,29 @@
                             <tr class="text-center">
                                 <td class="align-middle">{{ $item->id }}</td>
                                 <td class="align-middle text-left">{{ $item->nombre }}</td>
-                                <td class="align-middle text-left">{{ $item->tipopase->nombre }}</td>
+                                <td class="align-middle text-left">{{ $item->motivo->nombre }}</td>
 
                                 <td class="align-middle">{{ $item->fecha_inicio }}</td>
                                 <td class="align-middle">{{ $item->fecha_fin }}</td>
                                 <td class="align-middle">
-                                    @if ($item->estado)
-                                        @php
-                                            $fechaExpiracion = new DateTime($item->fecha_fin);
-                                            $hoy = new DateTime();
-                                        @endphp
-                                        @if ($hoy > $fechaExpiracion)
-                                            <span class="badge badge-pill badge-warning">Expirado</span>
-                                        @else
-                                            <span class="badge badge-pill badge-success">Activo</span>
-                                        @endif
-                                    @else
+                                    @php
+                                        $fechaInicio = new DateTime($item->fecha_inicio);
+                                        $fechaFin = new DateTime($item->fecha_fin);
+                                        $hoy = new DateTime();
+                                    @endphp
+
+                                    @if (!$item->estado)
                                         <span class="badge badge-pill badge-secondary">Cancelado</span>
+                                    @else
+                                        @if ($hoy < $fechaInicio)
+                                            <span class="badge badge-pill badge-info">Pendiente</span>
+                                        @elseif ($hoy >= $fechaInicio && $hoy <= $fechaFin)
+                                            <span class="badge badge-pill badge-success">Vigente</span>
+                                        @elseif ($hoy > $fechaFin)
+                                            <span class="badge badge-pill badge-warning">Expirado</span>
+                                        @endif
                                     @endif
+
                                 </td>
 
                                 <td class="text-right" style="width: 120px;min-width: 110px;">
@@ -119,7 +124,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Nombre</span>
                                     </div>
-                                    <input type="text" class="form-control" value="{{ $paseingreso->nombre }}">
+                                    <input readonly type="text" class="form-control" value="{{ $paseingreso->nombre }}">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
@@ -127,7 +132,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Cedula</span>
                                     </div>
-                                    <input type="text" class="form-control" value="{{ $paseingreso->cedula }}">
+                                    <input readonly type="text" class="form-control" value="{{ $paseingreso->cedula }}">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
@@ -135,7 +140,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Fecha Inicio</span>
                                     </div>
-                                    <input type="text" class="form-control"
+                                    <input readonly type="text" class="form-control"
                                         value="{{ $paseingreso->fecha_inicio }}">
                                 </div>
                             </div>
@@ -144,7 +149,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Fecha Fin</span>
                                     </div>
-                                    <input type="text" class="form-control" value="{{ $paseingreso->fecha_fin }}">
+                                    <input readonly type="text" class="form-control" value="{{ $paseingreso->fecha_fin }}">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
@@ -152,8 +157,8 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Tipo Pase</span>
                                     </div>
-                                    <input type="text" class="form-control"
-                                        value="{{ $paseingreso->tipopase->nombre }}">
+                                    <input readonly type="text" class="form-control"
+                                        value="{{ $paseingreso->motivo->nombre }}">
                                 </div>
                             </div>
 
@@ -168,7 +173,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Nro. Puerta</span>
                                     </div>
-                                    <input type="text" class="form-control"
+                                    <input readonly type="text" class="form-control"
                                         value="{{ $residencia->numeropuerta }}">
                                 </div>
                             </div>
@@ -177,7 +182,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Piso</span>
                                     </div>
-                                    <input type="text" class="form-control" value="{{ $residencia->piso }}">
+                                    <input readonly type="text" class="form-control" value="{{ $residencia->piso }}">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
@@ -185,7 +190,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Calle</span>
                                     </div>
-                                    <input type="text" class="form-control" value="{{ $residencia->calle }}">
+                                    <input readonly type="text" class="form-control" value="{{ $residencia->calle }}">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
@@ -193,7 +198,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Nro. Lote</span>
                                     </div>
-                                    <input type="text" class="form-control" value="{{ $residencia->nrolote }}">
+                                    <input readonly type="text" class="form-control" value="{{ $residencia->nrolote }}">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
@@ -201,7 +206,7 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Manzano</span>
                                     </div>
-                                    <input type="text" class="form-control" value="{{ $residencia->manzano }}">
+                                    <input readonly type="text" class="form-control" value="{{ $residencia->manzano }}">
                                 </div>
                             </div>
 

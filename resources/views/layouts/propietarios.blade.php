@@ -70,14 +70,6 @@
                                         <span>Pases</span>
                                     </a>
                                 </li>
-                                <li>
-                                    <a href="/propietarios/flujo-pases" class="nav-link">
-
-                                        <i class="fas fa-exchange-alt"></i>
-
-                                        <span>Ingresos - Salidas</span>
-                                    </a>
-                                </li>
                             </ul>
 
                         </div>
