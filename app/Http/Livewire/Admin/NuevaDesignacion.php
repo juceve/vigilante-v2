@@ -35,7 +35,6 @@ class NuevaDesignacion extends Component
             $this->fechaInicio >= $this->contrato->fecha_inicio
             && (is_null($this->contrato->fecha_fin) || $this->fechaInicio <= $this->contrato->fecha_fin)
         ) {
-            
         } else {
             $this->fechaInicio = "";
             $this->emit('error', 'Fecha fuera del rango de su Contrato.');
@@ -44,10 +43,9 @@ class NuevaDesignacion extends Component
     public function updatedFechaFin()
     {
         if (
-            $this->fechaFin >= $this->contrato->fecha_inicio            
+            $this->fechaFin >= $this->contrato->fecha_inicio
             && (is_null($this->contrato->fecha_fin) || $this->fechaFin <= $this->contrato->fecha_fin)
         ) {
-            
         } else {
             $this->fechaFin = "";
             $this->emit('error', 'Fecha fuera del rango de su Contrato.');
@@ -138,7 +136,7 @@ class NuevaDesignacion extends Component
                 "observaciones" => $this->observaciones,
             ]);
             $turno = Turno::find($this->turnoid);
-
+            $intervalo = [];
             $intervalo = crearIntervalo($turno->horainicio, $turno->horafin, $this->intervalo_hv);
             foreach ($intervalo as $item) {
                 Intervalo::create([

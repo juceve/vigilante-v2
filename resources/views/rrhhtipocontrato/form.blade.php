@@ -22,8 +22,8 @@
             <label class="form-check-label" for="indefinidoCheckbox">Indefinido</label>
         </div>
         <div class="form-group" id="cantidad_dias_div">
-            {{ Form::label('cantidad_dias') }}
-            {{ Form::number('cantidad_dias', $rrhhtipocontrato->cantidad_dias, ['class' => 'form-control' . ($errors->has('cantidad_dias') ? ' is-invalid' : ''), 'placeholder' => '0', 'id' => 'cantidad_dias']) }}
+            <label for="cantidad_dias">Cantidad días <small>(Cantidad maxima 30)</small></label>
+            {{ Form::number('cantidad_dias', $rrhhtipocontrato->cantidad_dias, ['class' => 'form-control' . ($errors->has('cantidad_dias') ? ' is-invalid' : ''), 'placeholder' => '0', 'id' => 'cantidad_dias', 'min' => '1', 'max' => '30']) }}
             {!! $errors->first('cantidad_dias', '<div class="invalid-feedback">:message</div>') !!}
         </div>
         <div class="form-group">
@@ -53,27 +53,37 @@
 
 </div>
 @section('js')
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkbox = document.getElementById('indefinidoCheckbox');
-        const cantidadDiasDiv = document.getElementById('cantidad_dias_div');
-        const cantidadDiasInput = document.getElementById('cantidad_dias');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkbox = document.getElementById('indefinidoCheckbox');
+            const cantidadDiasDiv = document.getElementById('cantidad_dias_div');
+            const cantidadDiasInput = document.getElementById('cantidad_dias');
 
-        function toggleCantidadDias() {
-            if (checkbox.checked) {
-                cantidadDiasDiv.style.display = 'none';
-                cantidadDiasInput.value = 30;
-            } else {
-                cantidadDiasDiv.style.display = 'block';
-                cantidadDiasInput.value = '';
+            function toggleCantidadDias() {
+                if (checkbox.checked) {
+                    cantidadDiasDiv.style.display = 'none';
+                    cantidadDiasInput.value = 30;
+                } else {
+                    cantidadDiasDiv.style.display = 'block';
+                    cantidadDiasInput.value = '';
+                }
             }
-        }
 
-        // Inicializar al cargar la página
-        toggleCantidadDias();
+            // Inicializar al cargar la página
+            toggleCantidadDias();
 
-        // Escuchar cambios en el checkbox
-        checkbox.addEventListener('change', toggleCantidadDias);
-    });
-</script>
+            // Escuchar cambios en el checkbox
+            checkbox.addEventListener('change', toggleCantidadDias);
+        });
+    </script>
+    <script>
+        document.getElementById('cantidad_dias').addEventListener('input', function() {
+            if (this.value > 30) {
+                this.value = 30; // fuerza el máximo
+            }
+            if (this.value <=0) {
+                this.value = 1; // fuerza el máximo
+            }
+        });
+    </script>
 @endsection

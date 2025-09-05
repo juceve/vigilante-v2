@@ -114,7 +114,6 @@ class ProcesarSueldo extends Component
             $dias_tipo = $contrato->rrhhtipocontrato->cantidad_dias ?? 30;
             $valor_dia = $contrato->salario_basico / $dias_tipo;
 
-            // Determinar días procesables para prorrateo (solo días laborables del contrato en el mes)
             $fechaInicioMes = Carbon::create($anio, $mes, 1)->startOfDay();
             $fechaFinMes = $fechaInicioMes->copy()->endOfMonth();
 
@@ -127,8 +126,45 @@ class ProcesarSueldo extends Component
                 : $fechaFinMes;
 
             $dias_procesables = $fechaInicioEval->diffInDays($fechaFinEval) + 1;
-            // El salario mes es el prorrateado, nunca mayor al salario básico
             $salario_prorrateado = round(min($dias_procesables * $valor_dia, $contrato->salario_basico), 2);
+
+            // --- INICIO NUEVO BLOQUE ---
+            // Traer designaciones activas para el contrato en el mes
+            $designaciones = Designacione::where('empleado_id', $contrato->empleado->id)
+                ->where(function ($q) use ($fechaInicioMes, $fechaFinMes) {
+                    $q->whereBetween('fechaInicio', [$fechaInicioMes, $fechaFinMes])
+                        ->orWhereBetween('fechaFin', [$fechaInicioMes, $fechaFinMes])
+                        ->orWhere(function ($q2) use ($fechaInicioMes, $fechaFinMes) {
+                            $q2->where('fechaInicio', '<=', $fechaInicioMes)
+                                ->where('fechaFin', '>=', $fechaFinMes);
+                        });
+                })
+                ->get();
+
+            // Si hay designaciones, toma la primera para analizar sus días
+            $designaciondias = null;
+            if ($designaciones->isNotEmpty()) {
+                $designacione = $designaciones->first();
+                $designaciondias = \App\Models\Designaciondia::where('designacione_id', $designacione->id)->first();
+
+                // Mapear los días laborales al formato [0=>domingo, 1=>lunes, ..., 6=>sabado]
+                $dias_php = [
+                    0 => 'domingo',
+                    1 => 'lunes',
+                    2 => 'martes',
+                    3 => 'miercoles',
+                    4 => 'jueves',
+                    5 => 'viernes',
+                    6 => 'sabado',
+                ];
+                $dias_laborales = [];
+                foreach ($dias_php as $num => $nombre) {
+                    $dias_laborales[$num] = $designaciondias ? (bool)$designaciondias->$nombre : false;
+                }
+
+                
+            }
+            // --- FIN NUEVO BLOQUE ---
 
             // Generar calendario laboral para el empleado
             $calendario = $this->generarCalendarioLaboral($contrato, $anio, $mes);
@@ -381,6 +417,45 @@ class ProcesarSueldo extends Component
                 'factor_permiso' => null,
             ];
 
+            // --- INICIO BLOQUE NUEVO ---
+            // Verificar si el día es designación activa y si es día libre según la designación
+            if ($dia['designacion_activa']) {
+                // Obtener la designación activa para el día
+                $designacione = \App\Models\Designacione::where('empleado_id', $empleado_id)
+                    ->whereDate('fechaInicio', '<=', $dia['fecha'])
+                    ->whereDate('fechaFin', '>=', $dia['fecha'])
+                    ->first();
+
+                if ($designacione) {
+                    $designaciondias = \App\Models\Designaciondia::where('designacione_id', $designacione->id)->first();
+                    $dias_php = [
+                        0 => 'domingo',
+                        1 => 'lunes',
+                        2 => 'martes',
+                        3 => 'miercoles',
+                        4 => 'jueves',
+                        5 => 'viernes',
+                        6 => 'sabado',
+                    ];
+                    $carbon_fecha = \Carbon\Carbon::parse($dia['fecha']);
+                    $dia_semana_num = $carbon_fecha->dayOfWeek; // 0=domingo, 1=lunes, ..., 6=sabado
+                    $dia_semana_nombre = $dias_php[$dia_semana_num];
+                    $dias_laborales = [];
+                    foreach ($dias_php as $num => $nombre) {
+                        $dias_laborales[$num] = $designaciondias ? (bool)$designaciondias->$nombre : false;
+                    }
+
+                    // Si el día no es laborable, marcar como Día Libre y continuar
+                    if (isset($dias_laborales[$dia_semana_num]) && $dias_laborales[$dia_semana_num] === false) {
+                        $info['concepto'] = 'Dia Libre';
+                        $info['ajuste'] = 0;
+                        $detalle['detalle_dias'][] = $info;
+                        continue; // Saltar el resto de la lógica de ajuste
+                    }
+                }
+            }
+            // --- FIN BLOQUE NUEVO ---
+
             // Buscar si el día tiene permiso
             $permiso_dia = $permisos->first(function ($permiso) use ($dia) {
                 return Carbon::parse($dia['fecha'])->between(
@@ -467,15 +542,15 @@ class ProcesarSueldo extends Component
     }
 
 
-    function tieneDesignacionActiva($fecha)
-    {
-        $fecha = Carbon::parse($fecha)->format('Y-m-d');
+    // function tieneDesignacionActiva($fecha)
+    // {
+    //     $fecha = Carbon::parse($fecha)->format('Y-m-d');
 
-        return Designacione::where('estado', true)
-            ->whereDate('fechaInicio', '<=', $fecha)
-            ->whereDate('fechaFin', '>=', $fecha)
-            ->exists();
-    }
+    //     return Designacione::where('estado', true)
+    //         ->whereDate('fechaInicio', '<=', $fecha)
+    //         ->whereDate('fechaFin', '>=', $fecha)
+    //         ->exists();
+    // }
 
     /**
      * Nuevo sistema de cálculo de sueldos:
@@ -490,113 +565,113 @@ class ProcesarSueldo extends Component
      * - Los descuentos solo se aplican a días normales.
      * - El total de días pagados + descontados nunca supera los días del mes.
      */
-    protected function calcularSueldoPorAsistencia($contrato, $anio, $mes)
-    {
-        $feriados = $this->getFeriados($anio);
-        $feriados_map = collect($feriados)->keyBy('fecha');
-        $fechaInicioMes = Carbon::create($anio, $mes, 1)->startOfMonth();
-        $fechaFinMes = $fechaInicioMes->copy()->endOfMonth();
-        $designaciones = Designacione::where('empleado_id', $contrato['empleado_id'])
-            ->where('estado', true)
-            ->where(function ($q) use ($fechaInicioMes, $fechaFinMes) {
-                $q->whereBetween('fechaInicio', [$fechaInicioMes, $fechaFinMes])
-                    ->orWhereBetween('fechaFin', [$fechaInicioMes, $fechaFinMes])
-                    ->orWhere(function ($q2) use ($fechaInicioMes, $fechaFinMes) {
-                        $q2->where('fechaInicio', '<=', $fechaInicioMes)
-                            ->where('fechaFin', '>=', $fechaFinMes);
-                    });
-            })
-            ->get();
-        $asistencias = [];
-        if ($designaciones->isNotEmpty()) {
-            $asistencias = Asistencia::join('designaciones', 'designaciones.id', '=', 'asistencias.designacione_id')
-                ->where('designaciones.empleado_id', $contrato['empleado_id'])
-                ->whereBetween('fecha', [$fechaInicioMes->format('Y-m-d'), $fechaFinMes->format('Y-m-d')])
-                ->get()
-                ->keyBy(fn($item) => Carbon::parse($item->fecha)->format('Y-m-d'));
-        }
-        $periodo = new DatePeriod(
-            new DateTime($fechaInicioMes),
-            new DateInterval('P1D'),
-            (new DateTime($fechaFinMes))->modify('+1 day')
-        );
-        $total_ajustes = 0;
-        $detalle = [
-            'normales_pagados' => 0,
-            'feriados_sin_marca' => 0,
-            'feriados_con_marca' => 0,
-            'descuentos' => 0,
-            'media_jornada' => 0,
-            'feriados_detalle' => []
-        ];
-        foreach ($periodo as $date) {
-            $fecha = $date->format('Y-m-d');
-            $valor_dia = $contrato['valor_dia'];
-            // Determinar si el día es feriado
-            $feriado = $feriados_map[$fecha] ?? null;
-            if ($designaciones->isEmpty()) {
-                continue;
-            }
-            if ($feriado) {
-                $factor_feriado = $feriado['factor'];
-                if (isset($asistencias[$fecha])) {
-                    $registro = $asistencias[$fecha];
-                    if ($registro->ingreso && $registro->salida) {
-                        // Feriado con marca: paga valor día * factor, ajuste es diferencia
-                        $detalle['feriados_con_marca']++;
-                        $total_ajustes += $valor_dia * ($factor_feriado - 1);
-                        $detalle['feriados_detalle'][] = [
-                            'fecha' => $fecha,
-                            'factor' => $factor_feriado,
-                            'tipo' => 'con_marca',
-                            'monto' => round($valor_dia * $factor_feriado, 2)
-                        ];
-                    } else {
-                        // Feriado sin marca: paga valor día normal
-                        $detalle['feriados_sin_marca']++;
-                        $detalle['feriados_detalle'][] = [
-                            'fecha' => $fecha,
-                            'factor' => $factor_feriado,
-                            'tipo' => 'sin_marca',
-                            'monto' => round($valor_dia, 2)
-                        ];
-                    }
-                } else {
-                    // Feriado sin marca: paga valor día normal
-                    $detalle['feriados_sin_marca']++;
-                    $detalle['feriados_detalle'][] = [
-                        'fecha' => $fecha,
-                        'factor' => $factor_feriado,
-                        'tipo' => 'sin_marca',
-                        'monto' => round($valor_dia, 2)
-                    ];
-                }
-            } else {
-                // Solo días normales pueden tener descuentos
-                if (isset($asistencias[$fecha])) {
-                    $registro = $asistencias[$fecha];
-                    if ($registro->ingreso && $registro->salida) {
-                        $detalle['normales_pagados']++;
-                    } elseif ($registro->ingreso || $registro->salida) {
-                        $total_ajustes -= $valor_dia * 0.5;
-                        $detalle['media_jornada']++;
-                    } else {
-                        // Solo descontar si NO es feriado
-                        $total_ajustes -= $valor_dia;
-                        $detalle['descuentos']++;
-                    }
-                } else {
-                    // Solo descontar si NO es feriado
-                    $total_ajustes -= $valor_dia;
-                    $detalle['descuentos']++;
-                }
-            }
-        }
-        return [
-            'ajuste' => round($total_ajustes, 2),
-            'detalle' => $detalle
-        ];
-    }
+    // protected function calcularSueldoPorAsistencia($contrato, $anio, $mes)
+    // {
+    //     $feriados = $this->getFeriados($anio);
+    //     $feriados_map = collect($feriados)->keyBy('fecha');
+    //     $fechaInicioMes = Carbon::create($anio, $mes, 1)->startOfMonth();
+    //     $fechaFinMes = $fechaInicioMes->copy()->endOfMonth();
+    //     $designaciones = Designacione::where('empleado_id', $contrato['empleado_id'])
+    //         ->where('estado', true)
+    //         ->where(function ($q) use ($fechaInicioMes, $fechaFinMes) {
+    //             $q->whereBetween('fechaInicio', [$fechaInicioMes, $fechaFinMes])
+    //                 ->orWhereBetween('fechaFin', [$fechaInicioMes, $fechaFinMes])
+    //                 ->orWhere(function ($q2) use ($fechaInicioMes, $fechaFinMes) {
+    //                     $q2->where('fechaInicio', '<=', $fechaInicioMes)
+    //                         ->where('fechaFin', '>=', $fechaFinMes);
+    //                 });
+    //         })
+    //         ->get();
+    //     $asistencias = [];
+    //     if ($designaciones->isNotEmpty()) {
+    //         $asistencias = Asistencia::join('designaciones', 'designaciones.id', '=', 'asistencias.designacione_id')
+    //             ->where('designaciones.empleado_id', $contrato['empleado_id'])
+    //             ->whereBetween('fecha', [$fechaInicioMes->format('Y-m-d'), $fechaFinMes->format('Y-m-d')])
+    //             ->get()
+    //             ->keyBy(fn($item) => Carbon::parse($item->fecha)->format('Y-m-d'));
+    //     }
+    //     $periodo = new DatePeriod(
+    //         new DateTime($fechaInicioMes),
+    //         new DateInterval('P1D'),
+    //         (new DateTime($fechaFinMes))->modify('+1 day')
+    //     );
+    //     $total_ajustes = 0;
+    //     $detalle = [
+    //         'normales_pagados' => 0,
+    //         'feriados_sin_marca' => 0,
+    //         'feriados_con_marca' => 0,
+    //         'descuentos' => 0,
+    //         'media_jornada' => 0,
+    //         'feriados_detalle' => []
+    //     ];
+    //     foreach ($periodo as $date) {
+    //         $fecha = $date->format('Y-m-d');
+    //         $valor_dia = $contrato['valor_dia'];
+    //         // Determinar si el día es feriado
+    //         $feriado = $feriados_map[$fecha] ?? null;
+    //         if ($designaciones->isEmpty()) {
+    //             continue;
+    //         }
+    //         if ($feriado) {
+    //             $factor_feriado = $feriado['factor'];
+    //             if (isset($asistencias[$fecha])) {
+    //                 $registro = $asistencias[$fecha];
+    //                 if ($registro->ingreso && $registro->salida) {
+    //                     // Feriado con marca: paga valor día * factor, ajuste es diferencia
+    //                     $detalle['feriados_con_marca']++;
+    //                     $total_ajustes += $valor_dia * ($factor_feriado - 1);
+    //                     $detalle['feriados_detalle'][] = [
+    //                         'fecha' => $fecha,
+    //                         'factor' => $factor_feriado,
+    //                         'tipo' => 'con_marca',
+    //                         'monto' => round($valor_dia * $factor_feriado, 2)
+    //                     ];
+    //                 } else {
+    //                     // Feriado sin marca: paga valor día normal
+    //                     $detalle['feriados_sin_marca']++;
+    //                     $detalle['feriados_detalle'][] = [
+    //                         'fecha' => $fecha,
+    //                         'factor' => $factor_feriado,
+    //                         'tipo' => 'sin_marca',
+    //                         'monto' => round($valor_dia, 2)
+    //                     ];
+    //                 }
+    //             } else {
+    //                 // Feriado sin marca: paga valor día normal
+    //                 $detalle['feriados_sin_marca']++;
+    //                 $detalle['feriados_detalle'][] = [
+    //                     'fecha' => $fecha,
+    //                     'factor' => $factor_feriado,
+    //                     'tipo' => 'sin_marca',
+    //                     'monto' => round($valor_dia, 2)
+    //                 ];
+    //             }
+    //         } else {
+    //             // Solo días normales pueden tener descuentos
+    //             if (isset($asistencias[$fecha])) {
+    //                 $registro = $asistencias[$fecha];
+    //                 if ($registro->ingreso && $registro->salida) {
+    //                     $detalle['normales_pagados']++;
+    //                 } elseif ($registro->ingreso || $registro->salida) {
+    //                     $total_ajustes -= $valor_dia * 0.5;
+    //                     $detalle['media_jornada']++;
+    //                 } else {
+    //                     // Solo descontar si NO es feriado
+    //                     $total_ajustes -= $valor_dia;
+    //                     $detalle['descuentos']++;
+    //                 }
+    //             } else {
+    //                 // Solo descontar si NO es feriado
+    //                 $total_ajustes -= $valor_dia;
+    //                 $detalle['descuentos']++;
+    //             }
+    //         }
+    //     }
+    //     return [
+    //         'ajuste' => round($total_ajustes, 2),
+    //         'detalle' => $detalle
+    //     ];
+    // }
 
 
     protected function getFeriados($anio)

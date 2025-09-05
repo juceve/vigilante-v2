@@ -280,20 +280,24 @@ function tengoPanicos($user_id, $cliente_id)
 
 function crearIntervalo($horaI, $horaF, $intervalo)
 {
-    $inicio = date('Y-m-d ') . $horaI;
-    $final = date('Y-m-d ') . $horaF;
-    $inicio = new DateTime($inicio);
-    $final = new DateTime($final);
-    $int = "+" . $intervalo . " hour";
-    $intervalo = array();
-    while ($inicio <= $final) {
-        $inicio->modify($int);
-        if ($inicio < $final) {
-            $intervalo[] = $inicio->format('H:i');
+    $intervalos = array();
+    if ($intervalo > 0) {
+        $inicio = date('Y-m-d ') . $horaI;
+        $final = date('Y-m-d ') . $horaF;
+        $inicio = new DateTime($inicio);
+        $final = new DateTime($final);
+        $int = "+" . $intervalo . " hour";
+
+        while ($inicio <= $final) {
+            $inicio->modify($int);
+            if ($inicio < $final) {
+                $intervalos[] = $inicio->format('H:i');
+            }
         }
     }
 
-    return $intervalo;
+
+    return $intervalos;
 }
 
 function verificaHV($designacione_id)
