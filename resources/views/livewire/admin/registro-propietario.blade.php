@@ -6,7 +6,7 @@
                 <div class="card-header text-white rounded-top-4"
                     style="background: linear-gradient(90deg, #0d6efd, #0dcaf0);">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Registro de Propietario</h5>
+                        <h5 class="mb-0">Registro de Propietario - {{$cliente->nombre}}</h5>
                         <div wire:loading>
                             <div class="spinner-border spinner-border-sm text-light" role="status"></div>
                         </div>

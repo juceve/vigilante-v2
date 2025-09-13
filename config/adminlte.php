@@ -16,7 +16,7 @@ return [
 
     'title' => '',
     'title_prefix' => '',
-    'title_postfix' => ' | VIGILANTE',
+    'title_postfix' => ' | RIALTO PATROL',
 
     /*
     |--------------------------------------------------------------------------
@@ -63,12 +63,12 @@ return [
     |
     */
 
-    'logo' => 'VIGILANTE',
+    'logo' => 'RIALTO PATROL',
     'logo_img' => 'images/logo_shield.png',
     'logo_img_class' => 'brand-image elevation-3',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Vigilante Logo',
+    'logo_img_alt' => 'RIALTO PATROL Logo',
 
     /*
     |--------------------------------------------------------------------------
@@ -87,7 +87,7 @@ return [
         'enabled' => false,
         'img' => [
             'path' => 'images/logo_shield.png',
-            'alt' => 'Vigilante Logo',
+            'alt' => 'RIALTO PATROL Logo',
             'class' => '',
             'width' => 50,
             'height' => 50,
@@ -110,7 +110,7 @@ return [
         'enabled' => true,
         'img' => [
             'path' => 'images/logo_shield.png',
-            'alt' => 'Vigilante Logo',
+            'alt' => 'RIALTO PATROL Logo',
             'effect' => 'animation__shake',
             'width' => 80,
             'height' => 90,
@@ -297,6 +297,7 @@ return [
             'can'  => 'home',
         ],
         ['header' => 'Operativa'],
+
         [
             'text'    => 'Designaciones',
             'icon'    => 'fas fa-fw fa-user-clock',
@@ -421,19 +422,19 @@ return [
                 ],
             ],
         ],
-
+        [
+            'text' => 'Clientes',
+            'url'  => 'admin/clientes',
+            'can'   =>  'clientes.index',
+            'icon' => 'fas fa-fw fa-address-book'
+        ],
 
         ['header' => 'Mantenimiento'],
         [
             'text'    => 'Administración',
             'icon'    => 'fas fa-fw fa-cog',
             'submenu' => [
-                [
-                    'text' => 'Clientes',
-                    'url'  => 'admin/clientes',
-                    'can'   =>  'clientes.index',
-                    'icon' => 'fas fa-fw fa-address-book'
-                ],
+
                 [
                     'text' => 'Propietarios',
                     'url'  => 'admin/listado-propietarios',

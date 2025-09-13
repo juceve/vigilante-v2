@@ -73,7 +73,7 @@
 
                                         <td>
                                             <a class="btn btn-sm btn-info "
-                                                href="{{ route('pdf.cobro', $citecobro->id) }}" title="Reimprimir"
+                                                href="{{ route('pdf.cobro', $citecobro->id.'|1') }}" title="Reimprimir"
                                                 target="_blank"><i class="fa fa-fw fa-print"></i></a>
 
                                         </td>

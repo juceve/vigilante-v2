@@ -70,9 +70,13 @@ use App\Http\Livewire\Admin\TurnoCliente;
 use App\Http\Livewire\Admin\RegNovedades;
 use App\Http\Livewire\Admin\Usuariocliente;
 use App\Http\Livewire\CtrlAsisitencias;
+use App\Http\Livewire\Customer\Aprobaciones as CustomerAprobaciones;
 use App\Http\Livewire\Customer\Cobros;
 use App\Http\Livewire\Customer\Informes;
 use App\Http\Livewire\Customer\Links;
+use App\Http\Livewire\Customer\ListadoPropietarios as CustomerListadoPropietarios;
+use App\Http\Livewire\Customer\ListadoResidencias as CustomerListadoResidencias;
+use App\Http\Livewire\Customer\ListadoSolicitudes as CustomerListadoSolicitudes;
 use App\Http\Livewire\Customer\Novedades as CustomerNovedades;
 use App\Http\Livewire\Customer\Recibos;
 use App\Http\Livewire\Customer\Rondas;
@@ -275,15 +279,22 @@ Route::middleware(['auth'])->group(function () {
     Route::get('customer/cobros', Cobros::class)->name('customer.cobros');
     Route::get('customer/recibos', Recibos::class)->name('customer.recibos');
     Route::get('customer/links', Links::class)->name('customer.links');
+    Route::get('customer/listado-solicitudes', CustomerListadoSolicitudes::class)->name('customer.listadosolicitudes');
+    Route::get('customer/{propietario_id}/{cliente_id}/aprobaciones', CustomerAprobaciones::class)->name('customer.aprobaciones');
+    Route::get('customer/listado-residencias', CustomerListadoResidencias::class)->name('customer.listadoresidencias');
+    Route::get('customer/listado-propietarios', CustomerListadoPropietarios::class)->name('customer.listadopropietarios');
 
     Route::get('propietarios/mis-residencias', MisResidencias::class)->name('misresidencias');
     Route::get('propietarios/pases', Pases::class)->name('propietarios.pases');
     Route::get('propietarios/resumen/{id}', [PaseingresoController::class, 'resumen'])->name('resumenpase');
+
+    Route::get('tools/passwords-propietarios', [App\Http\Controllers\ToolsController::class, 'passwordsPropietarios'])->name('tools.passwords-propietarios');
 });
 
 Route::middleware('throttle:10,1')->get('formulario-cobro/{link_id}', [FormularioAirbnbController::class, 'cobro'])->name('formcobro');
 Route::middleware('throttle:10,1')->get('formulario-recibo/{link_id}', [FormularioAirbnbController::class, 'recibo'])->name('formrecibo');
 Route::middleware('throttle:10,1')->get('formulario-informe/{link_id}', [FormularioAirbnbController::class, 'informe'])->name('forminforme');
+Route::middleware('throttle:10,1')->get('formulario-cotizacion/{link_id}', [FormularioAirbnbController::class, 'cotizacion'])->name('formcotizacion');
 
 Route::get('formulario-propietarios/{clienteId}', RegistroPropietario::class)->name('regpropietario');
 Route::middleware('throttle:5,1')->get('propietario/resumen/{id}', [PropietarioController::class, 'resumen'])

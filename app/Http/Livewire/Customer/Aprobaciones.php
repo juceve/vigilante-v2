@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Livewire\Admin;
+namespace App\Http\Livewire\Customer;
 
 use App\Models\Cliente;
 use App\Models\Propietario;
 use App\Models\Residencia;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 
@@ -34,7 +35,7 @@ class Aprobaciones extends Component
         $this->residenciaSeleccionada = null;
     }
 
-    protected $listeners = ['aprobar'];
+    protected $listeners = ['aprobar', 'eliminar'];
 
     public function aprobar()
     {
@@ -81,7 +82,28 @@ class Aprobaciones extends Component
             ->where('cliente_id', $this->cliente_id)
             ->get();
 
-        return view('livewire.admin.aprobaciones', compact('residencias'))
-            ->extends('adminlte::page');
+        return view('livewire.customer.aprobaciones', compact('residencias'))
+            ->extends('layouts.clientes');
+    }
+
+    public function eliminar($residenciaId)
+    {
+        DB::beginTransaction();
+        try {
+            $residencia = Residencia::findOrFail($residenciaId);
+            $propietario = $residencia->propietario;
+            $residencia->delete();
+            if ($propietario->residencias()->count() == 0) {
+                $propietario->delete();
+                DB::commit();
+                return redirect()->route('customer.listadosolicitudes')->with('success', 'La solicitud fue eliminada correctamente.');
+            } else {
+                DB::commit();
+                $this->emit('success', 'La solicitud fue eliminada correctamente.');
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $this->emit('error', 'Ocurrió un error al eliminar la solicitud.');
+        }
     }
 }

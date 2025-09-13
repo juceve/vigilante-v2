@@ -47,8 +47,8 @@
                 @else
                 <div class="form-group">
                     <label>El usuario ya fue generado:</label><br>
-                    <span><strong>Usuario:</strong>{{$usercliente->user->email}}</span><br>
-                    <span><strong>Password:</strong>blackbird{{$cliente->id}}</span><br><br>
+                    <span><strong>Usuario: </strong>{{$usercliente->user->email??''}}</span><br>
+                    <span><strong>Password: </strong>{{strtolower(str_replace(' ', '', config('app.name') . $this->cliente->id));}}</span><br><br>
                     <button class="btn btn-danger" onclick='eliminar({{$cliente->id}})'>Eliminar usuario <i
                             class="fas fa-trash"></i></button>
                 </div>

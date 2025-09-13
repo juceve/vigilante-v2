@@ -12,7 +12,7 @@ Inicio
 
 </div>
 <div class="content mb-3">
-    @livewire('admin.ctrl-all-airbnb')
+    {{-- @livewire('admin.ctrl-all-airbnb') --}}
 
 </div>
 @endsection

@@ -11,6 +11,11 @@ $detalles;
 $datos = [];
 if ($datos1[0] != 0) {
     $cite_id = $datos1[0];
+
+    $encryptedId = Crypt::encrypt($cite_id);
+    $link = url('/') . '/formulario-cotizacion' . '/' . $encryptedId;
+    $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?data=' . urlencode($link) . '&size=130x130';
+
     $citecotizacion = traeCitecotizacion($cite_id);
     $detalles = traeDetallesCotizacion($cite_id);
     $datos = [$citecotizacion['cite'], $citecotizacion['fechaliteral'], $citecotizacion['destinatario'], $citecotizacion['cargo'], $citecotizacion['monto']];
@@ -210,7 +215,8 @@ if ($datos1[0] != 0) {
 
         </p>
         <p style="margin-left: 3rem;margin-right: 3rem; margin-top: 2rem;text-align: justify;">
-            <b>{{ config('app.name') }}</b>, cuenta con entrenadores experimentados y la interacción, es permanente, propiciándose el
+            <b>{{ config('app.name') }}</b>, cuenta con entrenadores experimentados y la interacción, es permanente,
+            propiciándose el
             trabajo en equipo, a lo largo de todo el año calendario.
             Innovando con la selección de nuestros Recursos Humanos, demostrando eficiencia y seriedad empresarial, para
             alcanzar un nivel de prestigio, rentabilidad, y un crecimiento superior al promedio del mercado.
@@ -311,9 +317,13 @@ if ($datos1[0] != 0) {
 
         </p>
         <p style="margin-left: 3rem;margin-right: 3rem; margin-top: 8rem;text-align: center;">
+            @if ($encryptedId != '' && $datos1[1] > 0)
+                <img src="{{ $qrUrl }}" alt="QR Code"><br>
+            @endif
+
             <br>
             <strong>
-                GERENTE ADMINISTRATIVO            </strong>
+                GERENTE ADMINISTRATIVO </strong>
         </p>
 
     </div>

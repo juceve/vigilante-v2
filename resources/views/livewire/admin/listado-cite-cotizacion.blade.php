@@ -78,7 +78,7 @@
                                         <th>Destinatario</th>
                                         <th>Estado</th>
 
-                                        <th style="width: 150px;"></th>
+                                        <th style="width: 180px;"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -98,9 +98,13 @@
 
                                             <td>
                                                 <a class="btn btn-sm btn-info "
-                                                    href="{{ route('pdf.cotizacion', $citecotizacion->id) }}"
+                                                    href="{{ route('pdf.cotizacion', $citecotizacion->id.'|0') }}"
                                                     title="Reimprimir" target="_blank"><i
                                                         class="fa fa-fw fa-print"></i></a>
+                                                <a class="btn btn-sm btn-primary "
+                                                    href="{{ route('pdf.cotizacion', $citecotizacion->id.'|1') }}"
+                                                    title="Reimprimir con Qr" target="_blank"><i
+                                                        class="fa fa-fw fa-qrcode"></i></a>
                                                 @if ($citecotizacion->estado)
                                                     <button class="btn btn-sm btn-warning" title="Editar"
                                                         wire:click='editar({{ $citecotizacion->id }})'

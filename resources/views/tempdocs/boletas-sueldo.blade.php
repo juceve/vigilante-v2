@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Boletas de Pago - Estilo Máquina de Escribir</title>
+    <title>Boletas de Pago</title>
     <style>
         body {
             font-family: "Courier New", Courier, monospace;
@@ -87,7 +87,7 @@
             <div class="boleta">
                 <div class="titulo">{{ $appName }}</div>
                 <div class="titulo">Boleta de Pago NRO° {{ str_pad($b->id, 6, '0', STR_PAD_LEFT) }}</div>
-                
+
 
                 <div class="campo">
                     <span>Gestión: {{ $rrhhsueldo->gestion }}</span>

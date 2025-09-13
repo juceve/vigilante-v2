@@ -15,7 +15,7 @@ class Usuariocliente extends Component
     public function mount($cliente_id)
     {
         $this->cliente = Cliente::find($cliente_id);
-        $this->password = config('app.name') . $this->cliente->id;
+        $this->password = strtolower(str_replace(' ', '', config('app.name') . $this->cliente->id));
         $this->usercliente = Usercliente::where('cliente_id', $this->cliente->id)->first();
     }
     public function render()

@@ -8,17 +8,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Clientes - {{config('app.name')}}</title>
+    <title>Clientes - {{ config('app.name') }}</title>
 
     <!-- Bootstrap -->
-    <link href="{{asset('customers/vendors/bootstrap/dist/css/bootstrap.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('customers/vendors/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Font Awesome -->
-    <link href="{{asset('customers/vendors/font-awesome/css/font-awesome.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('customers/vendors/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
     <!-- NProgress -->
-    <link href="{{asset('customers/vendors/nprogress/nprogress.css')}}" rel="stylesheet">
+    <link href="{{ asset('customers/vendors/nprogress/nprogress.css') }}" rel="stylesheet">
 
     <!-- Custom Theme Style -->
-    <link href="{{asset('customers/build/css/custom.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('customers/build/css/custom.min.css') }}" rel="stylesheet">
 
     @yield('css')
     @livewireStyles
@@ -31,9 +31,9 @@
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
                         <a href="/" class="site_title">
-                            <img class="img-profile rounded-circle" src="{{asset('images/logo_shield.png')}}"
+                            <img class="img-profile rounded-circle" src="{{ asset('images/logo_shield.png') }}"
                                 style="width: 40px;">
-                            <span>{{config('app.name')}}</span>
+                            <span>{{ config('app.name') }}</span>
                         </a>
                     </div>
 
@@ -62,12 +62,13 @@
                             <li class="nav-item dropdown open" style="padding-left: 15px;">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true"
                                     id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
-                                    <strong>Cliente: </strong>{{Auth::user()->name}}
+                                    <strong>Cliente: </strong>{{ Auth::user()->name }}
                                 </a>
                                 <div class="dropdown-menu dropdown-usermenu pull-right"
                                     aria-labelledby="navbarDropdown">
 
-                                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                        onclick="event.preventDefault();
                                     document.getElementById('logout-form').submit();"><i
                                             class="fa fa-sign-out pull-right"></i>
                                         Cerrar Sesión</a>
@@ -107,17 +108,97 @@
     </div>
 
     <!-- jQuery -->
-    <script src="{{asset('customers/vendors/jquery/dist/jquery.min.js')}}"></script>
+    <script src="{{ asset('customers/vendors/jquery/dist/jquery.min.js') }}"></script>
     <!-- Bootstrap -->
-    <script src="{{asset('customers/vendors/bootstrap/dist/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{ asset('customers/vendors/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <!-- FastClick -->
-    <script src="{{asset('customers/vendors/fastclick/lib/fastclick.js')}}"></script>
+    <script src="{{ asset('customers/vendors/fastclick/lib/fastclick.js') }}"></script>
     <!-- NProgress -->
-    <script src="{{asset('customers/vendors/nprogress/nprogress.js')}}"></script>
+    <script src="{{ asset('customers/vendors/nprogress/nprogress.js') }}"></script>.
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Custom Theme Scripts -->
-    <script src="{{asset('customers/build/js/custom.js')}}"></script>
+    <script src="{{ asset('customers/build/js/custom.js') }}"></script>
     @livewireScripts
+    @if (session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Excelente',
+                text: '{{ session('success') }}',
+                showConfirmButton: true,
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#059669',
+                background: '#ffffff',
+                color: '#1e293b',
+                borderRadius: '12px',
+                customClass: {
+                    popup: 'material-popup',
+                    title: 'material-title',
+                    confirmButton: 'material-button'
+                }
+            })
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ session('error') }}',
+                showConfirmButton: true,
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#dc2626',
+                background: '#ffffff',
+                color: '#1e293b',
+                borderRadius: '12px',
+                customClass: {
+                    popup: 'material-popup',
+                    title: 'material-title',
+                    confirmButton: 'material-button'
+                }
+            })
+        </script>
+    @endif
+
+    @if (session('warning'))
+        <script>
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: '{{ session('warning') }}',
+                showConfirmButton: true,
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#d97706',
+                background: '#ffffff',
+                color: '#1e293b',
+                borderRadius: '12px',
+                customClass: {
+                    popup: 'material-popup',
+                    title: 'material-title',
+                    confirmButton: 'material-button'
+                }
+            })
+        </script>
+    @endif
+    <script>
+        Livewire.on('success', message => {
+            // Swal.fire('Excelente!',message,'success');
+            Swal.fire({
+                icon: 'success',
+                title: 'Excelente',
+                text: message,
+            })
+        });
+        Livewire.on('error', message => {
+            Swal.fire('Error!', message, 'error');
+
+        });
+        Livewire.on('warning', message => {
+            Swal.fire('Atención!', message, 'warning');
+        });
+    </script>
     @yield('js')
 
 </body>

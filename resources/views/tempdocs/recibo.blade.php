@@ -49,8 +49,8 @@ if ($datos1[0] != 0) {
     @if (count($datos))
         <style>
             body {
-                background-size: initial;
-                background-image: url("{{ $datos1[0] ? ($citecobro['estado'] ? asset('images/background_shield.png') : asset('images/anulado.png')) : asset('images/copia.jpg') }}");
+                background-size: 60%;
+                background-image: url("{{ $datos1[0] ? ($citecobro['estado'] ? asset(config('adminlte.auth_logo.img.path')) : asset('images/anulado.png')) : asset('images/copia.jpg') }}");
                 background-position: center center;
                 background-repeat: no-repeat;
                 height: 100%;
@@ -58,7 +58,7 @@ if ($datos1[0] != 0) {
 
             .contenido {
                 min-height: 75%;
-                background: rgba(255, 255, 255, 0.8);
+                background: rgba(255, 255, 255, 0.9);
                 z-index: -1;
             }
         </style>
@@ -73,9 +73,10 @@ if ($datos1[0] != 0) {
                     <br>
                     <small>
                         <strong>
-                            EMPRESA DE SEGURIDAD Y VIGILANCIA <br>
-                            {{ config('app.name') }} <br>
-                            BOLIVIA
+                             {{ strtoupper(config('app.name')) }} <br>
+                            Seguridad Privada y Vigilancia <br>
+
+                           SANTA CRUZ - BOLIVIA
                         </strong>
                     </small>
                 </div>
@@ -84,7 +85,7 @@ if ($datos1[0] != 0) {
 
                 </div>
                 <div class="col-xs-4 text-center">
-                    <img class="img-responsive" src="{{ asset('images/logo_shield.png') }}" style="width: 90px;">
+                    <img class="img-responsive" src="{{ asset(config('adminlte.auth_logo.img.path')) }}" style="width: 90px;">
                 </div>
             </div>
             <div class="row" style="margin-top: 5rem">

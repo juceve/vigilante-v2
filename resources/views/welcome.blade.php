@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bienvenido | Seguridad Privada</title>
+    <title>Bienvenido | {{config('app.name')}}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -75,7 +75,7 @@
     <header class="header-image">
         <div class="header-content text-white">
             <img src="{{asset('images/logo_shield.png')}}" alt="Logo Seguridad" class="logo">
-            <h1 class="display-5 fw-bold">Sistema de Seguridad Privada</h1>
+            <h1 class="display-5 fw-bold"><small>Sistema de Seguridad Privada</small><br>{{strtoupper(config('app.name'))}}</h1>
             <p class="lead mb-4">Protección física y digital en una sola plataforma</p>
             <div class="d-flex justify-content-center">
                 @guest
@@ -118,7 +118,7 @@
     </section>
 
     <footer class="text-center text-light py-3">
-        &copy; 2025 Seguridad Privada S.A. Todos los derechos reservados.
+        &copy; 2025 {{config('app.name')}} Todos los derechos reservados.
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

@@ -50,20 +50,21 @@
         <div class="row" style="width: 100%;margin-right: 3rem">
             <div class="col-xs-5 text-center">
                 <br>
-                <small>
-                    <strong>
-                        EMPRESA DE SEGURIDAD Y VIGILANCIA <br>
-                        {{ config('app.name') }} <br>
-                        BOLIVIA
-                    </strong>
-                </small>
+                  <small>
+                        <strong>
+                             {{ strtoupper(config('app.name')) }} <br>
+                            Seguridad Privada y Vigilancia <br>
+
+                           SANTA CRUZ - BOLIVIA
+                        </strong>
+                    </small>
             </div>
 
             <div class="col-xs-3 text-right">
 
             </div>
             <div class="col-xs-4 text-center">
-                <img class="img-responsive" src="{{ asset('images/logo_shield.png') }}" style="width: 90px;">
+                <img class="img-responsive" src="{{ asset(config('adminlte.auth_logo.img.path')) }}" style="width: 90px;">
             </div>
         </div>
 

@@ -7,6 +7,7 @@ use App\Models\Airbnblink;
 use App\Models\Airbnbtraveler;
 use App\Models\Citecobro;
 use App\Models\Citeinforme;
+use App\Models\Citecotizacion;
 use App\Models\Citerecibo;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -45,6 +46,22 @@ class FormularioAirbnbController extends Controller
                 return;
             }
             return view('customer.formulario_cobro', compact('link_id', 'citecobro'));
+        } catch (DecryptException $e) {
+            return view('customer.formulario_cobroerror');
+        }
+    }
+    public function cotizacion($encryptedId)
+    {
+        try {
+            $decryptedId = Crypt::decrypt($encryptedId);
+            $link_id =  Crypt::decrypt($encryptedId);
+            $citecotizacion = Citecotizacion::find($link_id);
+
+            if (!$citecotizacion) {
+                return;
+            }
+        // dd($citecotizacion);
+            return view('customer.formulario_cotizacion', compact('link_id', 'citecotizacion'));
         } catch (DecryptException $e) {
             return view('customer.formulario_cobroerror');
         }

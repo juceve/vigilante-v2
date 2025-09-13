@@ -9,6 +9,21 @@
     <h3>REGISTROS</h3>
     <ul class="nav side-menu">
         <li>
+            <a class="nav-link" href="{{route('customer.listadoresidencias')}}">
+                <i class="fa fa-tags" aria-hidden="true"></i>
+                <span>Residencias</span></a>
+        </li>
+        <li>
+            <a class="nav-link" href="{{route('customer.listadopropietarios')}}">
+                <i class="fa fa-book" aria-hidden="true"></i>
+                <span>Propietarios</span></a>
+        </li>
+        <li>
+            <a class="nav-link" href="{{route('customer.listadosolicitudes')}}">
+                <i class="fa fa-check-square" aria-hidden="true"></i>
+                <span>Solicitudes de Aprobación</span></a>
+        </li>
+        <li>
             <a class="nav-link" href="{{route('customer.visitas')}}">
                 <i class="fa fa-group"></i>
                 <span>Visitas</span></a>
@@ -23,11 +38,11 @@
                 <i class="fa fa-street-view"></i>
                 <span>Rondas</span></a>
         </li>
-        <li>
+        {{-- <li>
             <a class="nav-link" href="{{route('customer.links')}}">
                 <i class="fa fa-file-text-o"></i>
                 <span>Airbnb</span></a>
-        </li>
+        </li> --}}
     </ul>
     <br>
     <h3>DOCUMENTOS VINCULADOS</h3>

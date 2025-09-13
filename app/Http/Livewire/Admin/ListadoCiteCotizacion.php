@@ -136,7 +136,7 @@ class ListadoCiteCotizacion extends Component
             $this->resetAll();
 
             $datos = $citecotizacion->id;
-            $this->emit('renderizarpdf', $datos);
+            $this->emit('renderizarpdf', $datos."|1");
             $this->emit('success', 'Cotización registrado correctamente.');
         } catch (\Throwable $th) {
             DB::rollBack();

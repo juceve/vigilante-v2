@@ -79,7 +79,7 @@
 
                                         <td align="right">
                                             <a class="btn btn-sm btn-info "
-                                                href="{{ route('pdf.informe', $citeinforme->id) }}" title="Reimprimir"
+                                                href="{{ route('pdf.informe', $citeinforme->id.'|1') }}" title="Reimprimir"
                                                 target="_blank"><i class="fa fa-fw fa-print"></i></a>
 
                                         </td>

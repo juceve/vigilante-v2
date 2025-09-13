@@ -170,7 +170,7 @@
                                 </div>
 
                                 {{-- Airbnb --}}
-                                <div class="function-card airbnb-card">
+                                {{-- <div class="function-card airbnb-card">
                                     <a href="{{ route('vigilancia.airbnb', $designaciones->id) }}" class="card-link">
                                         <div class="card-icon">
                                             <i class="fab fa-airbnb"></i>
@@ -180,7 +180,7 @@
                                             <p class="card-subtitle">Gestión</p>
                                         </div>
                                     </a>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
 

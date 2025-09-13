@@ -34,6 +34,7 @@ class RegistroPropietario extends Component
 
     // Residencias dinámicas (JSON desde la vista)
     public $residencias_json = '';
+    public $cliente;
 
     public $clienteIdEncrypted; // pública, para enlaces y referencias en URL
     protected $clienteId;        // desencriptado, solo uso interno
@@ -42,7 +43,7 @@ class RegistroPropietario extends Component
     {
         $this->clienteIdEncrypted = $clienteId;
         $this->clienteId = Crypt::decryptString($clienteId);
-
+        $this->cliente = \App\Models\Cliente::find($this->clienteId);
         $this->residencias_json = json_encode([[
             'numeropuerta' => '',
             'piso'         => '',
@@ -113,7 +114,7 @@ class RegistroPropietario extends Component
                 // Redirigir al resumen del propietario
                 return redirect()->route('propietario.resumen', $encryptedId);
             } catch (\Throwable $e) {
-                DB::rollBack();                
+                DB::rollBack();
                 $this->emit('toast-error', $e->getMessage());
                 $this->procesando = false;
             }
