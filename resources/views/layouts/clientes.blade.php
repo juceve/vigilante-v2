@@ -99,7 +99,7 @@
             <!-- footer content -->
             <footer>
                 <div class="pull-right">
-                    Blackbird - 2024
+                    {{ config('app.name') }} - 2025
                 </div>
                 <div class="clearfix"></div>
             </footer>

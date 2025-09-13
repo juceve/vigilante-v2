@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property $cedula
  * @property $fecha_inicio
  * @property $fecha_fin
- 
+
  * @property $detalles
  * @property $url_foto
  * @property $created_at
@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Paseingreso extends Model
 {
-    
+
     static $rules = [
 		'nombre' => 'required',
 		'cedula' => 'required',
@@ -52,7 +52,7 @@ class Paseingreso extends Model
     {
         return $this->hasOne('App\Models\Residencia', 'id', 'residencia_id');
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -60,6 +60,10 @@ class Paseingreso extends Model
     {
         return $this->hasOne('App\Models\Motivo', 'id', 'motivo_id');
     }
-    
+
+    public function flujopases()
+    {
+        return $this->hasMany('App\Models\Flujopase', 'paseingreso_id', 'id');
+    }
 
 }

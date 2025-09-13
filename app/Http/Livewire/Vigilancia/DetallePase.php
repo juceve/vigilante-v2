@@ -10,19 +10,22 @@ use Livewire\Component;
 
 class DetallePase extends Component
 {
-    public $designacione_id, $paseingreso, $procesando = false;
+    public $designacione_id, $paseingreso, $procesando = false, $flujos;
 
     public function mount($designacione_id, $pase_id)
     {
         $this->designacione_id = $designacione_id;
         $this->paseingreso = Paseingreso::find($pase_id);
+        $this->flujos = Flujopase::where('paseingreso_id', $pase_id)->orderBy('id', 'desc')->first();
     }
 
     public function render()
     {
         return view('livewire.vigilancia.detalle-pase')->extends('layouts.app');
     }
+
     protected $listeners = ['marcar'];
+
     public function marcar($tipo)
     {
         if (!$this->procesando) {

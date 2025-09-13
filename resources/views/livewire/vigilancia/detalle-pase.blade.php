@@ -24,7 +24,9 @@
             </div>
         </div>
     </div>
+
     <h4 class="text-center text-primary">Información del Pase</h4>
+
     <div class="table-responsive p-3">
         <table class="table table-bordered table-striped" style="font-size: 13px;">
             <tr>
@@ -53,6 +55,14 @@
                 </td>
 
             </tr>
+            @if ($flujos)
+                <tr>
+                    <td colspan="2">
+                        <strong>Ultimo registro:</strong>
+                        {{ $flujos->tipo . ' | ' . $flujos->fecha . ' | ' . $flujos->hora }}
+                    </td>
+                </tr>
+            @endif
 
         </table>
     </div>
@@ -103,15 +113,20 @@
 
         </table>
     </div>
-    <div class="row text-center px-3 mt-3">
-        <div class="col-6 d-grid">
-            <button class="btn btn-success" onclick='marcado("INGRESO")'>Marcar Ingreso <br><i
-                    class="fas fa-sign-in-alt fs-2"></i></button>
-        </div>
-        <div class="col-6 d-grid">
+    <div class="d-grid p-3">
+        @if ($flujos && $flujos->tipo == 'INGRESO')
             <button class="btn btn-danger" onclick='marcado("SALIDA")'>Marcar Salida <br><i
                     class="fas fa-sign-out-alt fs-2"></i></button>
-        </div>
+        @else
+            <button class="btn btn-success" onclick='marcado("INGRESO")'>Marcar Ingreso <br><i
+                    class="fas fa-sign-in-alt fs-2"></i></button>
+        @endif
+
+
+        {{--
+            <button class="btn btn-danger" onclick='marcado("SALIDA")'>Marcar Salida <br><i
+                    class="fas fa-sign-out-alt fs-2"></i></button> --}}
+
     </div>
     <br>
 
@@ -120,7 +135,7 @@
     <script>
         function marcado(tipo) {
             Swal.fire({
-                title: "Marcar "+tipo,
+                title: "Marcar " + tipo,
                 text: "¿Seguro de realizar esta operación?",
                 icon: "warning",
                 showCancelButton: true,
@@ -130,7 +145,7 @@
                 cancelButtonText: "No, cancelar",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Livewire.emit('marcar',tipo);
+                    Livewire.emit('marcar', tipo);
                 }
             });
         }
