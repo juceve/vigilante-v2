@@ -498,7 +498,7 @@ return [
                 [
                     'text' => 'Estado Dotaciones',
                     'route'  => 'rrhhestadodotacions.index',
-                    'can'   =>  'rrhhestadodotacions.index',
+                    'can'   =>  'rrhhestadodotaciones.index',
                     'icon' => 'fas fa-toolbox'
                 ],
                 [

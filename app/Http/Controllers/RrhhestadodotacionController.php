@@ -6,17 +6,17 @@ use App\Models\Rrhhdotacion;
 use App\Models\Rrhhestadodotacion;
 use Illuminate\Http\Request;
 
-/**
- * Class RrhhestadodotacionController
- * @package App\Http\Controllers
- */
 class RrhhestadodotacionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+    public function __construct()
+    {
+        $this->middleware('can:rrhhestadodotaciones.index')->only('index');
+        $this->middleware('can:rrhhestadodotaciones.create')->only('create', 'store');
+        $this->middleware('can:rrhhestadodotaciones.edit')->only('edit', 'update');
+        $this->middleware('can:rrhhestadodotaciones.destroy')->only('destroy');
+    }
+
     public function index()
     {
         $rrhhestadodotacions = Rrhhestadodotacion::all();
@@ -88,7 +88,7 @@ class RrhhestadodotacionController extends Controller
     public function update(Request $request, $id)
     {
         $rrhhestadodotacion = Rrhhestadodotacion::find($id);
-        
+
 
         $rrhhestadodotacion->update($request->all());
 

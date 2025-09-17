@@ -15,7 +15,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
-                                Listado de Clientes
+                                Listado de Cargos
                             </span>
 
                             <div class="float-right">
@@ -72,7 +72,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>

@@ -19,7 +19,7 @@
                             </span>
 
                             <div class="float-right">
-                                @can('rrhhestadodotacions.create')
+                                @can('rrhhestadodotaciones.create')
                                     <a href="{{ route('rrhhestadodotacions.create') }}" class="btn btn-info btn-sm float-right"
                                         data-placement="left">
                                         Nuevo <i class="fas fa-plus"></i>
@@ -35,8 +35,8 @@
                                 <thead class="thead">
                                     <tr>
                                         <th>No</th>
-                                        
-										<th>Nombre</th>
+
+                                        <th>Nombre</th>
 
                                         <th></th>
                                     </tr>
@@ -45,16 +45,26 @@
                                     @foreach ($rrhhestadodotacions as $rrhhestadodotacion)
                                         <tr>
                                             <td>{{ ++$i }}</td>
-                                            
-											<td>{{ $rrhhestadodotacion->nombre }}</td>
+
+                                            <td>{{ $rrhhestadodotacion->nombre }}</td>
 
                                             <td class="text-right">
-                                                <form action="{{ route('rrhhestadodotacions.destroy',$rrhhestadodotacion->id) }}" class="delete" onsubmit="return false" method="POST">
-                                                   
-                                                    <a class="btn btn-sm btn-success" href="{{ route('rrhhestadodotacions.edit',$rrhhestadodotacion->id) }}" title="Editar"><i class="fa fa-fw fa-edit"></i></a>
+                                                <form
+                                                    action="{{ route('rrhhestadodotacions.destroy', $rrhhestadodotacion->id) }}"
+                                                    class="delete" onsubmit="return false" method="POST">
+                                                    @can('rrhhestadodotaciones.edit')
+                                                        <a class="btn btn-sm btn-success"
+                                                            href="{{ route('rrhhestadodotacions.edit', $rrhhestadodotacion->id) }}"
+                                                            title="Editar"><i class="fa fa-fw fa-edit"></i></a>
+                                                    @endcan
+
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" title="Eliminar DB"><i class="fa fa-fw fa-trash"></i></button>
+                                                    @can('rrhhestadodotaciones.destroy')
+                                                        <button type="submit" class="btn btn-danger btn-sm"
+                                                            title="Eliminar DB"><i class="fa fa-fw fa-trash"></i></button>
+                                                    @endcan
+
                                                 </form>
                                             </td>
                                         </tr>
@@ -64,7 +74,7 @@
                         </div>
                     </div>
                 </div>
-                
+
             </div>
         </div>
     </div>
