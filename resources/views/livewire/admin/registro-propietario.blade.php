@@ -6,7 +6,7 @@
                 <div class="card-header text-white rounded-top-4"
                     style="background: linear-gradient(90deg, #0d6efd, #0dcaf0);">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">Registro de Propietario - {{$cliente->nombre}}</h5>
+                        <h5 class="mb-0">Registro de Propietario - {{ $cliente->nombre }}</h5>
                         <div wire:loading>
                             <div class="spinner-border spinner-border-sm text-light" role="status"></div>
                         </div>
@@ -81,7 +81,7 @@
                             @enderror
                         </div>
                     </div>
-                    <br>
+                    {{-- <br>
                     <span class="mt-4 text-primary"><strong>DATOS DE LA RESIDENCIA</strong></span>
                     <hr>
                     <div class="row">
@@ -164,19 +164,21 @@
                             </tbody>
                         </table>
                     </div>
-                    <hr class="my-4">
+                    <hr class="my-4"> --}}
+                    @if (!$existePropietario)
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-success px-4" wire:loading.attr="disabled"
+                                wire:target='save' wire:click="save">
+                                <span wire:loading.remove wire:target='save'>Registrar Solicitud <i
+                                        class="bi bi-floppy"></i></span>
+                                <span wire:loading wire:target='save'>
+                                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                                    Registrando...
+                                </span>
+                            </button>
+                        </div>
+                    @endif
 
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-success px-4" wire:loading.attr="disabled"
-                            wire:target='save' wire:click="save">
-                            <span wire:loading.remove wire:target='save'>Registrar Solicitud <i
-                                    class="bi bi-floppy"></i></span>
-                            <span wire:loading wire:target='save'>
-                                <span class="spinner-border spinner-border-sm" role="status"></span>
-                                Registrando...
-                            </span>
-                        </button>
-                    </div>
 
                 </div>
             </div>

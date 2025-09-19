@@ -25,6 +25,9 @@ return new class extends Migration
             $table->string('telefonocontacto', 50);
             $table->foreignId('oficina_id')->nullable()->constrained()->nullOnDelete();
             $table->string('observaciones')->nullable();
+            $table->string('email',100)->nullable();
+            $table->date('fecha_inicio')->nullable();
+            $table->date('fecha_fin')->nullable();
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

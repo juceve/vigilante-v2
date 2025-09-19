@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Customer;
 
+use App\Models\Cliente;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Propietario;
@@ -15,11 +16,11 @@ class ListadoPropietarios extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public $propietario_id, $nombre, $cedula, $telefono, $email, $direccion, $ciudad, $activo = true;
-    public $search = '', $perPage = 5, $perPageOptions = [5, 10, 15, 25, 50];
+    public $propietario_id, $propietario, $nombre, $cedula, $telefono, $email, $direccion, $ciudad, $activo = true;
+    public $search = '', $perPage = 5, $perPageOptions = [5, 10, 15, 25, 50], $activoFiltro = "";
     public $modalMode = 'create'; // create | edit | show
 
-    public $cliente_id;
+    public $cliente_id, $cliente;
 
     protected function rules()
     {
@@ -43,19 +44,23 @@ class ListadoPropietarios extends Component
     {
         $usercliente = Usercliente::where('user_id', auth()->id())->first();
         $this->cliente_id = $usercliente ? $usercliente->cliente_id : null;
+        $this->cliente = Cliente::find($this->cliente_id);
     }
 
     public function render()
     {
-        $propietarios = Propietario::whereHas('residencias', function ($query) {
-            $query->where('cliente_id', $this->cliente_id);
-        })
+
+        $propietarios = Propietario::where('cliente_id', $this->cliente_id)
             ->where(function ($query) {
                 $query->where('nombre', 'like', "%{$this->search}%")
                     ->orWhere('cedula', 'like', "%{$this->search}%");
             })
+            ->when($this->activoFiltro !== "", function ($query) {
+                $query->where('activo', $this->activoFiltro);
+            })
             ->orderBy('id', 'desc')
             ->paginate($this->perPage);
+
 
         return view('livewire.customer.listado-propietarios', compact('propietarios'))->extends('layouts.clientes');
     }
@@ -144,8 +149,24 @@ class ListadoPropietarios extends Component
                 $propietario->ciudad = $this->ciudad;
                 $propietario->activo = $this->activo;
                 $propietario->save();
+
+                if ($propietario->user) {
+                    $propietario->user->status = $this->activo ? 1 : 0;
+                    $propietario->user->save();
+                } else {
+                    $user = $propietario->user()->create([
+                        "name" => $this->nombre,
+                        "password" => \Illuminate\Support\Facades\Hash::make($this->cedula),
+                        "email" => $this->email ?: strtolower(str_replace(" ", "", $this->email)),
+                        "template" => "PROPIETARIO",
+                        "status" => $this->activo ? 1 : 0,
+                    ]);
+
+                    $propietario->user_id = $user->id;
+                    $propietario->save();
+                }
             } else {
-                Propietario::create([
+                $propietario = Propietario::create([
                     'nombre'    => $this->nombre,
                     'cedula'    => $this->cedula,
                     'telefono'  => $this->telefono,
@@ -153,7 +174,19 @@ class ListadoPropietarios extends Component
                     'direccion' => $this->direccion,
                     'ciudad'    => $this->ciudad,
                     'activo'    => $this->activo,
+                    'cliente_id' => $this->cliente_id,
                 ]);
+
+                $user = $propietario->user()->create([
+                    "name" => $this->nombre,
+                    "password" => \Illuminate\Support\Facades\Hash::make($this->cedula),
+                    "email" => $this->email ?: strtolower(str_replace(" ", "", $this->email)),
+                    "template" => "PROPIETARIO",
+                    "status" => $this->activo ? 1 : 0,
+                ]);
+
+                $propietario->user_id = $user->id;
+                $propietario->save();
             }
             DB::commit();
             $this->emit('closeModal');
@@ -171,6 +204,75 @@ class ListadoPropietarios extends Component
     {
         Propietario::findOrFail($id)->delete();
         $this->emit('success', 'Propietario eliminado correctamente.');
+    }
+
+    public function addResidencia($propietario_id)
+    {
+        $this->propietario = Propietario::find($propietario_id);
+        $this->emit('openModalResidencia');
+    }
+
+    public $numeropuerta = '', $piso = '', $calle = '', $nrolote = '', $manzano = '', $notas = '';
+
+    public function resetAll()
+    {
+        $this->reset('numeropuerta', 'piso', 'calle', 'nrolote', 'manzano', 'notas');
+    }
+
+    public function storeResidencia()
+    {
+        $this->validate([
+            'numeropuerta' => 'nullable|string|max:255',
+            'piso' => 'nullable|string|max:255',
+            'calle' => 'nullable|string|max:255',
+            'nrolote' => 'nullable|string|max:255',
+            'manzano' => 'nullable|string|max:255',
+        ]);
+        if ($this->numeropuerta != "" || $this->calle != "" || $this->nrolote != "" || $this->manzano != "" || $this->piso != "") {
+            DB::beginTransaction();
+            try {
+                DB::commit();
+                $this->propietario->residencias()->create([
+                    'numeropuerta' => $this->numeropuerta,
+                    'piso' => $this->piso,
+                    'calle' => $this->calle,
+                    'nrolote' => $this->nrolote,
+                    'notas' => $this->notas,
+                    'estado' => 'VERIFICADO',
+                    'cliente_id' => $this->propietario->cliente_id,
+                ]);
+
+                $email = "";
+                if ($this->propietario->email == "" || is_null($this->propietario->email)) {
+                    $email = strtolower($this->propietario->nombre . $this->propietario->id . "@" . config('app.name'));
+                    $email = str_replace(" ", "", $email);
+                    $this->propietario->email = $email;
+                    $this->propietario->save();
+                }
+
+                if (is_null($this->propietario->user_id) || $this->propietario->user_id === "") {
+                    $user = \App\Models\User::create([
+                        "name" => $this->propietario->nombre,
+                        "password" => \Illuminate\Support\Facades\Hash::make($this->propietario->cedula),
+                        "email" => $this->propietario->email,
+                        "template" => "PROPIETARIO",
+                        "status" => 1,
+                    ]);
+                    $this->propietario->user_id = $user->id;
+                    $this->propietario->save();
+                }
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                $this->emit('error', 'Error al guardar la residencia: ' . $th->getMessage());
+                return;
+            }
+            $this->resetAll();
+            $this->propietario = Propietario::find($this->propietario->id);
+            // $this->emit('closeModalResidencia');
+            $this->emit('success', 'Residencia agregada correctamente.');
+        } else {
+            $this->emit('error', 'Debe completar al menos un campo para agregar una residencia.');
+        }
     }
 
     public function updatedSearch()

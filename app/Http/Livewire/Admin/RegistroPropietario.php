@@ -66,10 +66,10 @@ class RegistroPropietario extends Component
         if ($this->procesando === false) {
             $this->validate();
 
-            if (count($this->residencias) === 0) {
-                $this->emit('toast-warning', 'Debes llenar al menos una residencia con datos válidos.');
-                return;
-            }
+            // if (count($this->residencias) === 0) {
+            //     $this->emit('toast-warning', 'Debes llenar al menos una residencia con datos válidos.');
+            //     return;
+            // }
             $this->procesando = true;
             DB::beginTransaction();
             try {
@@ -85,30 +85,31 @@ class RegistroPropietario extends Component
                         'email'     => $this->email ?: null,
                         'direccion' => $this->direccion ?: null,
                         'ciudad'    => $this->ciudad ?: null,
+                        'cliente_id'    => $clienteId,
                         'activo'    => false,
                     ]);
                 }
 
-                $residenciasIds = [];
-                foreach ($this->residencias as $r) {
-                    $residencia = Residencia::create([
-                        'cliente_id'         => $clienteId,
-                        'propietario_id'     => $propietario->id,
-                        'cedula_propietario' => $this->cedula,
-                        'numeropuerta'       => $r['numeropuerta'] ?: null,
-                        'piso'               => $r['piso'] ?: null,
-                        'calle'              => $r['calle'] ?: null,
-                        'nrolote'            => $r['nrolote'] ?: null,
-                        'manzano'            => $r['manzano'] ?: null,
-                        'notas'              => $r['notas'] ?: null,
-                    ]);
-                    $residenciasIds[] = $residencia->id;
-                }
+                // $residenciasIds = [];
+                // foreach ($this->residencias as $r) {
+                //     $residencia = Residencia::create([
+                //         'cliente_id'         => $clienteId,
+                //         'propietario_id'     => $propietario->id,
+                //         'cedula_propietario' => $this->cedula,
+                //         'numeropuerta'       => $r['numeropuerta'] ?: null,
+                //         'piso'               => $r['piso'] ?: null,
+                //         'calle'              => $r['calle'] ?: null,
+                //         'nrolote'            => $r['nrolote'] ?: null,
+                //         'manzano'            => $r['manzano'] ?: null,
+                //         'notas'              => $r['notas'] ?: null,
+                //     ]);
+                //     $residenciasIds[] = $residencia->id;
+                // }
 
                 DB::commit();
 
                 // Guardar los IDs en la sesión
-                Session::put('residencias_registradas', $residenciasIds);
+                // Session::put('residencias_registradas', $residenciasIds);
 
                 $encryptedId = Crypt::encryptString($propietario->id);
                 // Redirigir al resumen del propietario
@@ -149,8 +150,9 @@ class RegistroPropietario extends Component
             $this->ciudad = $propietario->ciudad;
             $this->residencias_json = json_encode($propietario->residencias);
             $this->existePropietario = true;
+            $this->emit('toast-warning', 'Propietario ya existe.');
         } else {
-            $this->emit('toast-warning', 'Propietario nuevo.');
+            $this->emit('toast-success', 'Propietario nuevo.');
             $this->existePropietario = false;
         }
     }

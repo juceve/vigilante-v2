@@ -297,7 +297,7 @@ Route::middleware('throttle:10,1')->get('formulario-informe/{link_id}', [Formula
 Route::middleware('throttle:10,1')->get('formulario-cotizacion/{link_id}', [FormularioAirbnbController::class, 'cotizacion'])->name('formcotizacion');
 
 Route::get('formulario-propietarios/{clienteId}', RegistroPropietario::class)->name('regpropietario');
-Route::middleware('throttle:5,1')->get('propietario/resumen/{id}', [PropietarioController::class, 'resumen'])
+Route::middleware('throttle:500,1')->get('propietario/resumen/{id}', [PropietarioController::class, 'resumen'])
     ->name('propietario.resumen');
 
 Route::middleware('throttle:10,1')->get('formulario-airbnb/{link_id}', [FormularioAirbnbController::class, 'index'])->name('formairbnb');

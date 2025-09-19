@@ -24,7 +24,7 @@ class Cliente extends Model
 
     protected $perPage = 20;
 
-    protected $fillable = ['nombre', 'tipodocumento_id', 'nrodocumento', 'direccion', 'uv', 'manzano', 'latitud', 'longitud', 'personacontacto', 'telefonocontacto', 'oficina_id', 'observaciones', 'status'];
+    protected $fillable = ['nombre', 'tipodocumento_id', 'nrodocumento', 'direccion', 'uv', 'manzano', 'latitud', 'longitud', 'personacontacto', 'telefonocontacto', 'oficina_id', 'observaciones', 'email', 'fecha_inicio', 'fecha_fin', 'status'];
 
     public function oficina()
     {

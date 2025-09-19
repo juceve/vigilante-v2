@@ -14,19 +14,28 @@
         </div>
 
         <div class="card-body table-responsive">
-            <div class="alert alert-primary" role="alert">
-                Los propietarios que se muestran aqui son los que tienen una vinculación con alguna residencia de la
-                empresa.
-            </div>
+
             <div class="row mb-3">
                 <!-- Buscador -->
-                <div class="col-12 col-md-9 col-xl-10">
+                <div class="col-12 col-md-6 col-xl-8">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-search"></i></span>
                         </div>
                         <input type="search" class="form-control" placeholder="Ingrese su búsqueda..."
                             wire:model.debounce.500ms="search">
+                    </div>
+                </div>
+                <div class="col-12 col-md-3 col-xl-2">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        </div>
+                        <select class="form-control" wire:model.debounce.300ms="activoFiltro">
+                            <option value="">-- Todos --</option>
+                            <option value="1">Activos</option>
+                            <option value="0">Inactivos</option>
+                        </select>
                     </div>
                 </div>
 
@@ -53,7 +62,7 @@
                         <th>Cédula</th>
                         <th>Teléfono</th>
                         <th>Activo</th>
-                        <th width="150px"></th>
+                        <th width="190px"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,7 +87,10 @@
                                 <button class="btn btn-warning btn-sm" wire:click="edit({{ $item->id }})">
                                     <i class="fa fa-edit"></i>
                                 </button>
-
+                                <button class="btn btn-primary btn-sm" wire:click="addResidencia({{ $item->id }})"
+                                    title="Agregar Residencia">
+                                    <i class="fa fa-home"></i>
+                                </button>
 
                                 <button class="btn btn-danger btn-sm" onclick="eliminar({{ $item->id }})">
                                     <i class="fa fa-trash"></i>
@@ -88,7 +100,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center">No hay registros</td>
+                            <td colspan="8" class="text-center">No existen registros</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -183,13 +195,6 @@
                             </select>
                         </div>
                     </div>
-                    @if ($modalMode === 'create')
-                        <div class="alert alert-primary" role="alert">
-                            Luego realizar el registro debe vincular el propietario a una residencia desde el módulo de
-                            Residencias.
-                        </div>
-                    @endif
-
 
                 </div>
                 <div class="modal-footer">
@@ -210,6 +215,124 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalNuevaResidencia" tabindex="-1" data-backdrop="static" data-keyboard="false"
+        aria-labelledby="modalNuevaResidenciaLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-lg modal-dialog-centered custom-modal">
+            <div class="modal-content">
+                <div class="modal-header text-white bg-primary">
+                    <h5 class="modal-title" id="modalNuevaResidenciaLabel">
+                        Registrar Residencia - Propietario: {{ $propietario->nombre ?? '' }}
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                        wire:click='resetAll'>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label>Datos de la Nueva Residencia</label>
+                    <div class="row mb-3">
+                        <div class="col-12 col-md-1 mb-3">
+                            <small for="numeropuerta">N° Casa</small>
+                            <input type="text" class="form-control form-control-sm" id="numeropuerta"
+                                wire:model.defer="numeropuerta">
+                        </div>
+                        <div class="col-12 col-md-2 mb-3">
+                            <small for="calle">Calle</small>
+                            <input type="text" class="form-control form-control-sm" id="calle"
+                                wire:model.defer="calle">
+                        </div>
+
+                        <div class="col-12 col-md-1 mb-3">
+                            <small for="nrolote">N° Lote</small>
+                            <input type="text" class="form-control form-control-sm" id="nrolote"
+                                wire:model.defer="nrolote">
+                        </div>
+                        <div class="col-12 col-md-1 mb-3">
+                            <small for="manzano">Manzano</small>
+                            <input type="text" class="form-control form-control-sm" id="manzano"
+                                wire:model.defer="manzano">
+                        </div>
+                        <div class="col-12 col-md-1 mb-3">
+                            <small for="piso">Piso</small>
+                            <input type="text" class="form-control form-control-sm" id="piso"
+                                wire:model.defer="piso">
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                            <small for="calle">Notas</small>
+                            <input type="text" class="form-control form-control-sm" id="calle"
+                                wire:model.defer="notas">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <button type="button" class="btn btn-block btn-sm btn-primary"
+                                wire:click="storeResidencia">Registrar
+                                Residencia <i class="fa fa-save"></i></button>
+                        </div>
+                    </div>
+
+                    @if ($propietario)
+
+                        <hr>
+                        <label>Residencias Vinculadas</label>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered table-striped" style="font-size: 12px;">
+                                <thead>
+                                    <tr class="text-center table-info">
+                                        <th>
+                                            ID
+                                        </th>
+                                        <th>
+                                            N° Casa
+                                        </th>
+                                        <th>
+                                            Calle
+                                        </th>
+                                        <th>
+                                            N° Lote
+                                        </th>
+                                        <th>
+                                            Manzano
+                                        </th>
+                                        <th>
+                                            Piso
+                                        </th>
+                                        <th class="text-left">
+                                            Notas
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($propietario->residencias as $item)
+                                        <tr class="text-center">
+                                            <td>{{ $item->id }}</td>
+                                            <td>{{ $item->numeropuerta }}</td>
+                                            <td>{{ $item->calle }}</td>
+                                            <td>{{ $item->nrolote }}</td>
+                                            <td>{{ $item->manzano }}</td>
+                                            <td>{{ $item->piso }}</td>
+                                            <td class="text-left">{{ $item->notas }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center"><i>No existen registros</i></td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary col-4" data-dismiss="modal"
+                        wire:click='resetAll'><i class="fa fa-ban"></i> Cerrar</button>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 @section('js')
     <script>
@@ -237,5 +360,30 @@
         Livewire.on('closeModal', () => {
             $('#modalPropietario').modal('hide');
         });
+        Livewire.on('openModalResidencia', () => {
+            $('#modalNuevaResidencia').modal('show');
+        })
+        Livewire.on('closeModalResidencia', () => {
+            $('#modalNuevaResidencia').modal('hide');
+        });
     </script>
+@endsection
+@section('css')
+    <style>
+        @media (max-width: 991.98px) {
+            .custom-modal {
+                max-width: 100% !important;
+                /* ocupa todo el ancho */
+                margin: 0;
+                /* quita márgenes */
+            }
+
+            .custom-modal .modal-content {
+                height: 100vh;
+                /* opcional: ocupa alto completo */
+                border-radius: 0;
+                /* opcional: estilo más fullscreen */
+            }
+        }
+    </style>
 @endsection

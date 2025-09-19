@@ -63,8 +63,8 @@
                                 <b>Email:</b> <a class="float-right">{{ $empleado->email }}</a>
                             </li>
                             <li class="list-group-item">
-                                <b>Contrato Vigente:</b> <a
-                                    class="float-right">{{ $contratoActivo ? cerosIzq($contratoActivo->id) : 'Sin definir' }}</a>
+                                <b>Inicio de Contrato:</b> <a
+                                    class="float-right">{{ $contratoActivo ? formatearFecha($contratoActivo->fecha_inicio) : 'Sin definir' }}</a>
                             </li>
                         </ul>
 
@@ -119,7 +119,7 @@
             <!-- /.col -->
             <div class="col-md-9">
                 <div class="card">
-                   
+
                     <div class="card-header p-2 d-flex align-items-center">
                         <button class="btn btn-sm btn-light mr-2" id="scrollTabsLeft">&laquo;</button>
 

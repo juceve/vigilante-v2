@@ -73,10 +73,10 @@
                                         <a class="dropdown-item" href="{{ route('admin.residencias', $cliente->id) }}">
                                             <i class="fas fa-home text-secondary"></i> Residencias</a>
                                     @endcan
-                                    @can('residencias.solicitudes')
+                                    {{-- @can('residencias.solicitudes')
                                         <a class="dropdown-item" href="{{ route('admin.listadosolicitudes', $cliente->id) }}">
                                             <i class="fas fa-clipboard-check text-secondary"></i> Solicitudes Aprobación</a>
-                                    @endcan
+                                    @endcan --}}
                                     @can('turnos.index')
                                         <a class="dropdown-item" href="{{ route('admin.turnos-cliente', $cliente->id) }}"><i
                                                 class="fas fa-clock text-secondary"></i> Turnos</a>

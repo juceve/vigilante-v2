@@ -565,3 +565,8 @@ function diffMinutes($fecha1)
     $minutos = $fecha1->diffInMinutes($fecha2);
     return $minutos;
 }
+
+function formatearFecha($fecha)
+{
+    return Carbon::parse($fecha)->format('d/m/Y');
+}

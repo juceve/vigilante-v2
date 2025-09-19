@@ -39,7 +39,7 @@ class Propietario extends Model
    *
    * @var array
    */
-  protected $fillable = ['nombre', 'cedula', 'telefono', 'email', 'direccion', 'ciudad', 'activo', 'user_id'];
+  protected $fillable = ['nombre', 'cedula', 'telefono', 'email', 'direccion', 'ciudad', 'activo', 'cliente_id', 'user_id'];
 
 
   /**
@@ -52,8 +52,11 @@ class Propietario extends Model
 
   public function user()
   {
-    return $this->hasOne(User::class, 'user_id', 'id');
+    return $this->hasOne(User::class, 'id', 'user_id');
   }
+ public function cliente(){
+    return $this->hasOne(Cliente::class, 'id', 'cliente_id');
+ }
 
-  
+
 }

@@ -18,11 +18,11 @@
                 <i class="fa fa-book" aria-hidden="true"></i>
                 <span>Propietarios</span></a>
         </li>
-        <li>
+        {{-- <li>
             <a class="nav-link" href="{{route('customer.listadosolicitudes')}}">
                 <i class="fa fa-check-square" aria-hidden="true"></i>
                 <span>Solicitudes de Aprobación</span></a>
-        </li>
+        </li> --}}
         <li>
             <a class="nav-link" href="{{route('customer.visitas')}}">
                 <i class="fa fa-group"></i>

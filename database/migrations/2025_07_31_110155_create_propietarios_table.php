@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('direccion', 255)->nullable();
             $table->string('ciudad', 100)->nullable();
             $table->boolean('activo')->default(true);
+            $table->foreignId('cliente_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });

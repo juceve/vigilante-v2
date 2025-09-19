@@ -96,6 +96,28 @@
                     {!! $errors->first('observaciones', '<div class="invalid-feedback">:message</div>') !!}
                 </div>
             </div>
+
+            <div class="col col-12 col-md-6">
+                <div class="form-group">
+                    {{ Form::label('fecha inicio') }}
+                    {{ Form::date('fecha_inicio', $cliente->fecha_inicio, ['class' => 'form-control' . ($errors->has('fecha_inicio') ? ' is-invalid' : ''), 'placeholder' => 'Fecha inicio']) }}
+                    {!! $errors->first('fecha_inicio', '<div class="invalid-feedback">:message</div>') !!}
+                </div>
+            </div>
+            <div class="col col-12 col-md-6">
+                <div class="form-group">
+                    {{ Form::label('fecha fin') }}
+                    {{ Form::date('fecha_fin', $cliente->fecha_fin, ['class' => 'form-control' . ($errors->has('fecha_fin') ? ' is-invalid' : ''), 'placeholder' => 'Fecha fin']) }}
+                    {!! $errors->first('fecha_fin', '<div class="invalid-feedback">:message</div>') !!}
+                </div>
+            </div>
+             <div class="col col-12 col-md-6">
+                <div class="form-group">
+                    {{ Form::label('email') }}
+                    {{ Form::text('email', $cliente->email, ['class' => 'form-control' . ($errors->has('email') ? ' is-invalid' : ''), 'placeholder' => 'Email']) }}
+                    {!! $errors->first('email', '<div class="invalid-feedback">:message</div>') !!}
+                </div>
+            </div>
             <div class="col col-12 col-md-6">
                 <div class="form-group{{ $errors->has('status') ? ' has-error' : '' }}">
                     {!! Form::label('status', 'Estado') !!}
@@ -111,7 +133,7 @@
             <div class="col col-12 mb-2">
                 <label for="mapa">Ubicación del Domicilio</label>
                 <p class="text-muted small">
-                    <i class="fas fa-info-circle"></i> 
+                    <i class="fas fa-info-circle"></i>
                     Arrastra el marcador para ajustar la ubicación exacta
                 </p>
                 {{-- SOLO CAMBIO: div de Leaflet por Google Maps --}}
@@ -131,7 +153,7 @@
 
 {{-- SOLO CAMBIO: JavaScript de Leaflet por Google Maps --}}
 @section('js')
-<script async defer 
+<script async defer
     src="https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.api_key') }}&callback=initMap&loading=async">
 </script>
 <script>
@@ -142,12 +164,12 @@
         // Mismas coordenadas que tenías en Leaflet (usar existentes o coordenadas por defecto de Santa Cruz)
         const initialLat = {{ $cliente->latitud ? $cliente->latitud : -17.7817999 }};
         const initialLng = {{ $cliente->longitud ? $cliente->longitud : -63.1825485 }};
-        
-        const initialPosition = { 
-            lat: initialLat, 
-            lng: initialLng 
+
+        const initialPosition = {
+            lat: initialLat,
+            lng: initialLng
         };
-        
+
         // Crear mapa con mismo zoom que tenías (17)
         map = new google.maps.Map(document.getElementById("google_map"), {
             zoom: 17,
@@ -169,7 +191,7 @@
                                 <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
                             </filter>
                         </defs>
-                        <path d="M20 5 C28 5 35 12 35 20 C35 28 20 45 20 45 C20 45 5 28 5 20 C5 12 12 5 20 5 Z" 
+                        <path d="M20 5 C28 5 35 12 35 20 C35 28 20 45 20 45 C20 45 5 28 5 20 C5 12 12 5 20 5 Z"
                               fill="#E74C3C" filter="url(#shadow)"/>
                         <circle cx="20" cy="20" r="8" fill="#FFFFFF"/>
                         <circle cx="20" cy="20" r="5" fill="#C0392B"/>
@@ -185,16 +207,16 @@
             const position = marker.getPosition();
             const lat = position.lat();
             const lng = position.lng();
-            
+
             // Actualizar los campos ocultos (igual que en Leaflet)
             document.getElementById('latitud').value = lat;
             document.getElementById('longitud').value = lng;
-            
+
             // Disparar evento keyup para cualquier validación (igual que tenías)
             const longitudInput = document.getElementById('longitud');
             const event_keyup = new Event('keyup');
             longitudInput.dispatchEvent(event_keyup);
-            
+
             // Mostrar coordenadas en popup (opcional)
             const infoWindow = new google.maps.InfoWindow({
                 content: `
@@ -205,7 +227,7 @@
                 `
             });
             infoWindow.open(map, marker);
-            
+
             // Cerrar popup después de 3 segundos
             setTimeout(() => {
                 infoWindow.close();
@@ -221,7 +243,7 @@
                 </div>
             `
         });
-        
+
         // Mostrar popup inicial al hacer clic
         marker.addListener('click', () => {
             initialInfoWindow.open(map, marker);

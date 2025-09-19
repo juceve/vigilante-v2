@@ -29,13 +29,13 @@
                 @if (!$usercliente)
                 <div class="form-group">
                     <label>Email Cliente:</label>
-                    <input type="email" class="form-control" wire:model.defer='email'>
+                    <input type="email" class="form-control" wire:model.defer='email' @if ($email) readonly @endif>
                     @error('email')
                     <small class="text-danger">{{$message}}</small>
                     @enderror
                 </div>
                 <div class="form-group">
-                    <label>Password: <small>(Autogenerado)</small></label>
+                    <label>Password: <small>(Nro. Documento del Cliente)</small></label>
                     <input type="text" class="form-control" wire:model.defer='password' readonly>
                     @error('password')
                     <small class="text-danger">{{$message}}</small>
@@ -48,7 +48,7 @@
                 <div class="form-group">
                     <label>El usuario ya fue generado:</label><br>
                     <span><strong>Usuario: </strong>{{$usercliente->user->email??''}}</span><br>
-                    <span><strong>Password: </strong>{{strtolower(str_replace(' ', '', config('app.name') . $this->cliente->id));}}</span><br><br>
+                    <span><strong>Password: </strong>[<i>Nro. de Documento del Cliente</i>]</span><br><br>
                     <button class="btn btn-danger" onclick='eliminar({{$cliente->id}})'>Eliminar usuario <i
                             class="fas fa-trash"></i></button>
                 </div>

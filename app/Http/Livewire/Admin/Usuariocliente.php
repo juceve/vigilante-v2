@@ -15,7 +15,8 @@ class Usuariocliente extends Component
     public function mount($cliente_id)
     {
         $this->cliente = Cliente::find($cliente_id);
-        $this->password = strtolower(str_replace(' ', '', config('app.name') . $this->cliente->id));
+        $this->email = $this->cliente->email;
+        $this->password = $this->cliente->nrodocumento;
         $this->usercliente = Usercliente::where('cliente_id', $this->cliente->id)->first();
     }
     public function render()
@@ -40,6 +41,9 @@ class Usuariocliente extends Component
                 "template" => 'CLIENTE',
                 "status" => true
             ]);
+
+            $this->cliente->email = $this->email;
+            $this->cliente->save();
 
             $this->usercliente = Usercliente::create([
                 "user_id" => $usuario->id,

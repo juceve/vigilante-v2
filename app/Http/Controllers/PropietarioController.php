@@ -114,20 +114,20 @@ class PropietarioController extends Controller
     {
         $propietarioId = Crypt::decryptString($id);
         $propietario = Propietario::findOrFail($propietarioId);
-        $residenciasIds = [];
-        
-        // Obtener solo las residencias recién registradas
-        if (Session::get('residencias_registradas')) {
-            $residenciasIds = Session::get('residencias_registradas');
-        }
-        
-        $residencias = Residencia::where('propietario_id', $propietario->id)
-            ->whereIn('id', $residenciasIds)
-            ->get();
+        // $residenciasIds = [];
+
+        // // Obtener solo las residencias recién registradas
+        // if (Session::get('residencias_registradas')) {
+        //     $residenciasIds = Session::get('residencias_registradas');
+        // }
+
+        // $residencias = Residencia::where('propietario_id', $propietario->id)
+        //     ->whereIn('id', $residenciasIds)
+        //     ->get();
 
         // Limpia la variable de sesión para evitar mostrar residencias viejas en futuros registros
         // session()->forget('residencias_registradas');
 
-        return view('propietario.resumen', compact('propietario', 'residencias'));
+        return view('propietario.resumen', compact('propietario'));
     }
 }
