@@ -32,6 +32,11 @@ class HomeController extends Controller
      */
     public function index()
     {
+        if (Auth::user()->status == 0) {
+            Auth::logout(); // Cerramos sesión
+            return redirect()->route('login')->with('error', 'Tu cuenta está inactiva. Contacta al administrador.');
+        }
+
         if (!hayRevisionHoy()) {
             procesosDiarios();
         }
@@ -87,7 +92,7 @@ class HomeController extends Controller
             $residencias = Residencia::where('propietario_id', auth()->user()->propietario->id)
                 ->where('estado', 'VERIFICADO')->get();
 
-            return view('propietario.home', compact('paseingresos','residencias'));
+            return view('propietario.home', compact('paseingresos', 'residencias'));
         }
     }
 }

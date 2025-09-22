@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Admin;
 
 use App\Models\Cliente;
+use Illuminate\Support\Facades\Crypt;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -12,6 +13,9 @@ class ListadoClientes extends Component
     protected $paginationTheme = 'bootstrap';
 
     public $busqueda = "", $filas = 10;
+
+    public $linkSolicitud = '';
+
     public function render()
     {
         $clientes = Cliente::join('oficinas', 'oficinas.id', '=', 'clientes.oficina_id')->select('clientes.*', 'oficinas.nombre AS oficina')
@@ -31,5 +35,12 @@ class ListadoClientes extends Component
     public function updatedFilas()
     {
         $this->resetPage();
+    }
+
+    public function generaLink($cliente_id)
+    {
+        $encryptedId = Crypt::encryptString($cliente_id);
+        $this->linkSolicitud = route('regpropietario', $encryptedId);
+        $this->emit('abrirModalLink');
     }
 }

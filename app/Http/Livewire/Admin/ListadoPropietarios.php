@@ -266,6 +266,11 @@ class ListadoPropietarios extends Component
             $this->emit('error', 'Debe completar al menos un campo para agregar una residencia.');
         }
     }
+    public function updatedActivoFiltro()
+    {
+        $this->resetPage();
+    }
+
     public function updatedSearch()
     {
         $this->resetPage();

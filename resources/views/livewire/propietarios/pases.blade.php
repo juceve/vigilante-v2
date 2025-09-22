@@ -23,80 +23,77 @@
             </div>
 
             <div class="table-responsive">
-                <table class="table table-bordered hover">
-                    <thead class="table-info">
-                        <tr class="text-center">
-                            <th>ID</th>
-                            <th class="text-left">Nombre</th>
-                            <th class="text-left">Tipo Pase</th>
+               <table class="table table-bordered hover">
+    <thead class="table-info">
+        <tr class="text-center">
+            <th>ID</th>
+            <th class="text-left">Nombre</th>
+            <th class="text-left">Tipo Pase</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Estado</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @forelse ($paseingresos as $item)
+            <tr class="text-center">
+                <td class="align-middle">{{ $item->id }}</td>
+                <td class="align-middle text-left">{{ $item->nombre }}</td>
+                <td class="align-middle text-left">{{ $item->motivo->nombre }}</td>
 
-                            <th>Inicio</th>
-                            <th>Fin</th>
-                            <th>Estado</th>
+                <td class="align-middle">{{ $item->fecha_inicio }}</td>
+                <td class="align-middle">{{ $item->fecha_fin }}</td>
+                <td class="align-middle">
+                    @php
+                        $fechaInicio = (new DateTime($item->fecha_inicio))->format('Y-m-d');
+                        $fechaFin = (new DateTime($item->fecha_fin))->format('Y-m-d');
+                        $hoy = (new DateTime())->format('Y-m-d');
+                    @endphp
 
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($paseingresos as $item)
-                            <tr class="text-center">
-                                <td class="align-middle">{{ $item->id }}</td>
-                                <td class="align-middle text-left">{{ $item->nombre }}</td>
-                                <td class="align-middle text-left">{{ $item->motivo->nombre }}</td>
+                    @if (!$item->estado)
+                        <span class="badge badge-pill badge-secondary">Cancelado</span>
+                    @else
+                        @if ($hoy < $fechaInicio)
+                            <span class="badge badge-pill badge-info">Pendiente</span>
+                        @elseif ($hoy >= $fechaInicio && $hoy <= $fechaFin)
+                            <span class="badge badge-pill badge-success">Vigente</span>
+                        @else
+                            <span class="badge badge-pill badge-warning">Expirado</span>
+                        @endif
+                    @endif
+                </td>
 
-                                <td class="align-middle">{{ $item->fecha_inicio }}</td>
-                                <td class="align-middle">{{ $item->fecha_fin }}</td>
-                                <td class="align-middle">
-                                    @php
-                                        $fechaInicio = new DateTime($item->fecha_inicio);
-                                        $fechaFin = new DateTime($item->fecha_fin);
-                                        $hoy = new DateTime();
-                                    @endphp
+                <td class="text-right" style="width: 120px;min-width: 110px;">
+                    <button class="btn btn-sm btn-info" title="Mas Detalles"
+                        wire:click="verDetalles({{ $item->id }})" wire:loading.attr="disabled"
+                        wire:target='verDetalles({{ $item->id }})'>
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    @php
+                        $encryptedId = encriptar($item->id);
+                    @endphp
+                    <a href="{{ $item->estado ? route('resumenpase', $encryptedId) : 'javascript:void(0);' }}"
+                        target="_blank"
+                        class="btn btn-sm btn-primary @if (!$item->estado) disabled @endif"
+                        title="Ver Credencial">
+                        <i class="far fa-address-card"></i>
+                    </a>
+                    <button class="btn btn-sm btn-warning" title="Deshabilitar"
+                        @if (!$item->estado) disabled @endif
+                        onclick="deshabilitar({{ $item->id }})">
+                        <i class="fas fa-power-off"></i>
+                    </button>
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="7" class="text-center"><i>No existen registros.</i></td>
+            </tr>
+        @endforelse
+    </tbody>
+</table>
 
-                                    @if (!$item->estado)
-                                        <span class="badge badge-pill badge-secondary">Cancelado</span>
-                                    @else
-                                        @if ($hoy < $fechaInicio)
-                                            <span class="badge badge-pill badge-info">Pendiente</span>
-                                        @elseif ($hoy >= $fechaInicio && $hoy <= $fechaFin)
-                                            <span class="badge badge-pill badge-success">Vigente</span>
-                                        @elseif ($hoy > $fechaFin)
-                                            <span class="badge badge-pill badge-warning">Expirado</span>
-                                        @endif
-                                    @endif
-
-                                </td>
-
-                                <td class="text-right" style="width: 120px;min-width: 110px;">
-                                    <button class="btn btn-sm btn-info" title="Mas Detalles"
-                                        wire:click="verDetalles({{ $item->id }})" wire:loading.attr="disabled"
-                                        wire:target='verDetalles({{ $item->id }})'>
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    @php
-                                        $encryptedId = encriptar($item->id);
-                                    @endphp
-                                    <a href="{{ $item->estado ? route('resumenpase', $encryptedId) : 'javascript:void(0);' }}"
-                                        target="_blank"
-                                        class="btn btn-sm btn-primary @if (!$item->estado) disabled @endif"
-                                        title="Ver Credencial">
-                                        <i class="far fa-address-card"></i>
-                                    </a>
-                                    <button class="btn btn-sm btn-warning" title="Deshabilitar"
-                                        @if (!$item->estado) disabled @endif
-                                        onclick="deshabilitar({{ $item->id }})">
-                                        <i class="fas fa-power-off"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center"><i>No existen registros.</i></td>
-                            </tr>
-                        @endforelse
-
-                    </tbody>
-                </table>
             </div>
             <div class="float-right">
                 {{ $paseingresos->links() }}

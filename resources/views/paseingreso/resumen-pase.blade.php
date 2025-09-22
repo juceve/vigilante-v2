@@ -75,7 +75,7 @@
         <div id="credencial" class="credencial">
             <div class="header">
                 <small>PASE DE ACCESO N°
-                    {{ $paseingreso->residencia->id . '-' . str_pad($paseingreso->id, 4, '0', STR_PAD_LEFT) }}</small> <br>
+                    {{ $paseingreso->residencia->cliente->id . '-' . str_pad($paseingreso->id, 4, '0', STR_PAD_LEFT) }}</small> <br>
                 {{ $paseingreso->motivo->nombre }}
             </div>
             <table class="table table-striped table-sm text-left" style="font-size: 12px">

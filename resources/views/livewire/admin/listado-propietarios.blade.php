@@ -21,7 +21,7 @@
         <div class="card-body table-responsive">
             <div class="row mb-3">
                 <!-- Buscador -->
-               <div class="col-12 col-md-6 col-xl-8">
+                <div class="col-12 col-md-6 col-xl-8">
                     <div class="input-group">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fa fa-search"></i></span>
@@ -75,7 +75,7 @@
                         <tr>
                             <td>{{ $item->id }}</td>
                             <td>{{ $item->nombre }}</td>
-                            <td>{{ $item->cliente->nombre }}</td>
+                            <td>{{ $item->cliente ? $item->cliente->nombre : 'Sin asignar' }}</td>
                             <td>{{ $item->telefono }}</td>
                             <td>{{ $item->residencias->count() }}</td>
                             <td>
@@ -293,8 +293,8 @@
 
                     @if ($propietario)
 
-                    <hr>
-                    <h5>Residencias Vinculadas</h5>
+                        <hr>
+                        <h5>Residencias Vinculadas</h5>
                         <div class="table-responsive">
                             <table class="table table-sm table-bordered table-striped" style="font-size: 13px;">
                                 <thead>

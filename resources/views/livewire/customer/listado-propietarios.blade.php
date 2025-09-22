@@ -9,7 +9,9 @@
                     <i class="fa fa-plus"></i> Nuevo
                 </button>
 
-
+                <button class="btn btn-light btn-sm" data-toggle="modal" data-target="#modalFormSolicitud">
+                    <i class="fa fa-plus"></i> Form. Registro
+                </button>
             </div>
         </div>
 
@@ -333,6 +335,51 @@
         </div>
     </div>
 
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalFormSolicitud" tabindex="-1" aria-labelledby="modalFormSolicitudLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="modalFormSolicitudLabel">Nueva Solicitud</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row no-gutters">
+                        <div class="col-sm-10">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> <i class="fa fa-link"></i> &nbsp;
+                                        Link</span>
+                                </div>
+                                <input type="text" class="form-control" id="linkInput" wire:model="linkSolicitud"
+                                    readonly style="background-color: #fafafa;">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-primary" type="button" title="Copiar enlace" id="copyBtn">
+                                <i class="fa fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="col-sm-1">
+                            <button class="btn btn-success" type="button" title="Enviar WhatsApp" id="whatsappBtn">
+                                <i class="fa fa-whatsapp"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-ban"></i>
+                        Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 @section('js')
     <script>
@@ -365,6 +412,51 @@
         })
         Livewire.on('closeModalResidencia', () => {
             $('#modalNuevaResidencia').modal('hide');
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const copyBtn = document.getElementById('copyBtn');
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            const linkInput = document.getElementById('linkInput');
+
+            // Copiar al portapapeles
+            copyBtn.addEventListener('click', function() {
+                linkInput.select();
+                linkInput.setSelectionRange(0, 99999); // Para móviles
+                navigator.clipboard.writeText(linkInput.value)
+                    .then(() => {
+                        Swal.fire({
+                            toast: true,
+                            position: 'bottom-end',
+                            icon: 'success',
+                            title: 'Enlace copiado al portapapeles',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+
+                    })
+                    .catch(err => {
+                        Swal.fire({
+                            toast: true,
+                            position: 'bottom-end',
+                            icon: 'error',
+                            title: 'Error al copiar el enlace',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true
+                        });
+                    });
+            });
+
+            // Abrir WhatsApp
+            whatsappBtn.addEventListener('click', function() {
+                const url = encodeURIComponent(linkInput.value);
+                const whatsappURL = `https://wa.me/?text=${url}`;
+                window.open(whatsappURL, '_blank');
+            });
         });
     </script>
 @endsection

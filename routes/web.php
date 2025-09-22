@@ -51,6 +51,7 @@ use App\Http\Livewire\Admin\ListadoCiteMemorandum;
 use App\Http\Livewire\Admin\ListadoCiteRecibo;
 use App\Http\Livewire\Admin\ListadoPropietarios;
 use App\Http\Livewire\Admin\ListadoResidencias;
+use App\Http\Livewire\Admin\ListadoRondas;
 use App\Http\Livewire\Admin\ListadoSolicitudes;
 use App\Http\Livewire\Admin\ManageFeriados;
 use App\Http\Livewire\Admin\ManageSueldos;
@@ -68,6 +69,7 @@ use App\Http\Livewire\Admin\Registrostareas;
 use App\Http\Livewire\Admin\Registrosvisita;
 use App\Http\Livewire\Admin\TurnoCliente;
 use App\Http\Livewire\Admin\RegNovedades;
+use App\Http\Livewire\Admin\RondaPuntos;
 use App\Http\Livewire\Admin\Usuariocliente;
 use App\Http\Livewire\CtrlAsisitencias;
 use App\Http\Livewire\Customer\Aprobaciones as CustomerAprobaciones;
@@ -200,6 +202,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/admin/puntos-control-v2/{turnoId}', PuntosControlV2::class)->name('puntoscontrolv2');
 
+    Route::get('admin/clientes/{id}/rondas', ListadoRondas::class)->name('clientes.rondas');
+    Route::get('admin/clientes/rondas/{ronda_id}/puntos', RondaPuntos::class)->name('clientes.ronda_puntos');
     Route::get('admin/control-rondas', Admrondas::class)->name('control.rondas');
     Route::get('admin/designaciones/pdfRondas/{id}', [DesignacioneController::class, 'pdfRondas'])->name('admin.designaciones.pdfRondas');
     Route::get('admin/designaciones/pdfNovedades/{id}', [DesignacioneController::class, 'pdfNovedades'])->name('pdfNovedades');

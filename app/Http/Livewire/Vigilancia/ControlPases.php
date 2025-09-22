@@ -42,7 +42,7 @@ class ControlPases extends Component
             $paseingreso = Paseingreso::find($this->search);
             if ($paseingreso) {
                 if ($paseingreso->residencia->cliente_id == $cliente_id) {
-                    if ($paseingreso->fecha_inicio <= date('Y-m-d H:i:s') && $paseingreso->fecha_fin >= date('Y-m-d H:i:s')) {
+                    if ($paseingreso->fecha_inicio <= date('Y-m-d') && $paseingreso->fecha_fin >= date('Y-m-d')) {
                         if ($paseingreso->estado) {
                             return redirect()->route('vigilancia.detallepase', ['designacione_id' => $this->designacione_id, 'pase_id' => $paseingreso->id]);
                         } else {
@@ -78,7 +78,7 @@ class ControlPases extends Component
 
         if ($paseingreso) {
             if ($paseingreso->residencia->cliente_id === $cliente_id) {
-                if ($paseingreso->fecha_inicio <= date('Y-m-d H:i:s') && $paseingreso->fecha_fin >= date('Y-m-d H:i:s')) {
+                if ($paseingreso->fecha_inicio <= date('Y-m-d') && $paseingreso->fecha_fin >= date('Y-m-d')) {
 
                     if ($paseingreso->estado) {
                         return redirect()->route('vigilancia.detallepase', ['designacione_id' => $this->designacione_id, 'pase_id' => $paseingreso_id]);

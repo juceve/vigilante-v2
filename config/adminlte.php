@@ -428,19 +428,17 @@ return [
             'can'   =>  'clientes.index',
             'icon' => 'fas fa-fw fa-address-book'
         ],
-
+        [
+            'text' => 'Propietarios',
+            'url'  => 'admin/listado-propietarios',
+            'can'   =>  'propietarios.index',
+            'icon' => 'fas fa-fw fa-user-tag'
+        ],
         ['header' => 'Mantenimiento'],
         [
             'text'    => 'Administración',
             'icon'    => 'fas fa-fw fa-cog',
             'submenu' => [
-
-                [
-                    'text' => 'Propietarios',
-                    'url'  => 'admin/listado-propietarios',
-                    'can'   =>  'propietarios.index',
-                    'icon' => 'fas fa-fw fa-user-tag'
-                ],
                 [
                     'text' => 'Oficinas',
                     'url'  => 'admin/oficinas',

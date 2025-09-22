@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Propietario;
 use App\Models\Usercliente;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -19,7 +20,7 @@ class ListadoPropietarios extends Component
     public $propietario_id, $propietario, $nombre, $cedula, $telefono, $email, $direccion, $ciudad, $activo = true;
     public $search = '', $perPage = 5, $perPageOptions = [5, 10, 15, 25, 50], $activoFiltro = "";
     public $modalMode = 'create'; // create | edit | show
-
+    public $linkSolicitud = '';
     public $cliente_id, $cliente;
 
     protected function rules()
@@ -45,6 +46,9 @@ class ListadoPropietarios extends Component
         $usercliente = Usercliente::where('user_id', auth()->id())->first();
         $this->cliente_id = $usercliente ? $usercliente->cliente_id : null;
         $this->cliente = Cliente::find($this->cliente_id);
+
+        $encryptedId = Crypt::encryptString($this->cliente_id);
+        $this->linkSolicitud = route('regpropietario', $encryptedId);
     }
 
     public function render()
@@ -280,6 +284,11 @@ class ListadoPropietarios extends Component
         $this->resetPage();
     }
     public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedActivoFiltro()
     {
         $this->resetPage();
     }
