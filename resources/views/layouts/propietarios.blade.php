@@ -10,6 +10,9 @@
 
     <title>@yield('title') | Propietarios</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('images/logo_shield.png') }}">
+
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#1e3a8a">
     <!-- Bootstrap -->
     <link href="{{ asset('customers/vendors/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Font Awesome -->
@@ -151,7 +154,7 @@
     @livewireScripts
     <script>
         Livewire.on('success', message => {
-            // Swal.fire('Excelente!',message,'success');  
+            // Swal.fire('Excelente!',message,'success');
             Swal.fire({
                 icon: 'success',
                 title: 'Excelente',
@@ -167,7 +170,15 @@
         });
     </script>
     @yield('js')
-
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => console.log('Service Worker registrado:', reg))
+                    .catch(err => console.error('Error al registrar SW:', err));
+            });
+        }
+    </script>
 </body>
 
 </html>

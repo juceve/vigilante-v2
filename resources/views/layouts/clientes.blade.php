@@ -9,6 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Clientes - {{ config('app.name') }}</title>
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#1e3a8a">
 
     <!-- Bootstrap -->
     <link href="{{ asset('customers/vendors/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -73,7 +75,8 @@
                                             class="fa fa-sign-out pull-right"></i>
                                         Cerrar Sesión</a>
 
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                        class="d-none">
                                         @csrf
                                     </form>
                                 </div>
@@ -200,7 +203,15 @@
         });
     </script>
     @yield('js')
-
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => console.log('Service Worker registrado:', reg))
+                    .catch(err => console.error('Error al registrar SW:', err));
+            });
+        }
+    </script>
 </body>
 
 </html>

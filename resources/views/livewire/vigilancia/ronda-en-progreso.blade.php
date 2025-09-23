@@ -63,29 +63,49 @@
             Ronda en Proceso
         </a>
     @endif
-
-
 </div>
 @section('js')
     <script>
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(position => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-
-                @this.latitud = lat;
-                @this.longitud = lon;
-
-                @this.registrarUbicacion();
-            }, error => {
-                console.error('Error obteniendo ubicación:', error);
-            }, {
-                enableHighAccuracy: true,
-                maximumAge: 10000,
-                timeout: 10000
+        if ("geolocation" in navigator) {
+            navigator.permissions.query({
+                name: 'geolocation'
+            }).then(function(result) {
+                console.log("Permiso de geolocalización:", result.state);
+                if (result.state !== 'granted') {
+                    alert("Por favor habilita la geolocalización para registrar tu ronda.");
+                }
             });
         } else {
-            console.error("Geolocalización no soportada en este navegador.");
+            alert("Tu navegador no soporta geolocalización.");
+        }
+    </script>
+
+    <script>
+        let lastSaveTime = 0;
+        const SAVE_INTERVAL = 5 * 60 * 1000; // 5 minutos
+
+        if ("geolocation" in navigator) {
+            navigator.geolocation.watchPosition(
+                position => {
+                    const now = Date.now();
+                    if (now - lastSaveTime > SAVE_INTERVAL) {
+                        lastSaveTime = now;
+
+                        @this.latitud = position.coords.latitude;
+                        @this.longitud = position.coords.longitude;
+                        @this.registrarUbicacion();
+                    }
+                },
+                error => {
+                    console.error("Error de geolocalización:", error);
+                }, {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 10000
+                }
+            );
+        } else {
+            console.error("Geolocalización no disponible en este navegador.");
         }
     </script>
 @endsection

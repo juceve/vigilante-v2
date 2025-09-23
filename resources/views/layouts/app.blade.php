@@ -7,6 +7,10 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>@yield('title') | {{ strtoupper(config('app.name')) }}</title>
+
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#1e3a8a">
+
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="{{ asset('images/logo_shield.png') }}" />
     <!-- Font Awesome icons (free version)-->
@@ -420,7 +424,7 @@
                     </div>
                 </div>
             </a>
-              @livewire('vigilancia.ronda-en-progreso')
+            @livewire('vigilancia.ronda-en-progreso')
             @auth
                 <button class="navbar-toggler material-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
@@ -626,6 +630,16 @@
     </script>
 
     @stack('scripts')
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => console.log('Service Worker registrado:', reg))
+                    .catch(err => console.error('Error al registrar SW:', err));
+            });
+        }
+    </script>
+
 </body>
 
 </html>
