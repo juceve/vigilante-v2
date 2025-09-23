@@ -41,4 +41,9 @@ class Cliente extends Model
     {
         return $this->hasMany(Turno::class);
     }
+
+    public function rondas(): HasMany
+    {
+        return $this->hasMany(Ronda::class, 'cliente_id', 'id');
+    }
 }

@@ -11,6 +11,9 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card">
+                <div class="card-header bg-info ">
+                    <h3 class="card-title">{{$cliente->nombre}}</h3>
+                </div>
                 <div class="card-body">
                     <div wire:ignore id="map" style="height: 500px;"></div>
                 </div>

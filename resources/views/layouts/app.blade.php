@@ -27,23 +27,37 @@
     <style>
         /* Variables CSS Material Design - Paleta Empresarial de Seguridad */
         :root {
-            --primary-color: #1e3a8a;          /* Azul naval profundo */
-            --primary-dark: #1e293b;           /* Azul oscuro casi negro */
-            --primary-light: #3b82f6;          /* Azul corporativo */
-            --secondary-color: #334155;        /* Gris azulado */
-            --secondary-dark: #1e293b;         /* Gris oscuro */
-            --accent-color: #d97706;           /* Dorado corporativo */
-            --accent-light: #f59e0b;          /* Dorado claro */
-            --success-color: #059669;          /* Verde profesional */
-            --warning-color: #d97706;          /* Naranja dorado */
-            --error-color: #dc2626;           /* Rojo corporativo */
+            --primary-color: #1e3a8a;
+            /* Azul naval profundo */
+            --primary-dark: #1e293b;
+            /* Azul oscuro casi negro */
+            --primary-light: #3b82f6;
+            /* Azul corporativo */
+            --secondary-color: #334155;
+            /* Gris azulado */
+            --secondary-dark: #1e293b;
+            /* Gris oscuro */
+            --accent-color: #d97706;
+            /* Dorado corporativo */
+            --accent-light: #f59e0b;
+            /* Dorado claro */
+            --success-color: #059669;
+            /* Verde profesional */
+            --warning-color: #d97706;
+            /* Naranja dorado */
+            --error-color: #dc2626;
+            /* Rojo corporativo */
             --surface-color: #ffffff;
-            --background-color: #f8fafc;      /* Gris muy claro */
+            --background-color: #f8fafc;
+            /* Gris muy claro */
             --card-background: #ffffff;
-            --on-surface: #1e293b;            /* Texto principal */
+            --on-surface: #1e293b;
+            /* Texto principal */
             --on-primary: #ffffff;
-            --text-secondary: #64748b;        /* Texto secundario */
-            --border-color: #e2e8f0;          /* Bordes sutiles */
+            --text-secondary: #64748b;
+            /* Texto secundario */
+            --border-color: #e2e8f0;
+            /* Bordes sutiles */
             --shadow-1: 0 1px 3px rgba(30, 41, 59, 0.12), 0 1px 2px rgba(30, 41, 59, 0.24);
             --shadow-2: 0 3px 6px rgba(30, 41, 59, 0.16), 0 3px 6px rgba(30, 41, 59, 0.23);
             --shadow-3: 0 10px 20px rgba(30, 41, 59, 0.19), 0 6px 6px rgba(30, 41, 59, 0.23);
@@ -222,19 +236,19 @@
             .brand-text {
                 display: none;
             }
-            
+
             .brand-container {
                 gap: 0;
             }
-            
+
             .material-navbar {
                 padding: 0.6rem 0;
             }
-            
+
             .main-content {
                 margin-top: 76px;
             }
-            
+
             .navbar-collapse {
                 background: rgba(255, 255, 255, 0.95);
                 backdrop-filter: blur(10px);
@@ -243,18 +257,18 @@
                 padding: 1rem;
                 box-shadow: var(--shadow-2);
             }
-            
+
             .material-nav-link {
                 color: var(--on-surface) !important;
                 padding: 1rem !important;
                 margin: 0.25rem 0;
             }
-            
+
             .material-nav-link:hover {
                 background: var(--primary-color);
                 color: white !important;
             }
-            
+
             .logout-link {
                 margin-left: 0;
                 margin-top: 0.5rem;
@@ -265,11 +279,11 @@
             .brand-name {
                 font-size: 1rem;
             }
-            
+
             .material-navbar {
                 padding: 0.5rem 0;
             }
-            
+
             .main-content {
                 margin-top: 70px;
             }
@@ -282,16 +296,16 @@
                 --background-color: #121212;
                 --on-surface: #e0e0e0;
             }
-            
+
             body {
                 background-color: var(--background-color);
                 color: var(--on-surface);
             }
-            
+
             .main-content {
                 background: var(--background-color);
             }
-            
+
             .navbar-collapse {
                 background: rgba(30, 30, 30, 0.95);
             }
@@ -319,7 +333,7 @@
         /* SweetAlert2 Material Design */
         .material-popup {
             border-radius: 16px !important;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2) !important;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
             border: none !important;
         }
 
@@ -344,12 +358,12 @@
             text-transform: uppercase !important;
             letter-spacing: 0.5px !important;
             transition: all 0.3s ease !important;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
         }
 
         .material-button:hover {
             transform: translateY(-1px) !important;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.2) !important;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
         }
 
         /* DataTables Material Design */
@@ -397,44 +411,47 @@
                 <div class="brand-container">
                     <div class="brand-icon">
                         <img src="{{ asset('images/logo_shield.png') }}" alt="logo" width="40" height="44">
+
                     </div>
+
                     <div class="brand-text">
                         <span class="brand-name">{{ strtoupper(config('app.name')) }}</span>
                         <small class="brand-subtitle">Sistema de Vigilancia</small>
                     </div>
                 </div>
             </a>
+              @livewire('vigilancia.ronda-en-progreso')
             @auth
-            <button class="navbar-toggler material-toggler" type="button"
-                data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive"
-                aria-expanded="false" aria-label="Toggle navigation">
-                <span class="toggler-icon">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </span>
-            </button>
+                <button class="navbar-toggler material-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="toggler-icon">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
 
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link material-nav-link" href="{{ route('home') }}">
-                            <i class="fas fa-home me-2"></i>
-                            <span>Inicio</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('logout') }}" class="nav-link material-nav-link logout-link" 
-                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            <i class="fas fa-sign-out-alt me-2"></i>
-                            <span>Cerrar Sesión</span>
-                        </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </li>
-                </ul>
-            </div>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link material-nav-link" href="{{ route('home') }}">
+                                <i class="fas fa-home me-2"></i>
+                                <span>Inicio</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('logout') }}" class="nav-link material-nav-link logout-link"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="fas fa-sign-out-alt me-2"></i>
+                                <span>Cerrar Sesión</span>
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             @endauth
         </div>
     </nav>
@@ -457,66 +474,66 @@
     @yield('js')
 
     @if (session('success'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Excelente',
-            text: '{{ session('success') }}',
-            showConfirmButton: true,
-            confirmButtonText: 'Entendido',
-            confirmButtonColor: '#059669',
-            background: '#ffffff',
-            color: '#1e293b',
-            borderRadius: '12px',
-            customClass: {
-                popup: 'material-popup',
-                title: 'material-title',
-                confirmButton: 'material-button'
-            }
-        })
-    </script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Excelente',
+                text: '{{ session('success') }}',
+                showConfirmButton: true,
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#059669',
+                background: '#ffffff',
+                color: '#1e293b',
+                borderRadius: '12px',
+                customClass: {
+                    popup: 'material-popup',
+                    title: 'material-title',
+                    confirmButton: 'material-button'
+                }
+            })
+        </script>
     @endif
 
     @if (session('error'))
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: '{{ session('error') }}',
-            showConfirmButton: true,
-            confirmButtonText: 'Entendido',
-            confirmButtonColor: '#dc2626',
-            background: '#ffffff',
-            color: '#1e293b',
-            borderRadius: '12px',
-            customClass: {
-                popup: 'material-popup',
-                title: 'material-title',
-                confirmButton: 'material-button'
-            }
-        })
-    </script>
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ session('error') }}',
+                showConfirmButton: true,
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#dc2626',
+                background: '#ffffff',
+                color: '#1e293b',
+                borderRadius: '12px',
+                customClass: {
+                    popup: 'material-popup',
+                    title: 'material-title',
+                    confirmButton: 'material-button'
+                }
+            })
+        </script>
     @endif
 
     @if (session('warning'))
-    <script>
-        Swal.fire({
-            icon: 'warning',
-            title: 'Atención',
-            text: '{{ session('warning') }}',
-            showConfirmButton: true,
-            confirmButtonText: 'Entendido',
-            confirmButtonColor: '#d97706',
-            background: '#ffffff',
-            color: '#1e293b',
-            borderRadius: '12px',
-            customClass: {
-                popup: 'material-popup',
-                title: 'material-title',
-                confirmButton: 'material-button'
-            }
-        })
-    </script>
+        <script>
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: '{{ session('warning') }}',
+                showConfirmButton: true,
+                confirmButtonText: 'Entendido',
+                confirmButtonColor: '#d97706',
+                background: '#ffffff',
+                color: '#1e293b',
+                borderRadius: '12px',
+                customClass: {
+                    popup: 'material-popup',
+                    title: 'material-title',
+                    confirmButton: 'material-button'
+                }
+            })
+        </script>
     @endif
 
     <script>
@@ -532,8 +549,8 @@
                 },
                 // Material Design styling for DataTables
                 dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-                     '<"row"<"col-sm-12"tr>>' +
-                     '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+                    '<"row"<"col-sm-12"tr>>' +
+                    '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
                 pagingType: 'simple_numbers',
                 responsive: true
             })
@@ -601,7 +618,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.body.style.opacity = '0';
             document.body.style.transition = 'opacity 0.3s ease-in-out';
-            
+
             setTimeout(() => {
                 document.body.style.opacity = '1';
             }, 100);

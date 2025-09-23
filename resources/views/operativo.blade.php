@@ -64,6 +64,7 @@
         @else
             @if ($estadoMarcado > 0)
                 @if ($estadoMarcado == 1)
+
                     {{-- Panel de Funciones Material Design --}}
                     <div class="functions-container">
                         <div class="container-fluid px-3">

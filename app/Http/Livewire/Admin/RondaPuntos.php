@@ -15,7 +15,7 @@ class RondaPuntos extends Component
     public $puntos = [];
     public $cliente_latitud;
     public $cliente_longitud;
-    public $cliente_id;
+    public $cliente_id, $cliente;
 
     protected $rules = [
         'descripcion' => 'required|string',
@@ -36,6 +36,7 @@ class RondaPuntos extends Component
             $this->cliente_latitud = $ronda->cliente->latitud;
             $this->cliente_longitud = $ronda->cliente->longitud;
             $this->cliente_id = $ronda->cliente->id;
+            $this->cliente = $ronda->cliente;
         }
     }
 
@@ -73,7 +74,6 @@ class RondaPuntos extends Component
     public function render()
     {
         return view('livewire.admin.ronda-puntos')
-            ->extends('adminlte::page')
-            ->section('content');
+            ->extends('adminlte::page');
     }
 }

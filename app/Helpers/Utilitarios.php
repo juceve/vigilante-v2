@@ -15,6 +15,7 @@ use App\Models\Hombrevivo as ModelsHombrevivo;
 use App\Models\Intervalo;
 use App\Models\Marcacione;
 use App\Models\Regronda;
+use App\Models\Rondaejecutada;
 use App\Models\Tarea;
 use App\Models\Usercliente;
 use App\Models\Vwnovedade;
@@ -569,4 +570,15 @@ function diffMinutes($fecha1)
 function formatearFecha($fecha)
 {
     return Carbon::parse($fecha)->format('d/m/Y');
+}
+
+function tengoRondaIniciada($user_id, $cliente_id)
+{
+    $ronda = Rondaejecutada::where([
+        ['cliente_id', $cliente_id],
+        ['user_id', $user_id],
+        ['status', 'EN_PROGRESO'],
+    ])->first();
+
+    return $ronda ? $ronda->id : 0;
 }

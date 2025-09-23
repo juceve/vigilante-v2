@@ -94,6 +94,7 @@ use App\Http\Livewire\Vigilancia\HombreVivo;
 use App\Http\Livewire\Vigilancia\Novedades;
 use App\Http\Livewire\Vigilancia\Panelvisitas;
 use App\Http\Livewire\Vigilancia\Panico;
+use App\Http\Livewire\Vigilancia\RecorridoRonda;
 use App\Http\Livewire\Vigilancia\RegIngreso;
 use App\Http\Livewire\Vigilancia\RegSalida;
 use App\Http\Livewire\Vigilancia\Ronda;
@@ -155,6 +156,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('vigilancia/airbnb/{designacione_id}', Checkairbnb::class)->name('vigilancia.airbnb');
     Route::get('vigilancia/control-pases/{designacione_id}', ControlPases::class)->name('vigilancia.controlpases');
     Route::get('vigilancia/detalle-pase/{designacione_id}/{pase_id}', DetallePase::class)->name('vigilancia.detallepase');
+    Route::get('vigilancia/recorrido-ronda/{rondaejecutada_id}', RecorridoRonda::class)->name('vigilancia.recorrido_ronda');
     Route::get('vigilancia/controlairbnb', function () {
         return view('vigilancia.listadoairbnb');
     })->name('vigilancia.ctrlairbnb');
