@@ -17,6 +17,7 @@ use App\Http\Controllers\NovedadeController;
 use App\Http\Controllers\OficinaController;
 use App\Http\Controllers\PaseingresoController;
 use App\Http\Controllers\PropietarioController;
+use App\Http\Controllers\RecorridoRondaController;
 use App\Http\Controllers\RegistroguardiaController;
 use App\Http\Controllers\RegrondaController;
 use App\Http\Controllers\RoleController;
@@ -163,6 +164,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('admin/visitas', Registrosvisita::class)->middleware('can:admin.registros.visitas')->name('admin.visitas');
     Route::get('admin/rondas', Registrosronda::class)->middleware('can:admin.registros.rondas')->name('admin.rondas');
+    Route::get('admin/recorrido-ronda/{rondaejecutada_id}', [RecorridoRondaController::class,'recorrido'])->name('admin.recorrido_ronda');
     Route::get('admin/novedades', Registrosnovedades::class)->middleware('can:admin.registros.novedades')->name('admin.novedades');
     Route::get('admin/asistencias', Registroasistencias::class)->name('admin.asistencias');
     Route::get('admin/sueldos', ManageSueldos::class)->middleware('can:rrhhsueldos.index')->name('admin.sueldos');

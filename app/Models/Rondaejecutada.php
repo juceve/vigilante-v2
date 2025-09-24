@@ -30,7 +30,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Rondaejecutada extends Model
 {
-    
+
     static $rules = [
 		'status' => 'required',
     ];
@@ -52,15 +52,15 @@ class Rondaejecutada extends Model
     {
         return $this->hasOne('App\Models\Cliente', 'id', 'cliente_id');
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function rondaejecutadaubicaciones()
     {
-        return $this->hasMany('App\Models\Rondaejecutadaubicacione', 'rondaejecutada_id', 'id');
+        return $this->hasMany(Rondaejecutadaubicacione::class, 'rondaejecutada_id', 'id');
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -68,7 +68,7 @@ class Rondaejecutada extends Model
     {
         return $this->hasOne('App\Models\Ronda', 'id', 'ronda_id');
     }
-    
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
@@ -76,6 +76,6 @@ class Rondaejecutada extends Model
     {
         return $this->hasOne('App\Models\User', 'id', 'user_id');
     }
-    
+
 
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Vigilancia;
 
 use App\Models\Rondapunto;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class RecorridoRonda extends Component
@@ -26,4 +27,27 @@ class RecorridoRonda extends Component
         return view('livewire.vigilancia.recorrido-ronda')->extends('layouts.app');
     }
 
+    protected $listeners = ['finalizarRonda'];
+
+    public function finalizarRonda($latitud, $longitud)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Lógica para finalizar la ronda
+            $this->ronda_ejecutada->fin = now();
+            $this->ronda_ejecutada->latitud_fin = $latitud;
+            $this->ronda_ejecutada->longitud_fin = $longitud;
+            $this->ronda_ejecutada->status = 'FINALIZADA';
+            $this->ronda_ejecutada->save();
+            DB::commit();
+            return redirect()->route('home')->with('success', 'Ronda finalizada correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->emit('error', $e->getMessage());
+            // $this->emit('error', 'Ocurrió un error al finalizar la ronda. Inténtalo de nuevo.');
+            return;
+        }
+
+    }
 }

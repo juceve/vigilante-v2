@@ -11,6 +11,12 @@
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <meta name="theme-color" content="#1e3a8a">
 
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('images/logo_shield120x120.png') }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('images/logo_shield152x152.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logo_shield180x180.png') }}">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <!-- Favicon-->
     <link rel="icon" type="image/x-icon" href="{{ asset('images/logo_shield.png') }}" />
     <!-- Font Awesome icons (free version)-->
@@ -634,12 +640,12 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('/service-worker.js')
-                    .then(reg => console.log('Service Worker registrado:', reg))
-                    .catch(err => console.error('Error al registrar SW:', err));
+                    .then(reg => console.log('1'))
+                    .catch(err => console.error('0'));
             });
         }
     </script>
-
+@yield('js2')
 </body>
 
 </html>

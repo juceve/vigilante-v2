@@ -13,6 +13,14 @@
 
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <meta name="theme-color" content="#1e3a8a">
+
+    <link rel="apple-touch-icon" sizes="120x120" href="{{ asset('images/logo_shield120x120.png') }}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{{ asset('images/logo_shield152x152.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logo_shield180x180.png') }}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+
     <!-- Bootstrap -->
     <link href="{{ asset('customers/vendors/bootstrap/dist/css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Font Awesome -->

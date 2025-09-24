@@ -60,52 +60,44 @@
     @if ($rondaejecutada_id)
         <a href="{{ route('vigilancia.recorrido_ronda', $rondaejecutada_id) }}" class="ronda-badge">
             <img src="{{ asset('images/guardman.png') }}" alt="Guard" width="20" height="20">
-            Ronda en Proceso
+            Ronda en Progreso
         </a>
     @endif
+
 </div>
-@section('js')
+@section('js2')
     <script>
-        if ("geolocation" in navigator) {
-            navigator.permissions.query({
-                name: 'geolocation'
-            }).then(function(result) {
-                console.log("Permiso de geolocalización:", result.state);
-                if (result.state !== 'granted') {
-                    alert("Por favor habilita la geolocalización para registrar tu ronda.");
-                }
-            });
-        } else {
-            alert("Tu navegador no soporta geolocalización.");
-        }
-    </script>
+        let latitud = null;
+        let longitud = null;
 
-    <script>
-        let lastSaveTime = 0;
-        const SAVE_INTERVAL = 5 * 60 * 1000; // 5 minutos
-
-        if ("geolocation" in navigator) {
-            navigator.geolocation.watchPosition(
-                position => {
-                    const now = Date.now();
-                    if (now - lastSaveTime > SAVE_INTERVAL) {
-                        lastSaveTime = now;
-
-                        @this.latitud = position.coords.latitude;
-                        @this.longitud = position.coords.longitude;
-                        @this.registrarUbicacion();
-                    }
-                },
-                error => {
-                    console.error("Error de geolocalización:", error);
+        function obtenerUbicacion() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    latitud = position.coords.latitude;
+                    longitud = position.coords.longitude;
+                    Livewire.emit('registrarUbicacion', latitud, longitud);
+                    console.log(`OK`);
+                }, function(error) {
+                    console.error("Error al obtener la ubicación:", error);
+                    location.reload();
                 }, {
                     enableHighAccuracy: true,
-                    maximumAge: 0,
-                    timeout: 10000
-                }
-            );
-        } else {
-            console.error("Geolocalización no disponible en este navegador.");
+                    timeout: 10000,
+                    maximumAge: 0
+                });
+            } else {
+                console.error("La geolocalización no está disponible en este navegador.");
+            }
         }
+
+        window.onload = function() {
+            @if ($rondaejecutada_id)
+                // Obtener la ubicación inmediatamente después de que la página haya cargado
+                obtenerUbicacion();
+
+                // Obtener la ubicación cada 1 minutos (60,000 milisegundos)
+                setInterval(obtenerUbicacion, 90 * 1000);
+            @endif
+        };
     </script>
 @endsection

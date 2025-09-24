@@ -22,7 +22,13 @@
     </div>
     <!-- Contenido Principal -->
     <div class="patrol-content">
-        <div class="card">
+        <div class="alert alert-primary text-center" role="alert">
+            INICIO: <i class="fas fa-calendar"></i>
+            {{ \Carbon\Carbon::parse($ronda_ejecutada->inicio)->format('d/m/Y') }} <i class="fas fa-clock"></i>
+            {{ \Carbon\Carbon::parse($ronda_ejecutada->inicio)->format('H:i:s') }}
+        </div>
+
+        <div class="card mb-3">
             <div class="card-header bg-info text-white">
                 <strong>{{ $cliente->nombre }}</strong>
             </div>
@@ -30,6 +36,13 @@
                 <div wire:ignore id="map" style="height: 500px;"></div>
             </div>
         </div>
+        <div class="d-grid gap-2">
+            <button class="btn btn-danger p-2" onclick="finalizarRonda();">
+                <i class="fas fa-street-view fa-2x"></i>
+                <h5>FINALIZAR RONDA</h5>
+            </button>
+        </div>
+        <br>
     </div>
 </div>
 @section('css')
@@ -807,7 +820,7 @@
     <script>
         let map;
         let userMarker; // marcador del usuario
-
+        let ultimaPosicion = null;
         // Función para cargar el API de Google Maps
         function loadGoogleMapsApi() {
             const script = document.createElement('script');
@@ -877,12 +890,19 @@
             if (navigator.geolocation) {
                 navigator.geolocation.watchPosition(
                     (pos) => {
+
+                        ultimaPosicion = pos.coords; // 👈 guardamos siempre la última
+
                         const lat = pos.coords.latitude;
                         const lng = pos.coords.longitude;
                         const position = {
                             lat: lat,
                             lng: lng
                         };
+                        (err) => console.error("Error al obtener la ubicación:", err), {
+                            enableHighAccuracy: false,
+                            maximumAge: 10000
+                        }
 
                         if (!userMarker) {
                             // Primer marcador de tu posición
@@ -890,7 +910,7 @@
                                 position: position,
                                 map: map,
                                 icon: {
-                                    url: "{{asset('images/guardman.png')}}", // ícono guardia
+                                    url: "{{ asset('images/guardman.png') }}", // ícono guardia
                                     scaledSize: new google.maps.Size(48, 48), // tamaño
                                     anchor: new google.maps.Point(24, 24) // punto de anclaje al centro
                                 },
@@ -915,4 +935,81 @@
             }
         }
     </script>
+    <script>
+        function finalizarRonda() {
+            swal.fire({
+                title: 'Finalizar Ronda',
+                text: '¿Estás seguro de que deseas finalizar esta ronda?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, finalizar',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    swal.fire({
+                        title: 'Finalizando el recorrido...',
+                        text: 'Por favor espera unos segundos',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            swal.showLoading();
+                        }
+                    });
+                    if (ultimaPosicion) {
+                        Livewire.emit('finalizarRonda', ultimaPosicion.latitude, ultimaPosicion.longitude);
+                    } else {
+                        swal.fire({
+                            title: 'Error',
+                            text: 'No se pudo obtener tu ubicación. Intenta nuevamente.',
+                            icon: 'error'
+                        });
+                    }
+                }
+            });
+        }
+    </script>
+    {{-- <script>
+        function finalizarRonda() {
+            swal.fire({
+                title: 'Finalizar Ronda',
+                text: '¿Estás seguro de que deseas finalizar esta ronda?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, finalizar',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    swal.fire({
+                        title: 'Finalizando el recorrido...',
+                        text: 'Por favor espera unos segundos',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            swal.showLoading();
+                        }
+                    });
+                    if ("geolocation" in navigator) {
+                        navigator.geolocation.getCurrentPosition(function(position) {
+
+                            const latitud = position.coords.latitude;
+                            const longitud = position.coords.longitude;
+
+                            Livewire.emit('finalizarRonda', latitud, longitud);
+                        }, function(error) {
+                            swal.fire({
+                                title: 'Error',
+                                text: 'No se pudo obtener tu ubicación. Permite el acceso a la ubicación e intenta nuevamente.',
+                                icon: 'error'
+                            });
+                        });
+                    } else {
+                        swal.fire({
+                            title: 'Error',
+                            text: 'Tu dispositivo no soporta geolocalización',
+                            icon: 'error'
+                        });
+                    }
+                }
+            });
+
+        }
+    </script> --}}
 @endsection

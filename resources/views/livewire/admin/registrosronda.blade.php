@@ -1,11 +1,11 @@
 <div>
     @section('title')
-    Registro de Rondas
+        Registro de Rondas
     @endsection
     @section('content_header')
-    <div class="container-fluid">
-        <h4>Registro de Rondas</h4>
-    </div>
+        <div class="container-fluid">
+            <h4>Registro de Rondas</h4>
+        </div>
     @endsection
 
     <div class="container-fluid">
@@ -15,8 +15,11 @@
                 <label for="">Filtrar:</label>
                 <div class="row">
                     <div class="col-12 col-md-3 mb-3">
-                        {!! Form::select('cliente_id', $clientes, null,
-                        ['class'=>'form-control','placeholder'=>'Seleccione un cliente','wire:model'=>'cliente_id']) !!}
+                        {!! Form::select('cliente_id', $clientes, null, [
+                            'class' => 'form-control',
+                            'placeholder' => 'Seleccione un cliente',
+                            'wire:model' => 'cliente_id',
+                        ]) !!}
                     </div>
                     <div class="col-12 col-md-3">
                         <div class="input-group mb-3">
@@ -44,10 +47,10 @@
                     </div> --}}
                 </div>
                 <hr>
-                <div class="table-responsive">
-                    @if (!is_null($resultados))
+
+                @if (!is_null($resultados))
                     <div class="row w-100">
-                        <div class="col-12 col-md-8 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             <div class="input-group ">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="basic-addon1"><i
@@ -58,19 +61,16 @@
                                     wire:model.debounce.500ms='search'>
                             </div>
                         </div>
-                        <div class="col-12 col-md-2 mb-3">
+                        {{-- <div class="col-12 col-md-2 mb-3">
                             <button class="btn btn-success btn-block" wire:click='exporExcel'><i
                                     class="fas fa-file-excel"></i>
                                 Exportar</button>
                         </div>
                         <div class="col-12 col-md-2 mb-3">
-                            <a href="{{route('pdf.rondas')}}" class="btn btn-danger btn-block" target="_blank"><i
+                            <a href="{{ route('pdf.rondas') }}" class="btn btn-danger btn-block" target="_blank"><i
                                     class="fas fa-file-pdf"></i> Exportar</a>
-                        </div>
+                        </div> --}}
                     </div>
-
-                </div>
-
                 @endif
 
                 <div class="table-responsive">
@@ -80,38 +80,55 @@
                                 <th>ID</th>
                                 <th>CLIENTE</th>
                                 <th>GUARDIA</th>
-                                <th class="text-center">FECHA</th>
-                                <th class="text-center">HORA</th>
+                                <th class="text-center">DESCRIPCIÓN</th>
+                                <th class="text-center">INICIO</th>
+                                <th class="text-center">FINAL</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             @if (!is_null($resultados))
-                            @forelse ($resultados as $item)
-                            <tr>
-                                <td>{{$item->id}}</td>
-                                <td>{{$item->cliente}}</td>
-                                <td>{{$item->empleado}}</td>
-                                <td class="text-center">{{$item->fecha}}</td>
-                                <td class="text-center">{{$item->hora}}</td>
+                                @forelse ($resultados as $item)
+                                    <tr>
+                                        <td>{{ $item->id }}</td>
+                                        <td>{{ $item->cliente->nombre }}</td>
+                                        <td>{{ $item->user->name }}</td>
+                                        <td class="text-center">{{ $item->ronda->descripcion }}</td>
+                                        <td class="text-center">
+                                            <i class="fas fa-calendar text-primary"></i>
+                                            {{ \Carbon\Carbon::parse($item->inicio)->format('d/m/Y') }} |
+                                            <i class="fas fa-clock text-info"></i>
+                                            {{ \Carbon\Carbon::parse($item->inicio)->format('H:i:s') }}
+                                        </td>
+                                        <td class="text-center">
+                                            @if ($item->fin)
+                                                <i class="fas fa-calendar text-warning "></i>
+                                                {{ \Carbon\Carbon::parse($item->fin)->format('d/m/Y') }} |
+                                                <i class="fas fa-clock text-secondary"></i>
+                                                {{ \Carbon\Carbon::parse($item->fin)->format('H:i:s') }}
+                                            @elseif ($item->status === 'EN_PROGRESO')
+                                                <span class="badge badge-success">En progreso</span>
+                                            @else
+                                                <span class="badge badge-secondary">Sin registro</span>
+                                            @endif
 
-                                <td>
-                                    <button class="btn btn-info btn-sm" title="Ver info"
-                                        wire:click='verInfo({{$item->id}})' data-toggle='modal'
-                                        data-target='#modalInfo'>
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td class="text-center" colspan="7">No se econtraron resultados.</td>
-                            </tr>
-                            @endforelse
+                                        </td>
+                                        <td class="text-right">
+                                            <button class="btn btn-info btn-sm" title="Mas detalles"
+                                                wire:click="openModal({{ $item->id }})">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td class="text-center" colspan="7">No se econtraron resultados.</td>
+                                    </tr>
+                                @endforelse
                             @else
-                            <tr>
-                                <td class="text-center" colspan="7">No se econtraron resultados.</td>
-                            </tr>
+                                <tr>
+                                    <td class="text-center" colspan="7">No se econtraron resultados.</td>
+                                </tr>
                             @endif
                         </tbody>
                     </table>
@@ -119,107 +136,50 @@
             </div>
             <div class="d-flex justify-content-end">
                 @if (!is_null($resultados))
-                {{ $resultados->links() }}
+                    {{ $resultados->links() }}
                 @endif
 
             </div>
         </div>
     </div>
 
+
     <!-- Modal -->
-    <div class="modal fade" id="modalInfo" tabindex="-1" aria-labelledby="modalInfoLabel" aria-hidden="true"
-        wire:ignore.self>
-        <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="modalIframe" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalInfoLabel"><strong>INFO RONDA - ID: {{$ronda->id}}</strong></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">Detalles del Recorrido</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
-                    <div wire:loading>
+                <div class="modal-body p-0">
+                    @if ($modalUrl)
+                        <iframe id="iframeModal" src="{{ $modalUrl }}"
+                            style="width:100%; height:80vh; border:none;"></iframe>
+                    @endif
 
-                        <div class="spinner-border text-success" role="status">
-                            <span class="sr-only">Cargando...</span>
-                        </div>
-
-                    </div>
-                    <div wire:loading.remove>
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-
-                                <table class="table table-bordered table-striped">
-                                    <tr>
-                                        <td><strong>CLIENTE:</strong></td>
-                                        <td>{{$ronda->cliente}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>GUARDIA:</strong></td>
-                                        <td>{{$ronda->empleado}}</td>
-                                    </tr>
-
-                                    <tr>
-                                        <td><strong>TURNO:</strong></td>
-                                        <td>{{$ronda->turno}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>FECHA:</strong></td>
-                                        <td>{{$ronda->fecha}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>HORA:</strong></td>
-                                        <td>{{$ronda->hora}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>PUNTO CONTROL:</strong></td>
-                                        @if ($ronda->ctrlpunto)
-                                        <td>{{$ronda->ctrlpunto->nombre}}</td>
-                                        @endif
-
-                                    </tr>
-                                    <tr>
-                                        <td><strong>ANOTACIONES:</strong></td>
-                                        <td>{{$ronda->anotaciones}}</td>
-                                    </tr>
-                                    {{-- <tr>
-                                        <td><strong>MOTIVO:</strong></td>
-                                        <td>{{$visita->motivo}}</td>
-                                    </tr>
-                                    @if ($ronda->motivo =="Otros")
-                                    <tr>
-                                        <td><strong>OTROS:</strong></td>
-                                        <td>{{$ronda->otros}}</td>
-                                    </tr>
-                                    @endif
-                                    <tr>
-                                        <td><strong>OBSERVACIONES:</strong></td>
-                                        <td>{{$ronda->observaciones}}</td>
-                                    </tr> --}}
-
-                                </table>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                @if ($ronda->imgrondas->count()>0)
-                                <h6>CAPTURA:</h6>
-                                @foreach ($ronda->imgrondas as $item)
-                                <img src="{{asset('storage/'.$item->url)}}" class="img-fluid img-thumbnail">
-                                @endforeach
-
-                                @else
-                                <img src="{{asset('images/sinimagen.jpg')}}" class="img-fluid img-thumbnail"
-                                    style="max-height: 400px;">
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">CERRAR</button>
                 </div>
             </div>
         </div>
     </div>
+
+
+
 </div>
+@section('js')
+    <script>
+        // Escuchar evento de Livewire para abrir modal
+        window.addEventListener('openModal', event => {
+            $('#modalIframe').modal('show');
+        });
+
+        // Limpiar iframe al cerrar para liberar memoria
+        $('#modalIframe').on('hidden.bs.modal', function() {
+            document.getElementById('iframeModal').src = '';
+            @this.call('closeModal');
+        });
+    </script>
+@endsection

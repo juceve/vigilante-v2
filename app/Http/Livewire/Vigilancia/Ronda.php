@@ -11,6 +11,8 @@ class Ronda extends Component
     public $designacion;
     public function render()
     {
+
+
         $empleado_id = Auth::user()->empleados[0]->id;
         $designacion = null;
         $puntos = null;
@@ -23,6 +25,10 @@ class Ronda extends Component
 
                 $cliente = $designacion->turno->cliente;
             }
+        }
+        $ronda_id = tengoRondaIniciada(Auth::user()->id, $this->designacion->turno->cliente_id);
+        if ($ronda_id) {
+            redirect()->route('vigilancia.recorrido_ronda', $ronda_id);
         }
         return view('livewire.vigilancia.ronda', compact('cliente'))->extends('layouts.app');
     }

@@ -66,11 +66,11 @@
                                         data-toggle="modal" data-target="#modalEditar"
                                         wire:click='cargaTurno({{$turno->id}})'><i class="fas fa-edit"></i></button>
                                     @endcan
-                                    @can('turnos.ctrlpuntos')
+                                    {{-- @can('turnos.ctrlpuntos')
                                     <a href="{{route('puntoscontrolv2',$turno->id)}}"
                                         class="btn btn-outline-success btn-sm" title="Puntos de Control"><i
                                             class="fas fa-map-marked-alt"></i></a>
-                                    @endcan
+                                    @endcan --}}
                                     @can('turnos.destroy')
                                     <button class="btn btn-sm btn-outline-danger" onclick="eliminar({{ $turno->id }})"
                                         title="Eliminar de la DB"><i class="fas fa-trash"></i></button>

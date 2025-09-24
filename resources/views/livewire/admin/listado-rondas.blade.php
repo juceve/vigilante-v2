@@ -2,7 +2,13 @@
     @section('title', 'Rondas')
 
     <div class="content-header">
-        <h4 class="m-0 text-dark">Rondas - {{ $cliente->nombre }}</h4>
+         <div class="d-flex justify-content-between align-items-center mb-3">
+           <h4 class="m-0 text-dark">Rondas - {{ $cliente->nombre }}</h4>
+            <a href="{{ route('clientes.index') }}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+
     </div>
 
     <div class="card">

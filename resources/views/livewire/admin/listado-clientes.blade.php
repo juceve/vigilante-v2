@@ -77,6 +77,12 @@
                                         <a class="dropdown-item" href="javascript:void(0)" wire:click="generaLink({{ $cliente->id }})">
                                             <i class="fas fa-plus text-secondary"></i> Form. Propietarios</a>
                                     @endcan
+
+                                            <a class="dropdown-item" href="{{ route('clientes.rondas', $cliente->id) }}">
+                                                <i class="fas fa-street-view text-secondary"></i>
+                                                 Rondas
+                                            </a>
+
                                     @can('turnos.index')
                                         <a class="dropdown-item" href="{{ route('admin.turnos-cliente', $cliente->id) }}"><i
                                                 class="fas fa-clock text-secondary"></i> Turnos</a>
