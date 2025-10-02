@@ -272,6 +272,34 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Gestora</span>
+                                    </div>
+                                    <input type="number" step="any"
+                                        @if ($show) disabled @endif
+                                        class="form-control @error('gestora')
+                                    is-invalid
+                                @enderror"
+                                        placeholder="0.00" wire:model.defer="gestora">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Caja/Seguro</span>
+                                    </div>
+                                    <select @if ($show) disabled @endif
+                                        class="form-control @error('caja_seguro')
+                                    is-invalid
+                                @enderror"
+                                        wire:model.defer="caja_seguro">
+                                        <option value="0">NO</option>
+                                        <option value="1">SI</option>
+                                    </select>
+                                </div>
+                            </div>
                             @if ($edit || $show)
                                 <div class="col-12 col-md-6">
                                     <div class="input-group input-group-sm mb-3">

@@ -18,7 +18,7 @@ class Contratos extends Component
 {
 
     public $empleado, $procesando = false, $edit = false, $show = false, $selContrato;
-    public $rrhhtipocontratoid = "", $fecha_inicio = "", $fecha_fin = "", $salario_basico = "", $rrhhcargo_id = "", $moneda = "", $motivo_fin = "", $activo = '';
+    public $rrhhtipocontratoid = "", $fecha_inicio = "", $fecha_fin = "", $salario_basico = "", $rrhhcargo_id = "", $moneda = "", $motivo_fin = "", $activo = '', $gestora = '', $caja_seguro = 0;
     public $referencia = "";
     public $cantidad_dias = 0;
 
@@ -91,6 +91,8 @@ class Contratos extends Component
         $this->salario_basico = $this->selContrato->salario_basico;
         $this->rrhhcargo_id = $this->selContrato->rrhhcargo_id;
         $this->moneda = $this->selContrato->moneda;
+        $this->gestora = $this->selContrato->gestora;
+        $this->caja_seguro = $this->selContrato->caja_seguro;
         $this->motivo_fin = $this->selContrato->motivo_fin;
         $this->activo = $this->selContrato->activo;
         $this->edit = true;
@@ -118,6 +120,8 @@ class Contratos extends Component
                 $this->selContrato->salario_basico = $this->salario_basico;
                 $this->selContrato->rrhhcargo_id = $this->rrhhcargo_id;
                 $this->selContrato->moneda = $this->moneda;
+                $this->selContrato->gestora = $this->gestora;
+                $this->selContrato->caja_seguro = $this->caja_seguro;
                 $this->selContrato->activo = $this->activo;
                 $this->selContrato->motivo_fin = $this->motivo_fin ? $this->motivo_fin : NULL;
                 $this->selContrato->save();
@@ -161,7 +165,9 @@ class Contratos extends Component
                     "fecha_fin" => $this->fecha_fin ? $this->fecha_fin : NULL,
                     "salario_basico" => $this->salario_basico,
                     "rrhhcargo_id" => $this->rrhhcargo_id,
-                    "moneda" => $this->moneda
+                    "moneda" => $this->moneda,
+                    "gestora" => $this->gestora,
+                    "caja_seguro" => $this->caja_seguro,
                 ]);
                 DB::commit();
                 $this->limpiar();
