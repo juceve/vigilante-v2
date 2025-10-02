@@ -27,6 +27,11 @@ return new class extends Migration
             $table->string('cedulareverso')->nullable();
             $table->boolean('cubrerelevos')->default(false);
             $table->string('email', 100);
+            $table->string('enfermedades')->nullable();
+            $table->string('alergias')->nullable();
+            $table->string('persona_referencia')->nullable();
+            $table->string('telefono_referencia')->nullable();
+            $table->string('parentezco_referencia')->nullable();
             $table->foreignId('area_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('oficina_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();

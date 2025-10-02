@@ -94,6 +94,6 @@ class Designacione extends Model
     }
     public function dialibres()
     {
-        return $this->hasMany(DiaLibre::class);
+        return $this->hasMany(Dialibre::class,'designacione_id','id');
     }
 }

@@ -334,12 +334,12 @@ return [
                     'can'   =>  'rrhhsueldos.index',
                     'icon' => 'fas fa-fw fa-dollar-sign'
                 ],
-                [
-                    'text'  =>  'Control Asistencias',
-                    'route' =>  'rrhhctrlasistencias',
-                    'icon'  =>  'fas fa-user-clock',
-                    'can'   =>  'rrhhctrlasistencias',
-                ],
+                // [
+                //     'text'  =>  'Control Asistencias',
+                //     'route' =>  'rrhhctrlasistencias',
+                //     'icon'  =>  'fas fa-user-clock',
+                //     'can'   =>  'rrhhctrlasistencias',
+                // ],
                 [
                     'text'  =>  'Asistencias Web',
                     'route' =>  'admin.asistencias',

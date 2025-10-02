@@ -1,28 +1,68 @@
-const cacheName = 'vigilancia-cache-v1';
-const assetsToCache = [
-    '/',
-    '/css/styles.css',
+// Nombre del caché (cámbialo cuando actualices assets)
+const CACHE_NAME = 'vigilancia-static-v3';
+
+// Solo cachea archivos estáticos
+const ASSETS_TO_CACHE = [
+    '/css/app.css',
     '/web/js/scripts.js',
     '/images/logo_shield.png'
 ];
 
-// Instalación del SW
+// 🛠️ Instalación
 self.addEventListener('install', event => {
     event.waitUntil(
-        caches.open(cacheName)
-            .then(cache => cache.addAll(assetsToCache))
+        caches.open(CACHE_NAME).then(cache => {
+            return cache.addAll(ASSETS_TO_CACHE);
+        })
     );
+    self.skipWaiting(); // activa el SW sin esperar
 });
 
-// Activación
+// ♻️ Activación - limpia versiones viejas
 self.addEventListener('activate', event => {
-    console.log('Service Worker activado');
+    event.waitUntil(
+        caches.keys().then(keys => {
+            return Promise.all(
+                keys
+                    .filter(key => key !== CACHE_NAME)
+                    .map(key => caches.delete(key))
+            );
+        })
+    );
+    self.clients.claim();
 });
 
-// Interceptar requests
+// 🔍 Estrategia de fetch
 self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => response || fetch(event.request))
-    );
+    const request = event.request;
+
+    // Solo cachea assets estáticos por extensión
+    if (request.url.match(/\.(?:js|css|png|jpg|jpeg|svg|gif|woff2?)$/)) {
+        event.respondWith(
+            caches.open(CACHE_NAME).then(cache => {
+                return cache.match(request).then(cachedResponse => {
+                    if (cachedResponse) return cachedResponse;
+
+                    return fetch(request).then(networkResponse => {
+                        // ✅ Evitar error: solo cachear si es http/https
+                        if (request.url.startsWith('http')) {
+                            cache.put(request, networkResponse.clone());
+                        }
+                        return networkResponse;
+                    });
+                });
+            })
+        );
+    } else {
+        // 🧠 Para HTML y rutas dinámicas SIEMPRE trae desde el servidor
+        event.respondWith(
+            fetch(request).catch(() => {
+                // Opcional: servir un fallback si no hay red
+                return new Response(
+                    '<h1>Sin conexión</h1><p>No se pudo cargar la página.</p>',
+                    { headers: { 'Content-Type': 'text/html' } }
+                );
+            })
+        );
+    }
 });

@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('rrhhcontratos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('empleado_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('rrhhtipocontrato_id')->nullable()->constrained()->nullOnDelete();            
+            $table->foreignId('rrhhtipocontrato_id')->nullable()->constrained()->nullOnDelete();
             $table->date('fecha_inicio');
             $table->date('fecha_fin')->nullable();
             $table->float('salario_basico',10,2);
+            $table->float('gestora',10,2)->default(0);
+            $table->boolean('caja_seguro')->default(false);
             $table->foreignId('rrhhcargo_id')->nullable()->constrained()->nullOnDelete();
-            $table->enum('moneda',['BOL','USD'])->default('BOL');            
-            $table->string('motivo_fin')->nullable();            
+            $table->enum('moneda',['BOL','USD'])->default('BOL');
+            $table->string('motivo_fin')->nullable();
             $table->boolean('activo')->default(true);
             $table->timestamps();
         });

@@ -26,7 +26,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Desde</span>
                             </div>
-                            <input type="date" class="form-control" wire:model='inicio' aria-label="inicio"
+                            <input type="date" class="form-control" wire:model.debounce.999ms='inicio' aria-label="inicio"
                                 aria-describedby="basic-addon1">
                         </div>
 
@@ -36,7 +36,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Hasta</span>
                             </div>
-                            <input type="date" class="form-control" wire:model='final' aria-label="final"
+                            <input type="date" class="form-control" wire:model.debounce.999ms='final' aria-label="final"
                                 aria-describedby="basic-addon1">
                         </div>
 

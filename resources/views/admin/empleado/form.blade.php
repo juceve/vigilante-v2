@@ -1,4 +1,4 @@
-<div class="box box-info padding-1">
+   <div class="box box-info padding-1">
     <div class="box-body">
 
         <div class="row">
@@ -78,6 +78,46 @@
                     {{ Form::text('email', $empleado->email, ['class' => 'form-control' . ($errors->has('email') ? '
                     is-invalid' : ''), 'placeholder' => 'Correo']) }}
                     {!! $errors->first('email', '<div class="invalid-feedback">:message</div>') !!}
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    {{ Form::label('Padece Enfermedades') }}
+                    {{ Form::text('enfermedades', $empleado->enfermedades, ['class' => 'form-control' . ($errors->has('enfermedades') ? '
+                    is-invalid' : ''), 'placeholder' => 'Enfermedades que padece']) }}
+                    {!! $errors->first('enfermedades', '<div class="invalid-feedback">:message</div>') !!}
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    {{ Form::label('Padece Alergias') }}
+                    {{ Form::text('alergias', $empleado->alergias, ['class' => 'form-control' . ($errors->has('alergias') ? '
+                    is-invalid' : ''), 'placeholder' => 'Alergias que padece']) }}
+                    {!! $errors->first('alergias', '<div class="invalid-feedback">:message</div>') !!}
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    {{ Form::label('Persona Referencia') }}
+                    {{ Form::text('persona_referencia', $empleado->persona_referencia, ['class' => 'form-control' . ($errors->has('persona_referencia') ? '
+                    is-invalid' : ''), 'placeholder' => 'Nombre de Persona de Referencia']) }}
+                    {!! $errors->first('persona_referencia', '<div class="invalid-feedback">:message</div>') !!}
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="form-group">
+                    {{ Form::label('Parentezco Referencia') }}
+                    {!! Form::select('parentezco_referencia', ['ESPOSA'=>'ESPOSA','ESPOSO'=>'ESPOSO','HIJO/A'=>'HIJO/A','OTRO'=>'OTRO'],  $empleado->parentezco_referencia, ['class' => 'form-control' . ($errors->has('parentezco_referencia') ? '
+                    is-invalid' : ''),'placeholder'=>'- Elija una opción -']) !!}
+                    {!! $errors->first('parentezco_referencia', '<div class="invalid-feedback">:message</div>') !!}
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="form-group">
+                    {{ Form::label('Telef. Referencia') }}
+                    {{ Form::text('telefono_referencia', $empleado->telefono_referencia, ['class' => 'form-control' . ($errors->has('telefono_referencia') ? '
+                    is-invalid' : ''), 'placeholder' => 'Telefono referencia']) }}
+                    {!! $errors->first('telefono_referencia', '<div class="invalid-feedback">:message</div>') !!}
                 </div>
             </div>
             <div class="col-12 col-md-6">
@@ -228,7 +268,7 @@
 
 {{-- SOLO CAMBIO: JavaScript de Leaflet por Google Maps --}}
 @section('js')
-<script async defer 
+<script async defer
     src="https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.api_key') }}&callback=initMapEmpleado&loading=async">
 </script>
 <script>
@@ -239,12 +279,12 @@
         // Mismas coordenadas que tenías en Leaflet (usar existentes o coordenadas por defecto de Santa Cruz)
         const initialLat = {{ $empleado->direccionlat ? $empleado->direccionlat : -17.7817999 }};
         const initialLng = {{ $empleado->direccionlng ? $empleado->direccionlng : -63.1825485 }};
-        
-        const initialPosition = { 
-            lat: initialLat, 
-            lng: initialLng 
+
+        const initialPosition = {
+            lat: initialLat,
+            lng: initialLng
         };
-        
+
         // Crear mapa con mismo zoom que tenías (14)
         mapEmpleado = new google.maps.Map(document.getElementById("google_map_empleado"), {
             zoom: 14,
@@ -266,7 +306,7 @@
                                 <feDropShadow dx="2" dy="4" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
                             </filter>
                         </defs>
-                        <path d="M17.5 3 C24 3 29 8 29 14.5 C29 21 17.5 32 17.5 32 C17.5 32 6 21 6 14.5 C6 8 11 3 17.5 3 Z" 
+                        <path d="M17.5 3 C24 3 29 8 29 14.5 C29 21 17.5 32 17.5 32 C17.5 32 6 21 6 14.5 C6 8 11 3 17.5 3 Z"
                               fill="#E74C3C" filter="url(#shadow)"/>
                         <circle cx="17.5" cy="14.5" r="6" fill="#FFFFFF"/>
                         <circle cx="17.5" cy="14.5" r="4" fill="#C0392B"/>
@@ -282,16 +322,16 @@
             const position = markerEmpleado.getPosition();
             const lat = position.lat();
             const lng = position.lng();
-            
+
             // Actualizar los campos ocultos (igual que en Leaflet)
             document.getElementById('direccionlat').value = lat;
             document.getElementById('direccionlng').value = lng;
-            
+
             // Disparar evento keyup para cualquier validación (igual que tenías)
             const lngInput = document.getElementById('direccionlng');
             const event_keyup = new Event('keyup');
             lngInput.dispatchEvent(event_keyup);
-            
+
             // Mostrar popup con nueva ubicación (opcional)
             const infoWindow = new google.maps.InfoWindow({
                 content: `
@@ -302,7 +342,7 @@
                 `
             });
             infoWindow.open(mapEmpleado, markerEmpleado);
-            
+
             // Cerrar popup después de 3 segundos
             setTimeout(() => {
                 infoWindow.close();
@@ -314,9 +354,9 @@
 <script>
     function procesar(divName,idInput,id64){
     var srcEncoded;
-    
-    document.getElementById(divName).innerHTML='';    
-    
+
+    document.getElementById(divName).innerHTML='';
+
     const preview = document.getElementById(divName);
     const input = document.querySelector('#'+idInput);
         // const file = document.querySelector('#imageInput').files[0];
@@ -333,7 +373,7 @@
         reader.onload = function (event) {
             const imgElement = document.createElement("img");
             imgElement.src = event.target.result;
-            
+
 
             imgElement.onload = function (e) {
                 const canvas = document.createElement("canvas");
@@ -349,28 +389,28 @@
 
                 srcEncoded = ctx.canvas.toDataURL(e.target, "image/jpeg");
 
-                // document.querySelector("#output").src = srcEncoded;    
+                // document.querySelector("#output").src = srcEncoded;
                 // document.querySelector("#divOutput").classList.remove('d-none');
 
                 const resizedImg = new Image();
-                
+
                 resizedImg.src = srcEncoded;
                 if (divName=='fotoperfil') {
                     resizedImg.classList.add('img-preview');
                 } else {
                     resizedImg.classList.add('img-preview2');
                 }
-                
+
                 document.getElementById(id64).value=srcEncoded;
 
                 resizedImg.classList.add('img-thumbnail');
-                
+
                 preview.appendChild(resizedImg);
-                
+
             };
         };
     }
-    
+
 }
 </script>
 @endsection

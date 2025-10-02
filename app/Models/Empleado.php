@@ -23,7 +23,7 @@ class Empleado extends Model
      *
      * @var array
      */
-    protected $fillable = ['nombres', 'apellidos', 'tipodocumento_id', 'cedula', 'nacionalidad', 'direccion', 'direccionlat', 'direccionlng', 'telefono', 'imgperfil', 'cedulaanverso', 'cedulareverso', 'cubrerelevos', 'email', 'area_id', 'oficina_id', 'user_id'];
+    protected $fillable = ['nombres', 'apellidos', 'tipodocumento_id', 'cedula', 'nacionalidad', 'direccion', 'direccionlat', 'direccionlng', 'telefono', 'imgperfil', 'cedulaanverso', 'cedulareverso', 'cubrerelevos', 'email','enfermedades','alergias','persona_referencia','telefono_referencia','parentezco_referencia', 'area_id', 'oficina_id', 'user_id'];
 
 
     /**

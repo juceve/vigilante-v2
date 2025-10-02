@@ -45,6 +45,7 @@ class Registrosronda extends Component
 
     public function render()
     {
+        $this->emit('showLoading');
         $resultados = Rondaejecutada::with('ronda', 'cliente', 'user')
             ->when($this->cliente_id, function ($query) {
                 $query->where('cliente_id', $this->cliente_id);
@@ -67,8 +68,11 @@ class Registrosronda extends Component
             })
             ->orderBy('id', 'DESC')
             ->paginate(10);
+
+            $this->emit('hideLoading');
         return view('livewire.admin.registrosronda', compact('resultados'))->extends('adminlte::page');
     }
+
 
     public function verInfo($id)
     {

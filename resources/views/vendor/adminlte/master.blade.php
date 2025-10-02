@@ -521,7 +521,7 @@
         })
 
         Livewire.on('success', message => {
-            // Swal.fire('Excelente!',message,'success');  
+            // Swal.fire('Excelente!',message,'success');
             Swal.fire({
                 icon: 'success',
                 title: 'Excelente',
@@ -590,6 +590,24 @@
         });
     </script>
     <script>
+        Livewire.on('showLoading', () => {
+            Swal.fire({
+                title: 'Cargando...',
+                text: 'Por favor espera',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+        });
+
+        Livewire.on('hideLoading', () => {
+            swal.close();
+        });
+
+
         Livewire.on('toast-success', msg => {
             Swal.fire({
                 toast: true,

@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class Ronda extends Component
 {
-    public $designacion;
+    public $designacion = NULL;
     public function render()
     {
 

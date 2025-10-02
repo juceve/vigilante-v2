@@ -46,7 +46,7 @@ class Rrhhcontrato extends Model
      *
      * @var array
      */
-    protected $fillable = ['empleado_id', 'rrhhtipocontrato_id', 'fecha_inicio', 'fecha_fin', 'salario_basico', 'rrhhcargo_id', 'moneda', 'motivo_fin', 'activo'];
+    protected $fillable = ['empleado_id', 'rrhhtipocontrato_id', 'fecha_inicio', 'fecha_fin', 'salario_basico', 'gestora', 'caja_seguro', 'rrhhcargo_id', 'moneda', 'motivo_fin', 'activo'];
 
 
     /**

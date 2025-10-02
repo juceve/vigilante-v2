@@ -7,13 +7,13 @@
           <strong>Apellidos:</strong>
           {{ $empleado->apellidos }}
       </div>
-    
+
       <div class="col-12 col-md-6 mb-2">
           <strong>Nacionalidad:</strong>
           {{ $empleado->nacionalidad }}
       </div>
-      
-    
+
+
       <div class="col-12 col-md-6 mb-2">
           <strong>Area:</strong>
           {{ $empleado->area->nombre }}
@@ -46,7 +46,33 @@
   </div>
   <hr>
   <div class="row">
-     
+    <div class="col-12 col-md-6">
+       <small> <strong>Padece enfermedades:</strong></small> <br>
+          {{ $empleado->enfermedades??'N/A' }}
+    </div>
+    <div class="col-12 col-md-6">
+       <small> <strong>Padece alergias:</strong></small> <br>
+          {{ $empleado->alergias??'N/A' }}
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-12 col-md-6">
+        <small><strong>Persona Referencia:</strong></small> <br>
+          {{ $empleado->persona_referencia??'N/A' }}
+    </div>
+    <div class="col-12 col-md-3">
+        <small><strong>Parentezco:</strong></small> <br>
+          {{ $empleado->parentezco_referencia??'N/A' }}
+    </div>
+    <div class="col-12 col-md-3">
+        <small><strong>Telf. Ref.:</strong></small> <br>
+          {{ $empleado->telefono_referencia??'N/A' }}
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+
       <div class="col-12 col-md-4">
           <label>Cedula Anverso</label> <br>
           @if ($empleado->cedulaanverso)
@@ -78,13 +104,13 @@
         <script>
       function initMap() {
           const ubicacion = { lat: {{ $empleado->direccionlat }}, lng: {{ $empleado->direccionlng }} };
-          
+
           const map = new google.maps.Map(document.getElementById("mi_mapa"), {
               zoom: 17,
               center: ubicacion,
               mapId: "DEMO_MAP_ID" // Necesario para AdvancedMarkerElement
           });
-          
+
           // Usar el nuevo AdvancedMarkerElement en lugar del Marker deprecado
           const marker = new google.maps.marker.AdvancedMarkerElement({
               position: ubicacion,
@@ -92,7 +118,7 @@
               content: createCustomMarker()
           });
       }
-      
+
       function createCustomMarker() {
           const img = document.createElement('img');
           img.src = "{{ asset('images/punt.png') }}";
@@ -100,7 +126,7 @@
           img.style.height = '35px';
           return img;
       }
-      
+
       // Cargar Google Maps de forma asíncrona
       (function() {
           const script = document.createElement('script');

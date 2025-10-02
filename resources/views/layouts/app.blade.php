@@ -640,7 +640,7 @@
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('/service-worker.js')
-                    .then(reg => console.log('1'))
+                    .then(reg => console.log('Loaded App'))
                     .catch(err => console.error('0'));
             });
         }
