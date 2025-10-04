@@ -6,9 +6,11 @@ use App\Models\Empleado;
 use App\Models\Rrhhadelanto;
 use App\Models\Rrhhcargo;
 use App\Models\Rrhhcontrato;
+use App\Models\Rrhhdescuento;
 use App\Models\Rrhhestadodotacion;
 use App\Models\Rrhhtipobono;
 use App\Models\Rrhhtipocontrato;
+use App\Models\Rrhhtipodescuento;
 use App\Models\Rrhhtipopermiso;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -42,8 +44,9 @@ class RrhhKardexController extends Controller
         $tipopermisos = Rrhhtipopermiso::all();
         $optionsAdelantos = Rrhhadelanto::estadoOptions();
         $tipobonos = Rrhhtipobono::all();
+        $tipodescuentos = Rrhhtipodescuento::all();
         $estadoDots = Rrhhestadodotacion::all();
 
-        return view('admin.kardex.kardex', compact('empleado',  'contratoActivo', 'tipopermisos', 'optionsAdelantos', 'tipobonos', 'estadoDots'));
+        return view('admin.kardex.kardex', compact('empleado',  'contratoActivo', 'tipopermisos', 'optionsAdelantos', 'tipobonos', 'estadoDots','tipodescuentos'));
     }
 }

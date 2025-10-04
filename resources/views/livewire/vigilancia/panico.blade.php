@@ -2,7 +2,7 @@
     @section('title')
     Pánico
     @endsection
-    
+
     <!-- Header Corporativo -->
     <div class="panic-header">
         <div class="container">
@@ -42,7 +42,7 @@
         <!-- Botón de Llamada Manual -->
         <div class="call-section">
             <div class="call-card">
-                <a class="call-button" href="tel:+59178458561" id="llamar" onclick="llamada()">
+                <a class="call-button" href="tel:+591{{$parametrosgenerales->telefono_panico}}" id="llamar" onclick="llamada()">
                     <div class="call-icon">
                         <i class="fas fa-phone"></i>
                     </div>
@@ -60,7 +60,7 @@
                 <h4 class="info-title">INFORMACIÓN DE PÁNICO</h4>
                 <p class="info-subtitle">Complete los detalles del incidente</p>
             </div>
-            
+
             <div class="info-content">
                 <div class="row">
                     <!-- Multimedia -->
@@ -78,7 +78,7 @@
                                 <span class="error-message">{{ $message }}</span>
                                 @enderror
                                 @endforeach
-                                
+
                                 @if ($files)
                                 <div class="preview-section">
                                     <small class="preview-label">Vista previa:</small>
@@ -103,7 +103,7 @@
                                 <span>Informe</span>
                             </div>
                             <div class="card-body">
-                                <textarea class="report-textarea" id="txtinforme" 
+                                <textarea class="report-textarea" id="txtinforme"
                                     placeholder="Describa brevemente la situación de emergencia..."
                                     wire:model.lazy='informe'></textarea>
                             </div>
@@ -112,7 +112,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Botón de Envío -->
         <div class="submit-section">
             <button class="submit-button" id="enviar">
@@ -581,32 +581,32 @@
         .panic-content {
             padding: 0 0.5rem;
         }
-        
+
         .header-navigation {
             padding: 0.8rem 1rem;
         }
-        
+
         .title-text {
             font-size: 1.1rem;
         }
-        
+
         .emergency-card {
             padding: 1.5rem;
         }
-        
+
         .emergency-image {
             width: 60px;
             height: 60px;
         }
-        
+
         .emergency-title {
             font-size: 1.1rem;
         }
-        
+
         .call-button {
             padding: 1rem;
         }
-        
+
         .call-icon {
             width: 50px;
             height: 50px;
@@ -621,27 +621,27 @@
             --on-surface: #e2e8f0;
             --text-secondary: #94a3b8;
         }
-        
+
         body {
             background-color: var(--background-color);
             color: var(--on-surface);
         }
-        
+
         .emergency-card, .call-card, .media-card, .report-card, .info-header {
             background: var(--surface-color);
             border-color: var(--secondary-color);
         }
-        
+
         .header-navigation {
             background: rgba(30, 41, 59, 0.95);
         }
-        
+
         .file-input, .report-textarea {
             background: var(--surface-color);
             border-color: var(--secondary-color);
             color: var(--on-surface);
         }
-        
+
         .file-input:focus, .report-textarea:focus {
             border-color: var(--accent-color);
         }
@@ -656,7 +656,8 @@
 
         button.addEventListener('click', () => {
             button.disabled = true;
-            var telefono = document.getElementById('telephone');
+            // var telefono = document.getElementById('telephone');
+            var telefono = '{{$parametrosgenerales->telefono_panico}}';
             telefono.classList.remove('temblor');
             telefono.classList.add('greyscale');
         });
@@ -703,7 +704,8 @@
 
         function llamada() {
             button.disabled = true;
-            var telefono = document.getElementById('telephone');
+            // var telefono = document.getElementById('telephone');
+            var telefono = '{{$parametrosgenerales->telefono_panico}}';
             telefono.classList.remove('temblor');
             telefono.classList.add('greyscale');
             if (navigator.geolocation) {
@@ -736,7 +738,8 @@
 
         function paso1() {
             button.disabled = true;
-            var telefono = document.getElementById('telephone');
+            // var telefono = document.getElementById('telephone');
+            var telefono = '{{$parametrosgenerales->telefono_panico}}';
             telefono.classList.remove('temblor');
             telefono.classList.add('greyscale');
             Swal.fire({

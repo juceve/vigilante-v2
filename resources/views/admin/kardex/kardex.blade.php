@@ -70,6 +70,7 @@
 
                         <a href="{{ route('empleados.edit', $empleado->id) }}" class="btn btn-info btn-block"><b>Editar
                                 Datos <i class="fas fa-edit"></i></b></a>
+                        <a href="{{ route('pdf.kardex', $empleado->id) }}" target="_blank" class="btn btn-danger btn-block"><b>PDF Kardex <i class="fas fa-file-pdf"></i></i></b></a>
                     </div>
                     <!-- /.card-body -->
                 </div>
@@ -90,10 +91,12 @@
                                             data-toggle="tab">CONTRATOS</a></li>
                                     <li class="nav-item d-inline-block nav-permisos"><a class="nav-link" href="#permisos"
                                             data-toggle="tab">PERMISOS Y LICENCIAS</a></li>
+                                    <li class="nav-item d-inline-block nav-descuentos"><a class="nav-link" href="#descuentos"
+                                            data-toggle="tab">DESCUENTOS</a></li>
                                     <li class="nav-item d-inline-block nav-adelantos"><a class="nav-link" href="#adelantos"
                                             data-toggle="tab">ADELANTOS</a></li>
                                     <li class="nav-item d-inline-block nav-bonos"><a class="nav-link" href="#bonos"
-                                            data-toggle="tab">BONOS Y DESCUENTOS</a>
+                                            data-toggle="tab">BONOS</a>
                                     <li class="nav-item d-inline-block nav-dotaciones"><a class="nav-link" href="#dotaciones"
                                             data-toggle="tab">DOTACIONES</a>
                                         <!-- Más si querés -->
@@ -120,6 +123,9 @@
                             </div>
                             <!-- /.tab-pane -->
 
+                            <div class="tab-pane" id="descuentos">
+                                @include('admin.kardex.descuentos')
+                            </div>
                             <div class="tab-pane" id="adelantos">
                                 @include('admin.kardex.adelantos')
                             </div>

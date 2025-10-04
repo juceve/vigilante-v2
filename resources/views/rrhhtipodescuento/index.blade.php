@@ -1,10 +1,10 @@
 @extends('adminlte::page')
 
 @section('title')
-    Tipo de Bonos
+    Tipo de Descuentos
 @endsection
 @section('content_header')
-    <h4>Tipo de Bonos</h4>
+    <h4>Tipo de Descuentos</h4>
 @endsection
 @section('content')
     <div class="container-fluid">
@@ -15,12 +15,12 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
-                                Listado de Tipos de Bono
+                                Listado de Tipos de Descuentos
                             </span>
 
                             <div class="float-right">
-                                @can('rrhhtipobonos.create')
-                                    <a href="{{ route('rrhhtipobonos.create') }}" class="btn btn-info btn-sm float-right"
+                                @can('rrhhtipodescuentos.create')
+                                    <a href="{{ route('rrhhtipodescuentos.create') }}" class="btn btn-info btn-sm float-right"
                                         data-placement="left">
                                         Nuevo <i class="fas fa-plus"></i>
                                     </a>
@@ -38,31 +38,37 @@
 
                                         <th>Nombre</th>
                                         <th>Nombre Corto</th>
-                                        <th class="text-right">Monto</th>
+                                        <th>Monto</th>
 
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($rrhhtipobonos as $rrhhtipobono)
+                                    @foreach ($rrhhtipodescuentos as $rrhhtipodescuento)
                                         <tr>
                                             <td>{{ ++$i }}</td>
 
-                                            <td>{{ $rrhhtipobono->nombre }}</td>
-                                            <td>{{ $rrhhtipobono->nombre_corto }}</td>
-                                            <td class="text-right">{{ number_format($rrhhtipobono->monto,2,'.') }}</td>
+                                            <td>{{ $rrhhtipodescuento->nombre }}</td>
+                                            <td>{{ $rrhhtipodescuento->nombre_corto }}</td>
+                                            <td>{{ $rrhhtipodescuento->monto }}</td>
 
                                             <td class="text-right">
-                                                <form action="{{ route('rrhhtipobonos.destroy', $rrhhtipobono->id) }}" class="delete" onsubmit="return false"
-                                                    method="POST">
+                                                <form
+                                                    action="{{ route('rrhhtipodescuentos.destroy', $rrhhtipodescuento->id) }}"
+                                                    class="delete" onsubmit="return false;" method="POST">
+                                                    @can('rrhhtipodescuentos.edit')
+                                                        <a class="btn btn-sm btn-success"
+                                                            href="{{ route('rrhhtipodescuentos.edit', $rrhhtipodescuento->id) }}"
+                                                            title="Editar"><i class="fa fa-fw fa-edit"></i> </a>
+                                                    @endcan
 
-                                                    <a class="btn btn-sm btn-success"
-                                                        href="{{ route('rrhhtipobonos.edit', $rrhhtipobono->id) }}" title="Editar"><i
-                                                            class="fa fa-fw fa-edit"></i></a>
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" title="Eliminar DB"><i
-                                                            class="fa fa-fw fa-trash"></i></button>
+                                                    @can('rrhhtipodescuentos.destroy')
+                                                       <button type="submit" class="btn btn-danger btn-sm" title="Eliminar"><i
+                                                            class="fa fa-fw fa-trash"></i> </button>
+                                                    @endcan
+
                                                 </form>
                                             </td>
                                         </tr>

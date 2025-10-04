@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Vigilancia;
 use App\Models\Designacione;
 use App\Models\Imgregistro;
 use App\Models\Registroguardia;
+use App\Models\Sistemaparametro;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Support\Facades\Auth;
@@ -17,10 +18,11 @@ class Panico extends Component
 {
     use WithFileUploads;
 
-    public $files = [], $informe = "", $conUbicacion = true, $designacion = null;
+    public $files = [], $informe = "", $conUbicacion = true, $designacion = null, $parametrosgenerales;
 
     public function mount()
     {
+        $this->parametrosgenerales = Sistemaparametro::first();
         $empleado_id = Auth::user()->empleados[0]->id;
         if ($empleado_id) {
             $this->designacion = Designacione::where('fechaFin', '>=', date('Y-m-d'))->where('empleado_id', $empleado_id)->orderBy('fechaInicio', 'ASC')->first();
@@ -52,7 +54,6 @@ class Panico extends Component
                 DB::commit();
             } catch (\Throwable $th) {
                 DB::rollBack();
-                dd($th->getMessage());
             }
         }
     }

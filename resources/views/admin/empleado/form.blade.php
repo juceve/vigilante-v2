@@ -45,6 +45,14 @@
             </div>
             <div class="col-12 col-md-6">
                 <div class="form-group">
+                    {{ Form::label('Fecha Nacimiento') }}
+                    {{ Form::date('fecnacimiento', $empleado->fecnacimiento, ['class' => 'form-control' . ($errors->has('fecnacimiento') ? '
+                    is-invalid' : ''), 'placeholder' => 'Nro. Documento']) }}
+                    {!! $errors->first('fecnacimiento', '<div class="invalid-feedback">:message</div>') !!}
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
                     {{ Form::label('nacionalidad') }}
                     {{ Form::text('nacionalidad', $empleado->nacionalidad, ['class' => 'form-control' .
                     ($errors->has('nacionalidad') ? ' is-invalid' : ''), 'placeholder' => 'Nacionalidad']) }}
@@ -72,14 +80,7 @@
                     {!! $errors->first('telefono', '<div class="invalid-feedback">:message</div>') !!}
                 </div>
             </div>
-            <div class="col-12 col-md-6">
-                <div class="form-group">
-                    {{ Form::label('email') }}
-                    {{ Form::text('email', $empleado->email, ['class' => 'form-control' . ($errors->has('email') ? '
-                    is-invalid' : ''), 'placeholder' => 'Correo']) }}
-                    {!! $errors->first('email', '<div class="invalid-feedback">:message</div>') !!}
-                </div>
-            </div>
+
             <div class="col-12 col-md-6">
                 <div class="form-group">
                     {{ Form::label('Padece Enfermedades') }}
@@ -126,6 +127,14 @@
                     {!! Form::select('area_id', $areas, $empleado->area_id, ['class' => 'form-control', 'required' =>
                     'required', 'placeholder' => 'Seleccione una opción']) !!}
                     {!! $errors->first('area_id', '<div class="invalid-feedback">:message</div>') !!}
+                </div>
+            </div>
+             <div class="col-12 col-md-6">
+                <div class="form-group">
+                    {{ Form::label('email') }}
+                    {{ Form::text('email', $empleado->email, ['class' => 'form-control' . ($errors->has('email') ? '
+                    is-invalid' : ''), 'placeholder' => 'Correo']) }}
+                    {!! $errors->first('email', '<div class="invalid-feedback">:message</div>') !!}
                 </div>
             </div>
             <div class="col-12 col-md-6">

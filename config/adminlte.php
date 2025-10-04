@@ -488,10 +488,16 @@ return [
 
 
                 [
-                    'text' => 'Tipo Bonos-Descuentos',
+                    'text' => 'Tipo Bonos',
                     'route'  => 'rrhhtipobonos.index',
                     'can'   =>  'rrhhtipobonos.index',
                     'icon' => 'fas fa-funnel-dollar'
+                ],
+                [
+                    'text' => 'Tipo Descuentos',
+                    'route'  => 'rrhhtipodescuentos.index',
+                    'can'   =>  'rrhhtipodescuentos.index',
+                    'icon' => 'fas fa-search-dollar'
                 ],
                 [
                     'text' => 'Estado Dotaciones',
@@ -510,6 +516,12 @@ return [
                     'url'  => 'admin/areas',
                     'can'   =>  'areas.index',
                     'icon' => 'fas fa-fw fa-warehouse'
+                ],
+                [
+                    'text' => 'Parametros Generales',
+                    'route'  => 'sistemaparametros.index',
+                    'can'   =>  'sistemaparametros.index',
+                    'icon' => 'fas fa-fw fa-sliders-h'
                 ],
 
             ],

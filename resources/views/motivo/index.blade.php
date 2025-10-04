@@ -57,14 +57,14 @@
 
                                                     @can('motivos.edit')
                                                         <a class="btn btn-sm btn-success"
-                                                            href="{{ route('motivos.edit', $motivo->id) }}"><i
-                                                                class="fa fa-fw fa-edit"></i> {{ __('Editar') }}</a>
+                                                            href="{{ route('motivos.edit', $motivo->id) }}" title="Editar"><i
+                                                                class="fa fa-fw fa-edit"></i></a>
                                                     @endcan
                                                     @csrf
                                                     @method('DELETE')
                                                     @can('motivos.destroy')
-                                                        <button type="submit" class="btn btn-danger btn-sm"><i
-                                                                class="fa fa-fw fa-trash"></i> {{ __('Eliminar') }}</button>
+                                                        <button type="submit" class="btn btn-danger btn-sm" title="Eliminar"><i
+                                                                class="fa fa-fw fa-trash"></i></button>
                                                     @endcan
 
                                                 </form>

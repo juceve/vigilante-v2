@@ -80,7 +80,7 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'tareas.create',  'grupo' => 'TAREAS', 'descripcion' => 'Crear'])->assignRole([$role]);
         Permission::create(['name' => 'tareas.edit',  'grupo' => 'TAREAS', 'descripcion' => 'Editar'])->assignRole([$role]);
         Permission::create(['name' => 'tareas.destroy',  'grupo' => 'TAREAS', 'descripcion' => 'Eliminar'])->assignRole([$role]);
-       
+
         Permission::create(['name' => 'rrhhtipopermisos.index',  'grupo' => 'TIPO PERMISO', 'descripcion' => 'Ver listado'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhtipopermisos.create',  'grupo' => 'TIPO PERMISO', 'descripcion' => 'Crear'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhtipopermisos.edit',  'grupo' => 'TIPO PERMISO', 'descripcion' => 'Editar'])->assignRole([$role]);
@@ -102,17 +102,17 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'rrhhestados.destroy',  'grupo' => 'ESTADOS ASISTENCIA', 'descripcion' => 'Eliminar'])->assignRole([$role]);
 
         Permission::create(['name' => 'rrhhctrlasistencias',  'grupo' => 'CONTROL ASISTENCIA', 'descripcion' => 'Realizar controles'])->assignRole([$role]);
-        
+
         Permission::create(['name' => 'rrhhestadodotaciones.index',  'grupo' => 'ESTADOS DOTACIONES', 'descripcion' => 'Ver listado'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhestadodotaciones.create',  'grupo' => 'ESTADOS DOTACIONES', 'descripcion' => 'Crear'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhestadodotaciones.edit',  'grupo' => 'ESTADOS DOTACIONES', 'descripcion' => 'Editar'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhestadodotaciones.destroy',  'grupo' => 'ESTADOS DOTACIONES', 'descripcion' => 'Eliminar'])->assignRole([$role]);
-       
+
         Permission::create(['name' => 'rrhhtipobonos.index',  'grupo' => 'TIPO BONOS', 'descripcion' => 'Ver listado'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhtipobonos.create',  'grupo' => 'TIPO BONOS', 'descripcion' => 'Crear'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhtipobonos.edit',  'grupo' => 'TIPO BONOS', 'descripcion' => 'Editar'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhtipobonos.destroy',  'grupo' => 'TIPO BONOS', 'descripcion' => 'Eliminar'])->assignRole([$role]);
-       
+
         Permission::create(['name' => 'rrhhsueldos.index',  'grupo' => 'SUELDOS', 'descripcion' => 'Ver listado'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhsueldos.create',  'grupo' => 'SUELDOS', 'descripcion' => 'Crear'])->assignRole([$role]);
         Permission::create(['name' => 'rrhhsueldos.edit',  'grupo' => 'SUELDOS', 'descripcion' => 'Editar'])->assignRole([$role]);
@@ -129,15 +129,28 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'residencias.create',  'grupo' => 'RESIDENCIAS', 'descripcion' => 'Crear'])->assignRole([$role]);
         Permission::create(['name' => 'residencias.edit',  'grupo' => 'RESIDENCIAS', 'descripcion' => 'Editar'])->assignRole([$role]);
         Permission::create(['name' => 'residencias.destroy',  'grupo' => 'RESIDENCIAS', 'descripcion' => 'Eliminar'])->assignRole([$role]);
-       
-        Permission::create(['name' => 'propietarios.index',  'grupo' => 'PROPIETARIOS', 'descripcion' => 'Ver listado'])->assignRole([$role]);       
+
+        Permission::create(['name' => 'propietarios.index',  'grupo' => 'PROPIETARIOS', 'descripcion' => 'Ver listado'])->assignRole([$role]);
         Permission::create(['name' => 'propietarios.create',  'grupo' => 'PROPIETARIOS', 'descripcion' => 'Crear'])->assignRole([$role]);
         Permission::create(['name' => 'propietarios.edit',  'grupo' => 'PROPIETARIOS', 'descripcion' => 'Editar'])->assignRole([$role]);
         Permission::create(['name' => 'propietarios.destroy',  'grupo' => 'PROPIETARIOS', 'descripcion' => 'Eliminar'])->assignRole([$role]);
-       
-        Permission::create(['name' => 'motivos.index',  'grupo' => 'MOTIVO VISITA', 'descripcion' => 'Ver listado'])->assignRole([$role]);       
+
+        Permission::create(['name' => 'motivos.index',  'grupo' => 'MOTIVO VISITA', 'descripcion' => 'Ver listado'])->assignRole([$role]);
         Permission::create(['name' => 'motivos.create',  'grupo' => 'MOTIVO VISITA', 'descripcion' => 'Crear'])->assignRole([$role]);
         Permission::create(['name' => 'motivos.edit',  'grupo' => 'MOTIVO VISITA', 'descripcion' => 'Editar'])->assignRole([$role]);
         Permission::create(['name' => 'motivos.destroy',  'grupo' => 'MOTIVO VISITA', 'descripcion' => 'Eliminar'])->assignRole([$role]);
+
+        Permission::create(['name' => 'rrhhtipodescuentos.index',  'grupo' => 'TIPO DESCUENTO', 'descripcion' => 'Ver listado'])->assignRole([$role]);
+        Permission::create(['name' => 'rrhhtipodescuentos.create',  'grupo' => 'TIPO DESCUENTO', 'descripcion' => 'Crear'])->assignRole([$role]);
+        Permission::create(['name' => 'rrhhtipodescuentos.edit',  'grupo' => 'TIPO DESCUENTO', 'descripcion' => 'Editar'])->assignRole([$role]);
+        Permission::create(['name' => 'rrhhtipodescuentos.destroy',  'grupo' => 'TIPO DESCUENTO', 'descripcion' => 'Eliminar'])->assignRole([$role]);
+
+        Permission::create(['name' => 'rrhhdescuentos.index',  'grupo' => 'DESCUENTOS', 'descripcion' => 'Ver listado'])->assignRole([$role]);
+        Permission::create(['name' => 'rrhhdescuentos.create',  'grupo' => 'DESCUENTOS', 'descripcion' => 'Crear'])->assignRole([$role]);
+        Permission::create(['name' => 'rrhhdescuentos.edit',  'grupo' => 'DESCUENTOS', 'descripcion' => 'Editar'])->assignRole([$role]);
+        Permission::create(['name' => 'rrhhdescuentos.destroy',  'grupo' => 'DESCUENTOS', 'descripcion' => 'Eliminar'])->assignRole([$role]);
+
+        Permission::create(['name' => 'sistemaparametros.index',  'grupo' => 'PARAMETROS GENERALES', 'descripcion' => 'Ver listado'])->assignRole([$role]);
+        Permission::create(['name' => 'sistemaparametros.edit',  'grupo' => 'PARAMETROS GENERALES', 'descripcion' => 'Editar'])->assignRole([$role]);
     }
 }

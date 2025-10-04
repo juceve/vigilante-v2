@@ -12,6 +12,10 @@
           <strong>Nacionalidad:</strong>
           {{ $empleado->nacionalidad }}
       </div>
+      <div class="col-12 col-md-6 mb-2">
+          <strong>Fecha Nacimiento:</strong>
+          {{ $empleado->fecnacimiento }}
+      </div>
 
 
       <div class="col-12 col-md-6 mb-2">
@@ -46,29 +50,29 @@
   </div>
   <hr>
   <div class="row">
-    <div class="col-12 col-md-6">
-       <small> <strong>Padece enfermedades:</strong></small> <br>
-          {{ $empleado->enfermedades??'N/A' }}
-    </div>
-    <div class="col-12 col-md-6">
-       <small> <strong>Padece alergias:</strong></small> <br>
-          {{ $empleado->alergias??'N/A' }}
-    </div>
+      <div class="col-12 col-md-6">
+          <small> <strong>Padece enfermedades:</strong></small> <br>
+          {{ $empleado->enfermedades ?? 'N/A' }}
+      </div>
+      <div class="col-12 col-md-6">
+          <small> <strong>Padece alergias:</strong></small> <br>
+          {{ $empleado->alergias ?? 'N/A' }}
+      </div>
   </div>
   <hr>
   <div class="row">
-    <div class="col-12 col-md-6">
-        <small><strong>Persona Referencia:</strong></small> <br>
-          {{ $empleado->persona_referencia??'N/A' }}
-    </div>
-    <div class="col-12 col-md-3">
-        <small><strong>Parentezco:</strong></small> <br>
-          {{ $empleado->parentezco_referencia??'N/A' }}
-    </div>
-    <div class="col-12 col-md-3">
-        <small><strong>Telf. Ref.:</strong></small> <br>
-          {{ $empleado->telefono_referencia??'N/A' }}
-    </div>
+      <div class="col-12 col-md-6">
+          <small><strong>Persona Referencia:</strong></small> <br>
+          {{ $empleado->persona_referencia ?? 'N/A' }}
+      </div>
+      <div class="col-12 col-md-3">
+          <small><strong>Parentezco:</strong></small> <br>
+          {{ $empleado->parentezco_referencia ?? 'N/A' }}
+      </div>
+      <div class="col-12 col-md-3">
+          <small><strong>Telf. Ref.:</strong></small> <br>
+          {{ $empleado->telefono_referencia ?? 'N/A' }}
+      </div>
   </div>
   <hr>
   <div class="row">
@@ -101,41 +105,45 @@
       </div>
   @endif
   @section('js')
-        <script>
-      function initMap() {
-          const ubicacion = { lat: {{ $empleado->direccionlat }}, lng: {{ $empleado->direccionlng }} };
+      <script>
+          function initMap() {
+              const ubicacion = {
+                  lat: {{ $empleado->direccionlat ?? '-17.783604' }},
+                  lng: {{ $empleado->direccionlng ?? '-63.180395' }}
+              };
 
-          const map = new google.maps.Map(document.getElementById("mi_mapa"), {
-              zoom: 17,
-              center: ubicacion,
-              mapId: "DEMO_MAP_ID" // Necesario para AdvancedMarkerElement
-          });
+              const map = new google.maps.Map(document.getElementById("mi_mapa"), {
+                  zoom: 17,
+                  center: ubicacion,
+                  mapId: "DEMO_MAP_ID" // Necesario para AdvancedMarkerElement
+              });
 
-          // Usar el nuevo AdvancedMarkerElement en lugar del Marker deprecado
-          const marker = new google.maps.marker.AdvancedMarkerElement({
-              position: ubicacion,
-              map: map,
-              content: createCustomMarker()
-          });
-      }
+              // Usar el nuevo AdvancedMarkerElement en lugar del Marker deprecado
+              const marker = new google.maps.marker.AdvancedMarkerElement({
+                  position: ubicacion,
+                  map: map,
+                  content: createCustomMarker()
+              });
+          }
 
-      function createCustomMarker() {
-          const img = document.createElement('img');
-          img.src = "{{ asset('images/punt.png') }}";
-          img.style.width = '35px';
-          img.style.height = '35px';
-          return img;
-      }
+          function createCustomMarker() {
+              const img = document.createElement('img');
+              img.src = "{{ asset('images/punt.png') }}";
+              img.style.width = '35px';
+              img.style.height = '35px';
+              return img;
+          }
 
-      // Cargar Google Maps de forma asíncrona
-      (function() {
-          const script = document.createElement('script');
-          script.src = 'https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.api_key') }}&loading=async&libraries=marker&callback=initMap';
-          script.async = true;
-          script.defer = true;
-          document.head.appendChild(script);
-      })();
-  </script>
+          // Cargar Google Maps de forma asíncrona
+          (function() {
+              const script = document.createElement('script');
+              script.src =
+                  'https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.api_key') }}&loading=async&libraries=marker&callback=initMap';
+              script.async = true;
+              script.defer = true;
+              document.head.appendChild(script);
+          })();
+      </script>
   @endsection
 
   <style>
