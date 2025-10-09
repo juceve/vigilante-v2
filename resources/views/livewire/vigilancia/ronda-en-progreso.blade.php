@@ -66,38 +66,5 @@
 
 </div>
 @section('js2')
-    <script>
-        let latitud = null;
-        let longitud = null;
 
-        function obtenerUbicacion() {
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    latitud = position.coords.latitude;
-                    longitud = position.coords.longitude;
-                    Livewire.emit('registrarUbicacion', latitud, longitud);
-                    console.log(`OK`);
-                }, function(error) {
-                    console.error("Error al obtener la ubicación:", error);
-                    location.reload();
-                }, {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
-                });
-            } else {
-                console.error("La geolocalización no está disponible en este navegador.");
-            }
-        }
-
-        window.onload = function() {
-            @if ($rondaejecutada_id)
-                // Obtener la ubicación inmediatamente después de que la página haya cargado
-                obtenerUbicacion();
-
-                // Obtener la ubicación cada 1 minutos (60,000 milisegundos)
-                setInterval(obtenerUbicacion, 90 * 1000);
-            @endif
-        };
-    </script>
 @endsection

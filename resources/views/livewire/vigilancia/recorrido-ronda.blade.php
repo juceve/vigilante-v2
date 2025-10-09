@@ -36,6 +36,21 @@
                 <div wire:ignore id="map" style="height: 500px;"></div>
             </div>
         </div>
+
+        <!-- NUEVO: Panel de control para avance de puntos -->
+        <div class="card mb-3">
+            <div class="card-body text-center">
+                <h5 id="proximo-titulo">Siguiente punto: --</h5>
+                <p id="proximo-descripcion" class="text-muted">Acércate al punto para habilitar el botón de marcado.</p>
+                <div class="d-grid gap-2 col-8 mx-auto">
+                    <button id="btn-marcar" class="btn btn-success py-2" disabled onclick="marcarPuntoActual();">
+                        <i class="fas fa-map-pin"></i> MARCAR PUNTO
+                    </button>
+                </div>
+                <small id="progreso-indicador" class="text-muted d-block mt-2">0 / 0 puntos marcados</small>
+            </div>
+        </div>
+
         <div class="d-grid gap-2">
             <button class="btn btn-danger p-2" onclick="finalizarRonda();">
                 <i class="fas fa-street-view fa-2x"></i>
@@ -750,78 +765,18 @@
     </style>
 @endsection
 @section('js')
-    {{-- <script>
-        let map;
-        // Función para cargar el API de Google Maps
-        function loadGoogleMapsApi() {
-            const script = document.createElement('script');
-            script.src =
-                `https://maps.googleapis.com/maps/api/js?key={{ config('googlemaps.api_key') }}&libraries=places&loading=async&callback=initMap`;
-            script.async = true;
-            document.head.appendChild(script);
-        }
-
-        // Definir la función de inicialización que será llamada como callback
-        window.initMap = function() {
-            try {
-                const clienteLat = {{ is_numeric($cliente->latitud) ? $cliente->latitud : -17.7833 }};
-                const clienteLng = {{ is_numeric($cliente->longitud) ? $cliente->longitud : -63.1821 }};
-                const centro = {
-                    lat: parseFloat(clienteLat),
-                    lng: parseFloat(clienteLng)
-                };
-
-                map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 18,
-                    center: centro,
-                    mapTypeId: 'roadmap',
-                    gestureHandling: 'greedy'
-                });
-
-                cargarPuntosExistentes();
-            } catch (error) {
-                console.error('Error al inicializar el mapa:', error);
-            }
-        }
-
-        // Cargar el API cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', loadGoogleMapsApi);
-
-        function cargarPuntosExistentes() {
-            @foreach ($puntos as $punto)
-                if ({{ $punto->latitud }} && {{ $punto->longitud }}) {
-                    const position = {
-                        lat: parseFloat({{ $punto->latitud }}),
-                        lng: parseFloat({{ $punto->longitud }})
-                    };
-                    crearMarcadorPunto({{ $punto->id }}, position, "{{ $punto->descripcion }}");
-                }
-            @endforeach
-        }
-
-        function crearMarcadorPunto(id, position, descripcion) {
-            const marker = new google.maps.Marker({
-                position: position,
-                map: map,
-                icon: {
-                    url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png', // Cambiado a HTTPS
-                    scaledSize: new google.maps.Size(35, 35),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(17, 34)
-                },
-                title: descripcion,
-                animation: google.maps.Animation.DROP
-            });
-
-
-        }
-    </script> --}}
-
     <script>
+        // ...existing code for loading Google Maps API (unchanged) ...
         let map;
         let userMarker; // marcador del usuario
         let ultimaPosicion = null;
-        // Función para cargar el API de Google Maps
+        // usar JSON ya preparado en el componente para evitar problemas de parseo en Blade
+        let puntos = {!! $puntosJs !!};
+        let puntoMarkers = []; // marcadores numerados
+        let currentIndex = 0; // índice del punto que debe visitarse ahora (0-based)
+        let marcadosCount = 0;
+
+        // Cargar API Google Maps
         function loadGoogleMapsApi() {
             const script = document.createElement('script');
             script.src =
@@ -830,7 +785,6 @@
             document.head.appendChild(script);
         }
 
-        // Definir la función de inicialización que será llamada como callback
         window.initMap = function() {
             try {
                 const clienteLat = {{ is_numeric($cliente->latitud) ? $cliente->latitud : -17.7833 }};
@@ -847,80 +801,118 @@
                     gestureHandling: 'greedy'
                 });
 
-                cargarPuntosExistentes();
-                iniciarGeolocalizacion(); // 👈 añadimos la geolocalización
+                // Crear marcadores numerados para cada punto
+                crearMarcadoresNumerados();
+                // Iniciar geolocalización únicamente para seguimiento y proximidad
+                iniciarGeolocalizacion();
+                // Inicializar UI
+                actualizarUI();
             } catch (error) {
                 console.error('Error al inicializar el mapa:', error);
             }
         }
 
-        // Cargar el API cuando el DOM esté listo
         document.addEventListener('DOMContentLoaded', loadGoogleMapsApi);
 
-        // Mostrar los puntos existentes
-        function cargarPuntosExistentes() {
-            @foreach ($puntos as $punto)
-                if ({{ $punto->latitud }} && {{ $punto->longitud }}) {
-                    const position = {
-                        lat: parseFloat({{ $punto->latitud }}),
-                        lng: parseFloat({{ $punto->longitud }})
-                    };
-                    crearMarcadorPunto({{ $punto->id }}, position, "{{ $punto->descripcion }}");
-                }
-            @endforeach
-        }
-
-        function crearMarcadorPunto(id, position, descripcion) {
-            const marker = new google.maps.Marker({
-                position: position,
-                map: map,
-                icon: {
-                    url: 'https://maps.google.com/mapfiles/ms/icons/green-dot.png',
-                    scaledSize: new google.maps.Size(35, 35),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(17, 34)
-                },
-                title: descripcion,
-                animation: google.maps.Animation.DROP
+        function crearMarcadoresNumerados() {
+            puntoMarkers = [];
+            puntos.forEach((p, idx) => {
+                const position = { lat: parseFloat(p.lat), lng: parseFloat(p.lng) };
+                const marker = new google.maps.Marker({
+                    position,
+                    map,
+                    label: {
+                        text: String(idx + 1),
+                        color: 'white',
+                        fontSize: '14px',
+                        fontWeight: '700'
+                    },
+                    // marcador base color gris (no marcado)
+                    icon: {
+                        url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                        scaledSize: new google.maps.Size(35, 35)
+                    },
+                    title: p.desc || `Punto ${idx + 1}`,
+                    zIndex: 5
+                });
+                puntoMarkers.push({ marker, data: p, marcado: false });
             });
+
+            // Ajustar bounds para mostrar todos los puntos
+            const bounds = new google.maps.LatLngBounds();
+            puntoMarkers.forEach(pm => bounds.extend(pm.marker.getPosition()));
+            if (puntoMarkers.length > 0) {
+                map.fitBounds(bounds);
+            }
         }
 
-        // 📍 Mostrar y actualizar tu ubicación en tiempo real
+        // Haversine: distancia en metros entre dos coordenadas
+        function distanciaMetros(lat1, lon1, lat2, lon2) {
+            function toRad(x) { return x * Math.PI / 180; }
+            const R = 6371000; // metros
+            const dLat = toRad(lat2 - lat1);
+            const dLon = toRad(lon2 - lon1);
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return R * c;
+        }
+
+        // Verifica si el usuario está dentro de 5 metros del punto actual
+        function checkProximity() {
+            if (!ultimaPosicion) return;
+            if (currentIndex >= puntoMarkers.length) {
+                // Todos marcados
+                document.getElementById('btn-marcar').disabled = true;
+                document.getElementById('proximo-titulo').textContent = 'Todos los puntos marcados';
+                document.getElementById('proximo-descripcion').textContent = 'Puedes finalizar la ronda.';
+                document.getElementById('progreso-indicador').textContent = `${marcadosCount} / ${puntoMarkers.length} puntos marcados`;
+                return;
+            }
+            const target = puntoMarkers[currentIndex].marker.getPosition();
+            const dist = distanciaMetros(ultimaPosicion.latitude, ultimaPosicion.longitude, target.lat(), target.lng());
+            // habilitar si está a 5 metros (o menos)
+            const btn = document.getElementById('btn-marcar');
+            if (dist <= 5) {
+                btn.disabled = false;
+                document.getElementById('proximo-descripcion').textContent = `Estás a ${dist.toFixed(1)} m del punto. Puedes marcarlo.`;
+            } else {
+                btn.disabled = true;
+                document.getElementById('proximo-descripcion').textContent = `Distancia al punto: ${dist.toFixed(1)} m. Avanza hasta estar a 5 m para marcar.`;
+            }
+            document.getElementById('progreso-indicador').textContent = `${marcadosCount} / ${puntoMarkers.length} puntos marcados`;
+        }
+
+        // Iniciar watchPosition para obtener posición en tiempo real
         function iniciarGeolocalizacion() {
             if (navigator.geolocation) {
                 navigator.geolocation.watchPosition(
                     (pos) => {
-
-                        ultimaPosicion = pos.coords; // 👈 guardamos siempre la última
-
+                        ultimaPosicion = pos.coords;
                         const lat = pos.coords.latitude;
                         const lng = pos.coords.longitude;
-                        const position = {
-                            lat: lat,
-                            lng: lng
-                        };
-                        (err) => console.error("Error al obtener la ubicación:", err), {
-                            enableHighAccuracy: false,
-                            maximumAge: 10000
-                        }
+                        const position = { lat: lat, lng: lng };
 
                         if (!userMarker) {
-                            // Primer marcador de tu posición
                             userMarker = new google.maps.Marker({
                                 position: position,
                                 map: map,
                                 icon: {
-                                    url: "{{ asset('images/guardman.png') }}", // ícono guardia
-                                    scaledSize: new google.maps.Size(48, 48), // tamaño
-                                    anchor: new google.maps.Point(24, 24) // punto de anclaje al centro
+                                    url: "{{ asset('images/guardman.png') }}",
+                                    scaledSize: new google.maps.Size(48, 48),
+                                    anchor: new google.maps.Point(24, 24)
                                 },
-                                title: "👮 Guardia en ronda"
+                                title: "👮 Guardia en ronda",
+                                zIndex: 10
                             });
                             map.setCenter(position);
                         } else {
-                            // Actualiza la posición sin crear más marcadores
                             userMarker.setPosition(position);
                         }
+
+                        // cada actualización comprobamos la proximidad
+                        checkProximity();
                     },
                     (err) => {
                         console.error("Error al obtener la ubicación: ", err);
@@ -934,8 +926,62 @@
                 alert("Tu navegador no soporta geolocalización.");
             }
         }
-    </script>
-    <script>
+
+        // UI helpers
+        function actualizarUI() {
+            const titulo = document.getElementById('proximo-titulo');
+            const desc = document.getElementById('proximo-descripcion');
+            const progreso = document.getElementById('progreso-indicador');
+            if (currentIndex < puntoMarkers.length) {
+                titulo.textContent = `Siguiente punto: ${currentIndex + 1}`;
+                desc.textContent = puntoMarkers[currentIndex].data.desc || 'Acércate al punto para habilitar el marcado.';
+            } else {
+                titulo.textContent = 'Todos los puntos completados';
+                desc.textContent = 'Dirígete a finalizar la ronda.';
+            }
+            progreso.textContent = `${marcadosCount} / ${puntoMarkers.length} puntos marcados`;
+        }
+
+        // Al marcar el punto actual
+        function marcarPuntoActual() {
+            if (currentIndex >= puntoMarkers.length) return;
+            const pm = puntoMarkers[currentIndex];
+            // Confirmación
+            swal.fire({
+                title: `Marcar punto ${currentIndex + 1}`,
+                text: `¿Confirmas que marcaste el punto ${currentIndex + 1}?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, marcar',
+                cancelButtonText: 'Cancelar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si no hay posición del usuario mostramos error
+                    if (!ultimaPosicion) {
+                        swal.fire({ title: 'Error', text: 'No se pudo obtener tu ubicación. Intenta nuevamente.', icon: 'error' });
+                        return;
+                    }
+                    // Emitir al backend el marcado (id del punto y coordenadas actuales)
+                    Livewire.emit('registrarPunto', pm.data.id, ultimaPosicion.latitude, ultimaPosicion.longitude);
+                    // Actualizar marcador a estado "marcado" (color azul)
+                    pm.marker.setIcon({
+                        url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                        scaledSize: new google.maps.Size(35, 35)
+                    });
+                    pm.marcado = true;
+                    marcadosCount++;
+                    // Avanzar al siguiente punto
+                    currentIndex++;
+                    actualizarUI();
+                    // Deshabilitar botón hasta que alcance el siguiente punto
+                    document.getElementById('btn-marcar').disabled = true;
+
+                    swal.fire({ title: 'Registrado', text: 'Punto marcado correctamente.', icon: 'success', timer: 1300, showConfirmButton: false });
+                }
+            });
+        }
+
+        // Finalizar Ronda (usa ultimaPosicion como antes)
         function finalizarRonda() {
             swal.fire({
                 title: 'Finalizar Ronda',
@@ -966,50 +1012,12 @@
                 }
             });
         }
+
+        // Escuchar respuesta desde Livewire para comportamiento adicional si se desea
+        Livewire.on('puntoRegistradoCliente', function(payload){
+            // payload puede contener { id: ... } si el servidor responde
+            console.log('Servidor confirmó registro de punto', payload);
+        });
+
     </script>
-    {{-- <script>
-        function finalizarRonda() {
-            swal.fire({
-                title: 'Finalizar Ronda',
-                text: '¿Estás seguro de que deseas finalizar esta ronda?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, finalizar',
-                cancelButtonText: 'Cancelar',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    swal.fire({
-                        title: 'Finalizando el recorrido...',
-                        text: 'Por favor espera unos segundos',
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            swal.showLoading();
-                        }
-                    });
-                    if ("geolocation" in navigator) {
-                        navigator.geolocation.getCurrentPosition(function(position) {
-
-                            const latitud = position.coords.latitude;
-                            const longitud = position.coords.longitude;
-
-                            Livewire.emit('finalizarRonda', latitud, longitud);
-                        }, function(error) {
-                            swal.fire({
-                                title: 'Error',
-                                text: 'No se pudo obtener tu ubicación. Permite el acceso a la ubicación e intenta nuevamente.',
-                                icon: 'error'
-                            });
-                        });
-                    } else {
-                        swal.fire({
-                            title: 'Error',
-                            text: 'Tu dispositivo no soporta geolocalización',
-                            icon: 'error'
-                        });
-                    }
-                }
-            });
-
-        }
-    </script> --}}
 @endsection

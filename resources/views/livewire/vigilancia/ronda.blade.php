@@ -757,37 +757,54 @@
     @section('js')
         <script>
             function iniciarRonda(rondaId) {
-                if ("geolocation" in navigator) {
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        const latitud = position.coords.latitude;
-                        const longitud = position.coords.longitude;
+                // Mostrar confirmación inmediatamente (evita el retardo causado por obtener la ubicación antes)
+                swal.fire({
+                    title: 'Iniciar Ronda',
+                    text: '¿Estás seguro de que deseas iniciar esta ronda?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, iniciar',
+                    cancelButtonText: 'Cancelar',
+                }).then((result) => {
+                    if (!result.isConfirmed) return;
 
-                        swal.fire({
-                            title: 'Iniciar Ronda',
-                            text: '¿Estás seguro de que deseas iniciar esta ronda?',
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonText: 'Sí, iniciar',
-                            cancelButtonText: 'Cancelar',
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                Livewire.emit('iniciarRonda', rondaId, latitud, longitud);
-                            }
+                    // Mostrar mensaje de carga mientras se obtiene la ubicación
+                    swal.fire({
+                        title: 'Obteniendo ubicación...',
+                        text: 'Por favor espera mientras detectamos tu posición',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            swal.showLoading();
+                        }
+                    });
+
+                    if ("geolocation" in navigator) {
+                        // Timeout razonable para no dejar la alerta colgada demasiado tiempo
+                        navigator.geolocation.getCurrentPosition(function(position) {
+                            const latitud = position.coords.latitude;
+                            const longitud = position.coords.longitude;
+                            swal.close();
+                            Livewire.emit('iniciarRonda', rondaId, latitud, longitud);
+                        }, function(error) {
+                            // Mostrar error al usuario y cerrar loading
+                            swal.fire({
+                                title: 'Error',
+                                text: 'No se pudo obtener tu ubicación. Permite el acceso a la ubicación e intenta nuevamente.',
+                                icon: 'error'
+                            });
+                        }, {
+                            enableHighAccuracy: true,
+                            timeout: 10000, // 10s
+                            maximumAge: 5000
                         });
-                    }, function(error) {
+                    } else {
                         swal.fire({
                             title: 'Error',
-                            text: 'No se pudo obtener tu ubicación. Permite el acceso a la ubicación e intenta nuevamente.',
+                            text: 'Tu dispositivo no soporta geolocalización',
                             icon: 'error'
                         });
-                    });
-                } else {
-                    swal.fire({
-                        title: 'Error',
-                        text: 'Tu dispositivo no soporta geolocalización',
-                        icon: 'error'
-                    });
-                }
+                    }
+                });
             }
         </script>
     @endsection

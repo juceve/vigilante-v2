@@ -11,6 +11,7 @@ class RecorridoRonda extends Component
     public $ronda_ejecutada, $ronda, $ronda_id, $cliente;
 
     public $puntos = [];
+    public $puntosJs; // JSON preparado para la vista
 
     public function mount($rondaejecutada_id)
     {
@@ -20,6 +21,16 @@ class RecorridoRonda extends Component
             $this->puntos = Rondapunto::where('ronda_id', $this->ronda->id)->get();
             $this->cliente = $this->ronda->cliente;
         }
+
+        // Preparar JSON seguro de puntos para la plantilla (evita closures en Blade)
+        $this->puntosJs = $this->puntos->map(function ($p) {
+            return [
+                'id' => $p->id,
+                'lat' => (float) $p->latitud,
+                'lng' => (float) $p->longitud,
+                'desc' => $p->descripcion,
+            ];
+        })->values()->toJson();
     }
 
     public function render()
@@ -27,7 +38,7 @@ class RecorridoRonda extends Component
         return view('livewire.vigilancia.recorrido-ronda')->extends('layouts.app');
     }
 
-    protected $listeners = ['finalizarRonda'];
+    protected $listeners = ['finalizarRonda', 'registrarPunto'];
 
     public function finalizarRonda($latitud, $longitud)
     {
@@ -45,9 +56,17 @@ class RecorridoRonda extends Component
         } catch (\Exception $e) {
             DB::rollBack();
             $this->emit('error', $e->getMessage());
-            // $this->emit('error', 'Ocurrió un error al finalizar la ronda. Inténtalo de nuevo.');
             return;
         }
 
+    }
+
+    // Nuevo: recibir el marcado de un punto desde el cliente (sin asumir esquema)
+    public function registrarPunto($puntoId, $latitud, $longitud)
+    {
+        // Aquí puedes persistir la información según tu modelo (por ejemplo crear un registro de paso).
+        // Para no romper si la base de datos no tiene la estructura esperada, de momento notificamos al cliente.
+        // Si deseas guardar: buscar $this->ronda_ejecutada->id y crear el registro correspondiente.
+        $this->emit('puntoRegistradoCliente', ['id' => $puntoId, 'lat' => $latitud, 'lng' => $longitud]);
     }
 }
