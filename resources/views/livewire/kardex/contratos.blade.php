@@ -351,7 +351,7 @@
                                         class="fas fa-save"></i></button>
                             @else
                                 <button type="button" class="btn btn-primary" wire:click='registrarContrato'
-                                    data-dismiss="modal">Registrar Contrato <i class="fas fa-save"></i></button>
+                                    >Registrar Contrato <i class="fas fa-save"></i></button>
                             @endif
                         </div>
                     </div>
@@ -424,5 +424,10 @@
                     document.getElementById('spinnerSubida').classList.add('d-none');
                 });
         }
+    </script>
+    <script>
+        Livewire.on('cerrarModalReg',()=>{
+            $('#modalNuevoContrato').modal('hide');
+        });
     </script>
 @endsection

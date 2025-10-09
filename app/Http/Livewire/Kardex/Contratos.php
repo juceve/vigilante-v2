@@ -18,7 +18,7 @@ class Contratos extends Component
 {
 
     public $empleado, $procesando = false, $edit = false, $show = false, $selContrato;
-    public $rrhhtipocontratoid = "", $fecha_inicio = "", $fecha_fin = "", $salario_basico = "", $rrhhcargo_id = "", $moneda = "", $motivo_fin = "", $activo = '', $gestora = '', $caja_seguro = 0;
+    public $rrhhtipocontratoid = "", $fecha_inicio = "", $fecha_fin = "", $salario_basico = "", $rrhhcargo_id = "", $moneda = "", $motivo_fin = "", $activo = '', $gestora = '0', $caja_seguro = 0;
     public $referencia = "";
     public $cantidad_dias = 0;
 
@@ -43,6 +43,8 @@ class Contratos extends Component
         'salario_basico' => 'required',
         'rrhhcargo_id' => 'required',
         'moneda' => 'required',
+        'gestora' => 'required',
+        'caja_seguro' => 'required',
     ];
 
     public function subirArchivo()
@@ -172,6 +174,7 @@ class Contratos extends Component
                 DB::commit();
                 $this->limpiar();
                 $this->empleado->refresh();
+                $this->emit('cerrarModalReg');
                 $this->emit('success', 'Contrato registrado correctamente.');
             } catch (\Throwable $th) {
                 DB::rollBack();

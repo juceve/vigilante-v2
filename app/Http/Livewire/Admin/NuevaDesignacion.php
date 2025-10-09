@@ -29,6 +29,17 @@ class NuevaDesignacion extends Component
         'fechaFin' => 'required',
     ];
 
+    public function seleccionarTodosDias()
+    {
+        $this->lunes = true;
+        $this->martes = true;
+        $this->miercoles = true;
+        $this->jueves = true;
+        $this->viernes = true;
+        $this->sabado = true;
+        $this->domingo = true;
+    }
+
     public function updatedFechaInicio()
     {
         if (

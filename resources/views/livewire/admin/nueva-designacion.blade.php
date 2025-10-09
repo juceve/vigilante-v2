@@ -20,12 +20,12 @@
 
                 </div>
                  @if ($contrato)
-                <small class="text-success">* Vigencia Contrato: [{{$contrato->fecha_inicio}} - {{$contrato->fecha_final??'Indefinido'}}]</small>
+                <small class="text-success">* Vigencia Contrato: [{{$contrato->fecha_inicio}} - {{$contrato->fecha_fin??'Indefinido'}}]</small>
             @endif
             </div>
         </div>
         <div class="col-12 col-md-6">
-           
+
         </div>
         @if ($empleado)
             <div class="col-12 col-md-6">
@@ -101,7 +101,7 @@
                 </div>
             </div>
             <div class="col-12">
-                <label>Días laborales:</label>
+                <label>Días laborales:</label> <button class="btn btn-sm btn-outline-info" wire:click="seleccionarTodosDias">Sel. Todo <i class="fas fa-check-double"></i></button>
                 <div class="row">
                     <div class="col-6 col-md-2">
                         <div class="form-check">

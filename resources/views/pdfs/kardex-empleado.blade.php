@@ -177,7 +177,7 @@
                                 <strong>Moneda: </strong> {{ $contrato->moneda }}
                             </p>
                             <p>
-                                <strong>Caja/Seguro: </strong> {{ $contrato->caja_seguro }}
+                                <strong>Caja/Seguro: </strong> {{ $contrato->caja_seguro ? 'SI' : 'NO' }}
                             </p>
                         @endif
                     </div>
@@ -195,15 +195,15 @@
                     <div class="col-xs-6">
 
                         <p>
-                            <strong>Persona de Referecia: </strong> {{ $empleado->persona_referencia }}
+                            <strong>Persona de Referecia: </strong> {{ $empleado->persona_referencia ?? '-' }}
                         </p>
                         <p>
-                            <strong>Parentezco: </strong> {{ $empleado->parentezco_referencia }}
+                            <strong>Parentezco: </strong> {{ $empleado->parentezco_referencia ?? '-' }}
                         </p>
                     </div>
                     <div class="col-xs-6">
                         <p>
-                            <strong>Telf. Referencia: </strong> {{ $empleado->telefono_referencia }}
+                            <strong>Telf. Referencia: </strong> {{ $empleado->telefono_referencia ?? '-' }}
                         </p>
 
                     </div>
