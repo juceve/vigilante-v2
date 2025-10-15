@@ -26,25 +26,6 @@ class RondaEnProgreso extends Component
         $this->rondaejecutada_id = tengoRondaIniciada(Auth::id(), $cliente_id);
     }
 
-    public function registrarUbicacion($latitud, $longitud)
-    {
-
-        if ($this->ultLatitud == $latitud && $this->ultLongitud == $longitud) {
-            return;
-        }else {
-            $this->ultLatitud = $latitud;
-            $this->ultLongitud = $longitud;
-        }
-
-        $ahora = Carbon::now();
-        Rondaejecutadaubicacione::create([
-            'rondaejecutada_id' => $this->rondaejecutada_id,
-            'latitud' => $latitud,
-            'longitud' => $longitud,
-            'fecha_hora' => $ahora,
-        ]);
-    }
-
     public function render()
     {
         return view('livewire.vigilancia.ronda-en-progreso');

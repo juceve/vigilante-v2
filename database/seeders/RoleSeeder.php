@@ -152,5 +152,9 @@ class RoleSeeder extends Seeder
 
         Permission::create(['name' => 'sistemaparametros.index',  'grupo' => 'PARAMETROS GENERALES', 'descripcion' => 'Ver listado'])->assignRole([$role]);
         Permission::create(['name' => 'sistemaparametros.edit',  'grupo' => 'PARAMETROS GENERALES', 'descripcion' => 'Editar'])->assignRole([$role]);
+
+        Permission::create(['name' => 'admin.hombre_vivo',  'grupo' => 'HOMBRE VIVO', 'descripcion' => 'Ver listado'])->assignRole([$role]);
+        Permission::create(['name' => 'admin.hombre_vivo_reportes',  'grupo' => 'HOMBRE VIVO', 'descripcion' => 'Generar Reportes'])->assignRole([$role]);
+
     }
 }

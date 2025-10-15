@@ -818,6 +818,8 @@
             puntoMarkers = [];
             puntos.forEach((p, idx) => {
                 const position = { lat: parseFloat(p.lat), lng: parseFloat(p.lng) };
+                // elegir icono según si p.marcado es true
+                const iconUrl = p.marcado ? 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png' : 'https://maps.google.com/mapfiles/ms/icons/red-dot.png';
                 const marker = new google.maps.Marker({
                     position,
                     map,
@@ -827,15 +829,14 @@
                         fontSize: '14px',
                         fontWeight: '700'
                     },
-                    // marcador base color gris (no marcado)
                     icon: {
-                        url: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                        url: iconUrl,
                         scaledSize: new google.maps.Size(35, 35)
                     },
                     title: p.desc || `Punto ${idx + 1}`,
                     zIndex: 5
                 });
-                puntoMarkers.push({ marker, data: p, marcado: false });
+                puntoMarkers.push({ marker, data: p, marcado: !!p.marcado, pending: false });
             });
 
             // Ajustar bounds para mostrar todos los puntos
@@ -844,6 +845,12 @@
             if (puntoMarkers.length > 0) {
                 map.fitBounds(bounds);
             }
+            // calcular marcadosCount y currentIndex inicial
+            marcadosCount = puntoMarkers.filter(pm => pm.marcado).length;
+            // currentIndex al primer no marcado
+            currentIndex = puntoMarkers.findIndex(pm => !pm.marcado);
+            if (currentIndex === -1) currentIndex = puntoMarkers.length;
+            actualizarUI();
         }
 
         // Haversine: distancia en metros entre dos coordenadas
@@ -946,6 +953,7 @@
         function marcarPuntoActual() {
             if (currentIndex >= puntoMarkers.length) return;
             const pm = puntoMarkers[currentIndex];
+            if (pm.pending) return; // ya en proceso
             // Confirmación
             swal.fire({
                 title: `Marcar punto ${currentIndex + 1}`,
@@ -961,22 +969,11 @@
                         swal.fire({ title: 'Error', text: 'No se pudo obtener tu ubicación. Intenta nuevamente.', icon: 'error' });
                         return;
                     }
+                    // Marcar como pending para evitar doble envío hasta recibir confirmación
+                    pm.pending = true;
+                    document.getElementById('btn-marcar').disabled = true;
                     // Emitir al backend el marcado (id del punto y coordenadas actuales)
                     Livewire.emit('registrarPunto', pm.data.id, ultimaPosicion.latitude, ultimaPosicion.longitude);
-                    // Actualizar marcador a estado "marcado" (color azul)
-                    pm.marker.setIcon({
-                        url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
-                        scaledSize: new google.maps.Size(35, 35)
-                    });
-                    pm.marcado = true;
-                    marcadosCount++;
-                    // Avanzar al siguiente punto
-                    currentIndex++;
-                    actualizarUI();
-                    // Deshabilitar botón hasta que alcance el siguiente punto
-                    document.getElementById('btn-marcar').disabled = true;
-
-                    swal.fire({ title: 'Registrado', text: 'Punto marcado correctamente.', icon: 'success', timer: 1300, showConfirmButton: false });
                 }
             });
         }
@@ -1013,10 +1010,43 @@
             });
         }
 
-        // Escuchar respuesta desde Livewire para comportamiento adicional si se desea
+        // Escuchar respuesta desde Livewire y actualizar marcadores en UI
         Livewire.on('puntoRegistradoCliente', function(payload){
-            // payload puede contener { id: ... } si el servidor responde
-            console.log('Servidor confirmó registro de punto', payload);
+            const id = payload.id;
+            const pmIndex = puntoMarkers.findIndex(pm => pm.data.id == id);
+            if (pmIndex === -1) return;
+            const pm = puntoMarkers[pmIndex];
+            pm.marcado = true;
+            pm.pending = false;
+            pm.marker.setIcon({
+                url: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                scaledSize: new google.maps.Size(35, 35)
+            });
+            marcadosCount = puntoMarkers.filter(pm => pm.marcado).length;
+            // si el punto marcado era el currentIndex, avanzar al siguiente no marcado
+            if (pmIndex === currentIndex) {
+                currentIndex = puntoMarkers.findIndex((p, i) => !p.marcado && i > pmIndex);
+                if (currentIndex === -1) currentIndex = puntoMarkers.length;
+            }
+            actualizarUI();
+            swal.fire({ title: 'Registrado', text: 'Punto marcado correctamente.', icon: 'success', timer: 1200, showConfirmButton: false });
+        });
+
+        Livewire.on('puntoDuplicado', function(payload){
+            const id = payload.id;
+            const pm = puntoMarkers.find(pm => pm.data.id == id);
+            if (pm) pm.pending = false;
+            document.getElementById('btn-marcar').disabled = true;
+            swal.fire({ title: 'Aviso', text: 'Este punto ya fue registrado anteriormente.', icon: 'info' });
+        });
+
+        Livewire.on('puntoRegistroError', function(payload){
+            const id = payload.id;
+            const pm = puntoMarkers.find(pm => pm.data.id == id);
+            if (pm) pm.pending = false;
+            document.getElementById('btn-marcar').disabled = true;
+            console.error('Error registrando punto', payload);
+            swal.fire({ title: 'Error', text: payload.message || 'Error al registrar punto', icon: 'error' });
         });
 
     </script>

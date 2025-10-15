@@ -65,6 +65,3 @@
     @endif
 
 </div>
-@section('js2')
-
-@endsection

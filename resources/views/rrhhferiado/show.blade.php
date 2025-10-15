@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-    {{ $rrhhferiado->name ?? "{{ __('Show') Rrhhferiado" }}
+    Feriados
 @endsection
 
 @section('content')
@@ -19,7 +19,7 @@
                     </div>
 
                     <div class="card-body">
-                        
+
                         <div class="form-group">
                             <strong>Nombre:</strong>
                             {{ $rrhhferiado->nombre }}

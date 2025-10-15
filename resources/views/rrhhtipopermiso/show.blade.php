@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('template_title')
-    {{ $rrhhtipopermiso->name ?? "{{ __('Show') Rrhhtipopermiso" }}
+    Tipo Permisos
 @endsection
 
 @section('content')
@@ -19,7 +19,7 @@
                     </div>
 
                     <div class="card-body">
-                        
+
                         <div class="form-group">
                             <strong>Nombre:</strong>
                             {{ $rrhhtipopermiso->nombre }}

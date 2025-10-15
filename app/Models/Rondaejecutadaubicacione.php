@@ -33,7 +33,7 @@ class Rondaejecutadaubicacione extends Model
      *
      * @var array
      */
-    protected $fillable = ['rondaejecutada_id','latitud','longitud','fecha_hora'];
+    protected $fillable = ['rondaejecutada_id', 'rondapunto_id', 'latitud','longitud','fecha_hora'];
 
 
     /**

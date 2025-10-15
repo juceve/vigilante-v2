@@ -265,6 +265,72 @@ function yaMarque($designacione_id)
         return 2; // Por seguridad, asumir que ya marcó todo
     }
 }
+function yaMarque2($designacione_id)
+{
+    try {
+        $designacione = Designacione::select('id', 'turno_id')
+            ->with(['turno:id,horainicio,horafin'])
+            ->find($designacione_id);
+
+        if (!$designacione || !$designacione->turno) {
+            return [2, null, null]; // Estado 2: Sin información
+        }
+
+        $turno = $designacione->turno;
+        $ahora = Carbon::now();
+        $horaInicio = $turno->horainicio;
+        $horaFin = $turno->horafin;
+
+        // Determinar si es turno diurno o nocturno
+        $esTurnoDiurno = $horaInicio < $horaFin;
+
+        // Crear objetos Carbon para comparación correcta
+        $horaActualCarbon = Carbon::parse($ahora->format('Y-m-d') . ' ' . $ahora->format('H:i:s'));
+        $horaInicioCarbon = Carbon::parse($ahora->format('Y-m-d') . ' ' . $horaInicio);
+
+        // Determinar la fecha de búsqueda
+        if ($esTurnoDiurno) {
+            $fechaBusqueda = $ahora->format('Y-m-d');
+        } else {
+            // NOCTURNO: Si la hora actual es mayor o igual a la hora de inicio, buscar hoy, sino ayer
+            $fechaBusqueda = $horaActualCarbon->gte($horaInicioCarbon->copy()->subHour())
+                ? $ahora->format('Y-m-d')
+                : $ahora->copy()->subDay()->format('Y-m-d');
+        }
+
+        // Buscar marcación
+        $marcacion = Asistencia::select('ingreso', 'salida')
+            ->where('designacione_id', $designacione_id)
+            ->where('fecha', $fechaBusqueda)
+            ->first();
+
+        // Si encontró marcación
+        if ($marcacion) {
+            if ($marcacion->ingreso && $marcacion->salida) {
+                // Estado 2: Turno completo
+                return [2, $marcacion->ingreso, $marcacion->salida];
+            }
+            // Estado 1: Marcó ingreso, pendiente salida
+            return [1, $marcacion->ingreso, null];
+        }
+
+        // No hay marcación - Verificar si ya pasó la hora de inicio
+        if ($horaActualCarbon->gte($horaInicioCarbon)) {
+            // Estado 0: Ya es hora de marcar y no marcó (CRÍTICO)
+            return [0, null, null];
+        } else {
+            // Estado 3: Aún no es hora de marcar (EN DESCANSO)
+            return [3, null, null];
+        }
+
+    } catch (Exception $e) {
+        Log::error('Error en yaMarque2: ' . $e->getMessage(), [
+            'designacione_id' => $designacione_id,
+            'trace' => $e->getTraceAsString()
+        ]);
+        return [2, null, null];
+    }
+}
 
 function tengoPanicos($user_id, $cliente_id)
 {

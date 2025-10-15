@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('rondaejecutadaubicaciones', function (Blueprint $table) {
             $table->id();
             $table->foreignId('rondaejecutada_id')->nullable()->constrained('rondaejecutadas')->nullOnDelete();
+            $table->foreignId('rondapunto_id')->nullable()->constrained('rondapuntos')->nullOnDelete();
             $table->string('latitud')->nullable();
             $table->string('longitud')->nullable();
             $table->dateTime('fecha_hora');

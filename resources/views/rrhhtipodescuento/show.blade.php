@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-    {{ $rrhhtipodescuento->name ?? "{{ __('Show') Rrhhtipodescuento" }}
+    Tipo Descuento
 @endsection
 
 @section('content')
@@ -19,7 +19,7 @@
                     </div>
 
                     <div class="card-body">
-                        
+
                         <div class="form-group">
                             <strong>Nombre:</strong>
                             {{ $rrhhtipodescuento->nombre }}

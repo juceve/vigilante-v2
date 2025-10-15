@@ -41,17 +41,17 @@
                         {!! Form::select('cliente_id', $clientes, null,
                         ['class'=>'form-control','placeholder'=>'Todos los Clientes','wire:model'=>'cliente_id']) !!}
                     </div>
-                  
+
                     <div class="col-12 col-md-3">
                         {!! Form::select('estado', [''=>'Todos los estados','1'=>'Activo','0'=>'Finalizado'],
                         null, ['class'=>'form-control','wire:model'=>'estado']) !!}
                     </div>
                 </div>
-                
+
                 <div class="table-responsive">
                     @if (!is_null($resultados))
                     <div class="row w-100">
-                        
+
 
                     </div>
 
@@ -78,7 +78,7 @@
                             @foreach ($resultados as $designacione)
                             <tr class="text-center">
                                 {{-- <td>{{ ++$i }}</td> --}}
-                                
+
                                 <td>{{ $designacione->id}}</td>
                                 <td class="text-left">{{ $designacione->empleado}}</td>
                                 <td>{{ $designacione->cliente }}
@@ -100,13 +100,7 @@
                                         </button>
                                         <div class="dropdown-menu" role="menu" style="">
 
-                                            @can('admin.registros.hombrevivo')
-                                            <a class="dropdown-item"
-                                                href="{{ route('designaciones.show', $designacione->id) }}" title="">
-                                                <i class="fas fa-fw fa-street-view text-secondary"></i>
-                                                Rondas
-                                            </a>
-                                            @endcan
+
                                             @can('admin.registros.hombrevivo')
                                             <a class="dropdown-item"
                                                 href="{{ route('registroshv', $designacione->id) }}" title="">
@@ -177,7 +171,7 @@
         </div>
     </div>
 
-  
+
 </div>
 @section('js')
 

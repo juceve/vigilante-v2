@@ -41,10 +41,14 @@
                         </div>
 
                     </div>
-                    {{-- <div class="col-12 col-md-3">
-                        {!! Form::select('estado', [''=>'Todos','1'=>'En proceso','0'=>'Finalizado'],
-                        null, ['class'=>'form-control','wire:model'=>'estado']) !!}
-                    </div> --}}
+                    <div class="col-12 col-md-3">
+                        {{-- Nuevo filtro por empleados (se llena desde el componente Livewire) --}}
+                        {!! Form::select('empleado_id', $empleados ?? [], null, [
+                            'class' => 'form-control',
+                            'placeholder' => 'Todos los empleados',
+                            'wire:model' => 'empleado_id',
+                        ]) !!}
+                    </div>
                 </div>
                 <hr>
 
@@ -65,11 +69,14 @@
                             <button class="btn btn-success btn-block" wire:click='exporExcel'><i
                                     class="fas fa-file-excel"></i>
                                 Exportar</button>
-                        </div>
-                        <div class="col-12 col-md-2 mb-3">
-                            <a href="{{ route('pdf.rondas') }}" class="btn btn-danger btn-block" target="_blank"><i
-                                    class="fas fa-file-pdf"></i> Exportar</a>
-                        </div> --}}
+                        </div>--}}
+                       @if ($resultados->count() > 0)
+                           <div class="col-12 col-md-2 mb-3">
+                               <button class="btn btn-danger btn-block" wire:click='exportarPDF'><i
+                                       class="fas fa-file-pdf"></i>
+                                   Exportar PDF</button>
+
+                       @endif
                     </div>
                 @endif
 
@@ -182,4 +189,11 @@
             @this.call('closeModal');
         });
     </script>
+
+    <script>
+    Livewire.on('renderizarpdf', () => {
+            var win = window.open("../pdf/rondasejecutadas/", '_blank');
+            win.focus();
+        });
+</script>
 @endsection

@@ -53,6 +53,7 @@ use App\Http\Livewire\Admin\ListadoCiteCotizacion;
 use App\Http\Livewire\Admin\ListadoCiteInforme;
 use App\Http\Livewire\Admin\ListadoCiteMemorandum;
 use App\Http\Livewire\Admin\ListadoCiteRecibo;
+use App\Http\Livewire\Admin\ListadoHv;
 use App\Http\Livewire\Admin\ListadoPropietarios;
 use App\Http\Livewire\Admin\ListadoResidencias;
 use App\Http\Livewire\Admin\ListadoRondas;
@@ -167,7 +168,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('admin/visitas', Registrosvisita::class)->middleware('can:admin.registros.visitas')->name('admin.visitas');
     Route::get('admin/rondas', Registrosronda::class)->middleware('can:admin.registros.rondas')->name('admin.rondas');
-    Route::get('admin/recorrido-ronda/{rondaejecutada_id}', [RecorridoRondaController::class,'recorrido'])->name('admin.recorrido_ronda');
+    Route::get('admin/hombre-vivo', ListadoHv::class)->middleware('can:admin.hombre_vivo')->name('admin.hombre_vivo');
+    Route::get('admin/recorrido-ronda/{rondaejecutada_id}', [RecorridoRondaController::class, 'recorrido'])->name('admin.recorrido_ronda');
     Route::get('admin/novedades', Registrosnovedades::class)->middleware('can:admin.registros.novedades')->name('admin.novedades');
     Route::get('admin/asistencias', Registroasistencias::class)->name('admin.asistencias');
     Route::get('admin/sueldos', ManageSueldos::class)->middleware('can:rrhhsueldos.index')->name('admin.sueldos');
@@ -244,7 +246,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('admin/rrhh/tipo-bonos', RrhhtipobonoController::class)->names('rrhhtipobonos');
     Route::resource('admin/rrhh/tipo-descuentos', RrhhtipodescuentoController::class)->names('rrhhtipodescuentos');
     Route::resource('admin/rrhh/estado-dotaciones', RrhhestadodotacionController::class)->names('rrhhestadodotacions');
-    Route::resource('admin/parametros-generales', SistemaparametroController::class)->only(['edit','update','index'])->names('sistemaparametros');
+    Route::resource('admin/parametros-generales', SistemaparametroController::class)->only(['edit', 'update', 'index'])->names('sistemaparametros');
     // Route::resource('admin/tareas', TareaController::class)->names('tareas');
 
     Route::get('/ubicacion/{lat}/{lng}', function (string $lat, string $lng) {
@@ -256,6 +258,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('pdf/kardex-empleado/{empleadoID}', [EmpleadoController::class, 'pdfKardex'])->name('pdf.kardex');
     Route::get('pdf/visitas/', [VisitaController::class, 'pdfVisitas'])->name('pdf.visitas');
     Route::get('pdf/rondas/', [RegrondaController::class, 'pdfRondas'])->name('pdf.rondas');
+    Route::get('pdf/rondasejecutadas/', [RegrondaController::class, 'rondasEjecutadas'])->name('pdf.rondasejecutadas');
     Route::get('pdf/novedades/', [NovedadeController::class, 'pdfNovedades'])->name('pdf.novedades');
     Route::get('pdf/tareas/', [TareaController::class, 'pdfTareas'])->name('pdf.tareas');
     Route::get('pdf/asistencias/', [AsistenciaController::class, 'pdfAsistencia'])->name('pdf.asistencias');
@@ -264,6 +267,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/pdf/boletas-sueldo/{id}', [SueldoController::class, 'boletas'])->name('pdf.boletas');
 
 
+    Route::get('admin/hombre-vivo', ListadoHv::class)->name('admin.hombre_vivo');
     Route::get('pdf/informe/{data}', [CiteinformeController::class, 'previsualizacion'])->name('pdf.informe');
     Route::get('admin/citesinforme', ListadoCiteInforme::class)->middleware('can:admin.generador.informe')->name('admin.citesinformes');
 

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-    {{ $sistemaparametro->name ?? "{{ __('Show') Sistemaparametro" }}
+    Parametros de Sistema
 @endsection
 
 @section('content')
@@ -19,7 +19,7 @@
                     </div>
 
                     <div class="card-body">
-                        
+
                         <div class="form-group">
                             <strong>Tolerancia Ingreso:</strong>
                             {{ $sistemaparametro->tolerancia_ingreso }}

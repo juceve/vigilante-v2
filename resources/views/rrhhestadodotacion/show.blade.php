@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('template_title')
-    {{ $rrhhestadodotacion->name ?? "{{ __('Show') Rrhhestadodotacion" }}
+    Estado Dotación
 @endsection
 
 @section('content')
@@ -19,7 +19,7 @@
                     </div>
 
                     <div class="card-body">
-                        
+
                         <div class="form-group">
                             <strong>Nombre:</strong>
                             {{ $rrhhestadodotacion->nombre }}

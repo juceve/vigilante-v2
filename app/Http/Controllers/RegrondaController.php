@@ -140,4 +140,13 @@ class RegrondaController extends Controller
 
         return $pdf->stream();
     }
+
+    public function rondasEjecutadas(){
+        $data = Session::get('rondas_ejecutadas', []);
+        $fechas = Session::get('fechas_rondas', []);
+        $pdf = Pdf::loadView('pdfs.rondasejecutadas', compact('data', 'fechas'))
+            ->setPaper('letter', 'portrait');
+
+        return $pdf->stream('Reporte_Rondas_'.date('Ymd_His').'.pdf');
+    }
 }

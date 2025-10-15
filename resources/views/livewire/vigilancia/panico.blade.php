@@ -652,118 +652,181 @@
 @section('js')
 <script>
     const button = document.getElementById('button-call');
-        const buttonEnviar = document.getElementById('enviar');
+    const buttonEnviar = document.getElementById('enviar');
 
-        button.addEventListener('click', () => {
-            button.disabled = true;
-            // var telefono = document.getElementById('telephone');
-            var telefono = '{{$parametrosgenerales->telefono_panico}}';
-            telefono.classList.remove('temblor');
-            telefono.classList.add('greyscale');
-        });
+    button.addEventListener('click', () => {
+        button.disabled = true;
+        var telefono = document.getElementById('telephone');
+        telefono.classList.remove('temblor');
+        telefono.classList.add('greyscale');
+    });
 
+    buttonEnviar.addEventListener('click', (e) => {
+        e.preventDefault();
+        paso1();
+    });
 
-        buttonEnviar.addEventListener('click', () => {
-            paso1();
-            // console.log('paso 1 activo');
-        });
+    var contador = 5;
+    var numero = document.getElementById('numero');
+    var llamar = document.getElementById('llamar');
 
+    function iniciarContador() {
+        let intervalo = setInterval(function() {
+            if (button.disabled == false) {
+                if (contador === 1) {
+                    clearInterval(intervalo);
+                    contador--;
+                    numero.innerText = contador;
 
-        var contador = 5;
-        var numero = document.getElementById('numero');
-        var llamar = document.getElementById('llamar');
-
-        function iniciarContador() {
-
-            let intervalo = setInterval(function() {
-                console.log(contador);
-                if (button.disabled == false) {
-                    if (contador === 1) {
-                        clearInterval(intervalo);
-                        contador--;
-                        numero.innerText = contador;
-
-                        if (navigator.geolocation) {
-                            // navigator.geolocation.getCurrentPosition(success);
-                            llamar.click();
-                        } else {
-                            console.log("Llamando");
-                        }
-
-                    } else {
-                        contador--;
-
-                        numero.innerText = contador;
+                    if (navigator.geolocation) {
+                        llamar.click();
                     }
                 } else {
-                    clearInterval(intervalo);
+                    contador--;
+                    numero.innerText = contador;
                 }
-
-            }, 1000);
-        }
-
-        function llamada() {
-            button.disabled = true;
-            // var telefono = document.getElementById('telephone');
-            var telefono = '{{$parametrosgenerales->telefono_panico}}';
-            telefono.classList.remove('temblor');
-            telefono.classList.add('greyscale');
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(success);
-            }else{
-                console.log('No entro');
+            } else {
+                clearInterval(intervalo);
             }
+        }, 1000);
+    }
+
+    function llamada() {
+        button.disabled = true;
+        var telefono = document.getElementById('telephone');
+        telefono.classList.remove('temblor');
+        telefono.classList.add('greyscale');
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(success, errorGeolocation);
+        } else {
+            Swal.fire('Error', 'La geolocalización no está disponible en este navegador', 'error');
         }
+    }
 
-        function success(geoLocationPosition) {
-            // console.log(geoLocationPosition.timestamp);
-            let data = [
-                geoLocationPosition.coords.latitude,
-                geoLocationPosition.coords.longitude,
-                'ALTA',
-                'Llamada de Panico'
-            ];
-            Livewire.emit('guardarRegistro', data);
-        }
+    function success(geoLocationPosition) {
+        let data = [
+            geoLocationPosition.coords.latitude,
+            geoLocationPosition.coords.longitude,
+            'ALTA',
+            'Llamada de Panico'
+        ];
 
-        function success2(geoLocationPosition) {
-            console.log(geoLocationPosition.timestamp);
-            let data = [
-                geoLocationPosition.coords.latitude,
-                geoLocationPosition.coords.longitude,
-            ];
-            // console.log('registro Panico');
-            Livewire.emit('registroPanico', data);
-        }
+        console.log('Enviando registro de llamada:', data);
+        @this.call('guardarRegistro', data);
+    }
 
-        function paso1() {
-            button.disabled = true;
-            // var telefono = document.getElementById('telephone');
-            var telefono = '{{$parametrosgenerales->telefono_panico}}';
-            telefono.classList.remove('temblor');
-            telefono.classList.add('greyscale');
-            Swal.fire({
-                title: 'Guardar Registro',
-                text: "Está seguro de realizar esta operación?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Continuar',
-                cancelButtonText: 'Cancelar',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    if (navigator.geolocation) {
-                        // console.log('enviando coord');
-                        navigator.geolocation.getCurrentPosition(success2);
-                    }
-                }
-            })
+    function success2(geoLocationPosition) {
+        let data = [
+            geoLocationPosition.coords.latitude,
+            geoLocationPosition.coords.longitude,
+        ];
 
-        }
+        console.log('Enviando registro de pánico:', data);
 
-        document.addEventListener('DOMContentLoaded', () => {
-            iniciarContador();
+        // Mostrar loading
+        Swal.fire({
+            title: 'Guardando...',
+            text: 'Por favor espere',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
         });
+
+        // Emitir evento a Livewire
+        @this.call('registroPanico', data)
+            .then(() => {
+                console.log('Registro enviado exitosamente');
+            })
+            .catch(error => {
+                console.error('Error al enviar registro:', error);
+                Swal.fire('Error', 'Ocurrió un error al guardar el registro', 'error');
+            });
+    }
+
+    function errorGeolocation(error) {
+        console.error('Error de geolocalización:', error);
+        let mensaje = 'No se pudo obtener la ubicación';
+
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                mensaje = "Permiso de ubicación denegado. Por favor active los permisos de ubicación.";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                mensaje = "La información de ubicación no está disponible.";
+                break;
+            case error.TIMEOUT:
+                mensaje = "Tiempo de espera agotado al obtener la ubicación.";
+                break;
+        }
+
+        Swal.fire('Error', mensaje, 'error');
+    }
+
+    function paso1() {
+        button.disabled = true;
+        var telefono = document.getElementById('telephone');
+        telefono.classList.remove('temblor');
+        telefono.classList.add('greyscale');
+
+        Swal.fire({
+            title: 'Guardar Registro de Pánico',
+            text: "¿Está seguro de enviar este reporte de pánico?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#059669',
+            cancelButtonColor: '#dc2626',
+            confirmButtonText: 'Sí, enviar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                if (navigator.geolocation) {
+                    // Obtener ubicación con opciones mejoradas
+                    navigator.geolocation.getCurrentPosition(
+                        success2,
+                        errorGeolocation,
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 10000,
+                            maximumAge: 0
+                        }
+                    );
+                } else {
+                    Swal.fire('Error', 'La geolocalización no está disponible', 'error');
+                }
+            } else {
+                button.disabled = false;
+                telefono.classList.add('temblor');
+                telefono.classList.remove('greyscale');
+            }
+        });
+    }
+
+    // Listeners de Livewire
+    window.addEventListener('success', event => {
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: event.detail || 'Operación completada exitosamente',
+            timer: 2000
+        });
+    });
+
+    window.addEventListener('error', event => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: event.detail || 'Ocurrió un error',
+        });
+        button.disabled = false;
+        var telefono = document.getElementById('telephone');
+        telefono.classList.add('temblor');
+        telefono.classList.remove('greyscale');
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        iniciarContador();
+    });
 </script>
 @endsection

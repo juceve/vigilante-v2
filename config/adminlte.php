@@ -383,6 +383,12 @@ return [
                     'can'   =>  'tareas.index',
                     'icon'  =>  'fas fa-fw fa-tasks'
                 ],
+                [
+                    'text'  =>  'Hombre Vivo',
+                    'route' =>  'admin.hombre_vivo',
+                    'can'   =>  'admin.hombre_vivo',
+                    'icon'  =>  'fas fa-fw fa-heartbeat'
+                ],
 
             ],
         ],
