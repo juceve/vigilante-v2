@@ -2,7 +2,7 @@
     @section('title')
     SALIDAS
     @endsection
-    
+
     <!-- Header Corporativo -->
     <div class="patrol-header">
         <div class="container">
@@ -26,7 +26,7 @@
         <!-- Información de Asignación -->
         <div class="assignment-card">
             <div class="assignment-header">
-                <i class="fas fa-building" style="margin-right: 10px"></i> 
+                <i class="fas fa-building" style="margin-right: 10px"></i>
                 <span>Cliente: {{ $designacion->turno->cliente->nombre }}</span>
             </div>
         </div>
@@ -44,7 +44,7 @@
                         <i class="fas fa-search"></i>
                         Búsqueda de visitantes:
                     </label>
-                    <input type="search" class="search-input" placeholder="Buscar por nombre o cédula..." 
+                    <input type="search" class="search-input" placeholder="Buscar por nombre o cédula..."
                         wire:model.debounce.500ms='search' id="search">
                 </div>
 
@@ -133,6 +133,17 @@
         --shadow-heavy: 0 8px 24px rgba(30, 41, 59, 0.2);
         --border-radius: 16px;
         --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Forzar modo claro permanente */
+    * {
+        color-scheme: light !important;
+    }
+
+    html,
+    body {
+        background-color: #f8fafc !important;
+        color: #1e293b !important;
     }
 
     /* Estilos Generales */
@@ -458,43 +469,43 @@
         .header-navigation {
             padding: 0.8rem 1rem;
         }
-        
+
         .title-text {
             font-size: 1.1rem;
         }
-        
+
         .subtitle-text {
             font-size: 0.75rem;
         }
-        
+
         .back-button {
             width: 45px;
             height: 45px;
             font-size: 1.1rem;
         }
-        
+
         .patrol-content {
             padding: 0 0.5rem;
         }
-        
+
         .assignment-body {
             padding: 1rem;
         }
-        
+
         .visits-list-body {
             padding: 1.5rem 1rem;
         }
-        
+
         .table-header th {
             padding: 0.75rem 0.5rem;
             font-size: 0.75rem;
         }
-        
+
         .table-row td {
             padding: 0.75rem 0.5rem;
             font-size: 0.8rem;
         }
-        
+
         .corporate-table {
             font-size: 0.8rem;
         }
@@ -504,57 +515,57 @@
         .header-navigation {
             padding: 0.7rem 0.8rem;
         }
-        
+
         .title-text {
             font-size: 1rem;
         }
-        
+
         .subtitle-text {
             font-size: 0.7rem;
         }
-        
+
         .back-button {
             width: 40px;
             height: 40px;
             font-size: 1rem;
         }
-        
+
         .header-title {
             margin: 0 0.5rem;
         }
-        
+
         .assignment-header,
         .visits-list-header {
             padding: 0.75rem 1rem;
             font-size: 0.9rem;
         }
-        
+
         .assignment-body,
         .visits-list-body {
             padding: 1rem 0.75rem;
         }
-        
+
         .search-input {
             padding: 0.625rem 0.75rem;
             font-size: 0.85rem;
         }
-        
+
         .table-header th {
             padding: 0.5rem 0.25rem;
             font-size: 0.7rem;
         }
-        
+
         .table-row td {
             padding: 0.5rem 0.25rem;
             font-size: 0.75rem;
         }
-        
+
         .action-btn {
             width: 32px;
             height: 32px;
             font-size: 0.8rem;
         }
-        
+
         .corporate-table {
             font-size: 0.75rem;
         }

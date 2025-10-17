@@ -13,6 +13,21 @@
     </div>
 </div>
 
+@section('css')
+<style>
+    /* Forzar modo claro permanente */
+    * {
+        color-scheme: light !important;
+    }
+
+    html,
+    body {
+        background-color: #f8fafc !important;
+        color: #1e293b !important;
+    }
+</style>
+@endsection
+
 @section('js')
 <script>
     function prepararMarcado() {

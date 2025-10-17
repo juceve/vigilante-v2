@@ -1,3 +1,4 @@
+{{-- filepath: c:\laragon\www\vigilantev2\resources\views\livewire\vigilancia\panico.blade.php --}}
 <div>
     @section('title')
     Pánico
@@ -127,28 +128,39 @@
 <style>
     /* Variables CSS - Paleta Empresarial de Seguridad */
     :root {
-        --primary-color: #1e3a8a;          /* Azul naval profundo */
-        --primary-dark: #1e293b;           /* Azul oscuro casi negro */
-        --primary-light: #3b82f6;          /* Azul corporativo */
-        --secondary-color: #334155;        /* Gris azulado */
-        --secondary-dark: #1e293b;         /* Gris oscuro */
-        --accent-color: #d97706;           /* Dorado corporativo */
-        --accent-light: #f59e0b;          /* Dorado claro */
-        --success-color: #059669;          /* Verde profesional */
-        --warning-color: #d97706;          /* Naranja dorado */
-        --error-color: #dc2626;           /* Rojo corporativo */
-        --emergency-color: #dc2626;        /* Rojo emergencia */
-        --info-color: #0891b2;            /* Azul información */
+        --primary-color: #1e3a8a;
+        --primary-dark: #1e293b;
+        --primary-light: #3b82f6;
+        --secondary-color: #334155;
+        --secondary-dark: #1e293b;
+        --accent-color: #d97706;
+        --accent-light: #f59e0b;
+        --success-color: #059669;
+        --warning-color: #d97706;
+        --error-color: #dc2626;
+        --emergency-color: #dc2626;
+        --info-color: #0891b2;
         --surface-color: #ffffff;
-        --background-color: #f8fafc;      /* Gris muy claro */
-        --on-surface: #1e293b;            /* Texto principal */
-        --text-secondary: #64748b;        /* Texto secundario */
+        --background-color: #f8fafc;
+        --on-surface: #1e293b;
+        --text-secondary: #64748b;
         --shadow-light: 0 2px 8px rgba(30, 41, 59, 0.1);
         --shadow-medium: 0 4px 16px rgba(30, 41, 59, 0.15);
         --shadow-heavy: 0 8px 24px rgba(30, 41, 59, 0.2);
         --shadow-emergency: 0 4px 20px rgba(220, 38, 38, 0.3);
         --border-radius: 16px;
         --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Forzar modo claro permanente */
+    * {
+        color-scheme: light !important;
+    }
+
+    html,
+    body {
+        background-color: #f8fafc !important;
+        color: #1e293b !important;
     }
 
     /* Estilos Generales */
@@ -613,39 +625,7 @@
         }
     }
 
-    /* Modo Oscuro */
-    @media (prefers-color-scheme: dark) {
-        :root {
-            --surface-color: #1e293b;
-            --background-color: #0f172a;
-            --on-surface: #e2e8f0;
-            --text-secondary: #94a3b8;
-        }
-
-        body {
-            background-color: var(--background-color);
-            color: var(--on-surface);
-        }
-
-        .emergency-card, .call-card, .media-card, .report-card, .info-header {
-            background: var(--surface-color);
-            border-color: var(--secondary-color);
-        }
-
-        .header-navigation {
-            background: rgba(30, 41, 59, 0.95);
-        }
-
-        .file-input, .report-textarea {
-            background: var(--surface-color);
-            border-color: var(--secondary-color);
-            color: var(--on-surface);
-        }
-
-        .file-input:focus, .report-textarea:focus {
-            border-color: var(--accent-color);
-        }
-    }
+    /* Estilos responsivos eliminados - Se mantiene solo modo claro */
 </style>
 @endsection
 

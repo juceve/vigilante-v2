@@ -1,8 +1,9 @@
+{{-- filepath: c:\laragon\www\vigilantev2\resources\views\livewire\vigilancia\reg-ingreso.blade.php --}}
 <div>
     @section('title')
     INGRESOS
     @endsection
-    
+
     <!-- Header Corporativo -->
     <div class="patrol-header">
         <div class="container">
@@ -193,6 +194,17 @@
         --shadow-heavy: 0 8px 24px rgba(30, 41, 59, 0.2);
         --border-radius: 16px;
         --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Forzar modo claro permanente */
+    * {
+        color-scheme: light !important;
+    }
+
+    html,
+    body {
+        background-color: #f8fafc !important;
+        color: #1e293b !important;
     }
 
     /* Estilos Generales */
@@ -562,38 +574,38 @@
         .header-navigation {
             padding: 0.8rem 1rem;
         }
-        
+
         .title-text {
             font-size: 1.1rem;
         }
-        
+
         .subtitle-text {
             font-size: 0.75rem;
         }
-        
+
         .back-button {
             width: 45px;
             height: 45px;
             font-size: 1.1rem;
         }
-        
+
         .patrol-content {
             padding: 0 0.5rem;
         }
-        
+
         .assignment-body {
             padding: 1rem;
         }
-        
+
         .form-body {
             padding: 1.5rem 1rem;
         }
-        
+
         .search-group {
             flex-direction: column;
             gap: 1rem;
         }
-        
+
         .register-btn {
             padding: 0.875rem 2rem;
             font-size: 0.9rem;
@@ -604,47 +616,47 @@
         .header-navigation {
             padding: 0.7rem 0.8rem;
         }
-        
+
         .title-text {
             font-size: 1rem;
         }
-        
+
         .subtitle-text {
             font-size: 0.7rem;
         }
-        
+
         .back-button {
             width: 40px;
             height: 40px;
             font-size: 1rem;
         }
-        
+
         .header-title {
             margin: 0 0.5rem;
         }
-        
+
         .assignment-header,
         .form-header {
             padding: 0.75rem 1rem;
             font-size: 0.9rem;
         }
-        
+
         .assignment-body,
         .form-body {
             padding: 1rem 0.75rem;
         }
-        
+
         .form-input,
         .form-select-custom {
             padding: 0.625rem 0.75rem;
             font-size: 0.85rem;
         }
-        
+
         .search-btn {
             padding: 0.625rem 0.75rem;
             min-width: 45px;
         }
-        
+
         .register-btn {
             padding: 0.75rem 1.5rem;
             font-size: 0.85rem;
@@ -706,7 +718,7 @@
                 createNewFileInput();
 
                 const imgElement = document.createElement("img");
-                imgElement.src = event.target.result;            
+                imgElement.src = event.target.result;
 
                 imgElement.onload = function (e) {
                     const canvas = document.createElement("canvas");
@@ -721,7 +733,7 @@
                     ctx.drawImage(e.target, 0, 0, canvas.width, canvas.height);
 
                     srcEncoded = ctx.canvas.toDataURL(e.target, "image/jpeg");
-                    
+
                     @this.cargaImagenBase64(srcEncoded);
                 };
             }

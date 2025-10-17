@@ -1,3 +1,4 @@
+{{-- filepath: c:\laragon\www\vigilantev2\resources\views\livewire\vigilancia\ronda.blade.php --}}
 <div>
     @section('title')
         Ronda
@@ -88,6 +89,17 @@
                 --shadow-heavy: 0 8px 24px rgba(30, 41, 59, 0.2);
                 --border-radius: 16px;
                 --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            /* Forzar modo claro permanente */
+            * {
+                color-scheme: light !important;
+            }
+
+            html,
+            body {
+                background-color: #f8fafc !important;
+                color: #1e293b !important;
             }
 
             /* Estilos Generales */
@@ -656,7 +668,6 @@
 
             /* Animaciones */
             @keyframes pulse-patrol {
-
                 0%,
                 100% {
                     opacity: 1;
@@ -714,46 +725,9 @@
                     font-size: 1.3rem;
                 }
             }
-
-            /* Modo Oscuro */
-            @media (prefers-color-scheme: dark) {
-                :root {
-                    --surface-color: #1e293b;
-                    --background-color: #0f172a;
-                    --on-surface: #e2e8f0;
-                    --text-secondary: #94a3b8;
-                }
-
-                body {
-                    background-color: var(--background-color);
-                    color: var(--on-surface);
-                }
-
-                .assignment-card,
-                .control-point-card,
-                .location-info-card,
-                .notes-card,
-                .multimedia-card,
-                .status-card {
-                    background: var(--surface-color);
-                    border-color: var(--secondary-color);
-                }
-
-                .header-navigation {
-                    background: rgba(30, 41, 59, 0.95);
-                }
-
-                .location-input,
-                .coordinate-input,
-                .notes-textarea,
-                .multimedia-input {
-                    background: var(--surface-color);
-                    border-color: var(--secondary-color);
-                    color: var(--on-surface);
-                }
-            }
         </style>
     @endsection
+
     @section('js')
         <script>
             function iniciarRonda(rondaId) {
@@ -808,3 +782,4 @@
             }
         </script>
     @endsection
+</div>

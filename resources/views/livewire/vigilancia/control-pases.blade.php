@@ -50,8 +50,8 @@
 
             <!-- Mostrar información del registro -->
 
-        </div>      
-       
+        </div>
+
         <div class="d-grid mt-3" wire:ignore>
             <a href="{{ route('vigilancia.flujopases',$designacione->id) }}" id="ctrlbutton" class="btn btn-warning"
                 style="height: 70px; align-content:center;">Control de Flujos <i class="fas fa-exchange-alt"></i></a>
@@ -211,6 +211,17 @@
             --shadow-heavy: 0 8px 24px rgba(30, 41, 59, 0.2);
             --border-radius: 16px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Forzar modo claro permanente */
+        * {
+            color-scheme: light !important;
+        }
+
+        html,
+        body {
+            background-color: #f8fafc !important;
+            color: #1e293b !important;
         }
 
         /* Estilos Generales */

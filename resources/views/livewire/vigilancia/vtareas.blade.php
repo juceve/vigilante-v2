@@ -1,8 +1,9 @@
+{{-- filepath: c:\laragon\www\vigilantev2\resources\views\livewire\vigilancia\vtareas.blade.php --}}
 <div>
     @section('title')
     TAREAS
     @endsection
-    
+
     <!-- Header Corporativo -->
     <div class="tasks-header">
         <div class="container">
@@ -184,6 +185,7 @@
         </div>
     </div>
 </div>
+
 @section('css')
 <style>
     /* Variables CSS - Paleta Empresarial de Seguridad */
@@ -208,6 +210,17 @@
         --shadow-heavy: 0 8px 24px rgba(30, 41, 59, 0.2);
         --border-radius: 16px;
         --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Forzar modo claro permanente */
+    * {
+        color-scheme: light !important;
+    }
+
+    html,
+    body {
+        background-color: #f8fafc !important;
+        color: #1e293b !important;
     }
 
     /* Estilos Generales */
@@ -776,44 +789,44 @@
         .tasks-content {
             padding: 0 0.5rem;
         }
-        
+
         .header-navigation {
             padding: 0.8rem 1rem;
         }
-        
+
         .title-text {
             font-size: 1.1rem;
         }
-        
+
         .task-card {
             flex-direction: column;
             align-items: flex-start;
             gap: 1rem;
         }
-        
+
         .task-actions {
             width: 100%;
             justify-content: center;
         }
-        
+
         .task-action-btn {
             width: 100%;
             justify-content: center;
         }
-        
+
         .task-info-grid {
             grid-template-columns: 1fr;
         }
-        
+
         .upload-item {
             flex-direction: column;
             align-items: stretch;
         }
-        
+
         .task-modal-footer {
             flex-direction: column;
         }
-        
+
         .cancel-button, .complete-button {
             width: 100%;
             justify-content: center;
@@ -828,35 +841,35 @@
             --on-surface: #e2e8f0;
             --text-secondary: #94a3b8;
         }
-        
+
         body {
             background-color: var(--background-color);
             color: var(--on-surface);
         }
-        
-        .client-info-card, .task-card, .empty-tasks-card, 
+
+        .client-info-card, .task-card, .empty-tasks-card,
         .task-info-section, .evidence-section {
             background: var(--surface-color);
             border-color: var(--secondary-color);
         }
-        
+
         .header-navigation {
             background: rgba(30, 41, 59, 0.95);
         }
-        
+
         .upload-label {
             background: var(--surface-color);
             border-color: var(--info-color);
         }
-        
+
         .task-modal .modal-content {
             background: var(--surface-color);
         }
-        
+
         .task-modal-body {
             background: var(--background-color);
         }
-        
+
         .task-modal-footer {
             background: var(--surface-color);
         }
@@ -867,7 +880,7 @@
 @section('js')
 <script>
     let inputCount = 1;
-    
+
     function remArray(id){
         Livewire.emit('deleteInput',id);
     }
@@ -899,7 +912,7 @@
                 createNewFileInput();
 
                 const imgElement = document.createElement("img");
-                imgElement.src = event.target.result;            
+                imgElement.src = event.target.result;
 
                 imgElement.onload = function (e) {
                     const canvas = document.createElement("canvas");
@@ -914,7 +927,7 @@
                     ctx.drawImage(e.target, 0, 0, canvas.width, canvas.height);
 
                     srcEncoded = ctx.canvas.toDataURL(e.target, "image/jpeg");
-                    
+
                     @this.cargaImagenBase64(srcEncoded);
                 };
             }
@@ -967,7 +980,7 @@
         const deleteContainer = document.createElement('div');
         deleteContainer.className = 'delete-container d-none';
         deleteContainer.id = `deleteButtonContainer${inputCount}`;
-        
+
         const deleteButton = document.createElement('button');
         deleteButton.type = 'button';
         deleteButton.className = 'delete-button';
@@ -977,7 +990,7 @@
         inputContainer.appendChild(input);
         inputContainer.appendChild(label);
         deleteContainer.appendChild(deleteButton);
-        
+
         uploadItem.appendChild(inputContainer);
         uploadItem.appendChild(thumbnailContainer);
         uploadItem.appendChild(deleteContainer);
@@ -991,7 +1004,7 @@
         if (row) {
             row.remove();
         }
-        
+
         // Asegurar que al menos quede un input vacío
         const inputs = document.querySelectorAll('input[type="file"]');
         if (inputs.length === 0) {

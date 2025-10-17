@@ -29,7 +29,7 @@
                         @foreach ($residencias as $item)
                             <tr>
                                 <td style="vertical-align: middle">{{ $item->id }}</td>
-                                <td style="vertical-align: middle">{{ $item->cliente->nombre }}</td>
+                                <td style="vertical-align: middle">{{ $item->cliente->nombre??'Sin definir' }}</td>
                                 <td style="vertical-align: middle">{{ $item->numeropuerta }}</td>
                                 <td style="vertical-align: middle">{{ $item->calle }}</td>
                                 <td style="vertical-align: middle">

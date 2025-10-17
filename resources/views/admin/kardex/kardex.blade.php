@@ -54,7 +54,7 @@
 
                         <ul class="list-group list-group-unbordered mb-3">
                             <li class="list-group-item">
-                                <b>Nro Doc.:</b> <a class="float-right">{{ $empleado->cedula }}</a>
+                                <b>Nro Doc.:</b> <a class="float-right">{{ $empleado->cedula }} {{ $empleado->expedido }}</a>
                             </li>
                             <li class="list-group-item">
                                 <b>Telefono:</b> <a class="float-right">{{ $empleado->telefono }}</a>

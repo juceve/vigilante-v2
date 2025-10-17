@@ -60,6 +60,7 @@
         <br>
     </div>
 </div>
+
 @section('css')
     <style>
         /* Variables CSS - Paleta Empresarial de Seguridad */
@@ -98,6 +99,17 @@
             --shadow-heavy: 0 8px 24px rgba(30, 41, 59, 0.2);
             --border-radius: 16px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Forzar modo claro permanente */
+        * {
+            color-scheme: light !important;
+        }
+
+        html,
+        body {
+            background-color: #f8fafc !important;
+            color: #1e293b !important;
         }
 
         /* Estilos Generales */
@@ -764,6 +776,7 @@
         }
     </style>
 @endsection
+
 @section('js')
     <script>
         // ...existing code for loading Google Maps API (unchanged) ...

@@ -16,7 +16,9 @@ class MisResidencias extends Component
     public function render()
     {        
         $motivos = Motivo::all();
-        $residencias = \App\Models\Residencia::where('propietario_id', auth()->user()->propietario->id)->get();
+        $residencias = \App\Models\Residencia::where('propietario_id', auth()->user()->propietario->id)
+            ->whereNotNull('cliente_id')
+            ->get();
         return view('livewire.propietarios.mis-residencias', compact('residencias', 'motivos'))->extends('layouts.propietarios');
     }
 

@@ -131,7 +131,6 @@ class ListadoResidencias extends Component
                 'calle' => $this->calle,
                 'nrolote' => $this->nrolote,
                 'manzano' => $this->manzano,
-                'cedula_propietario' => $this->cedula_propietario,
                 'estado' => $this->estado,
             ]);
 

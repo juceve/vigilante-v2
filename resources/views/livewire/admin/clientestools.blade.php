@@ -173,24 +173,26 @@
                                     <table class="table table-sm table-bordered table-striped" style="font-size: 14px;">
                                         <thead>
                                             <tr class="bg-info text-white">
-                                                <td colspan="4"><strong>Personal Asignado</strong></td>
+                                                <td colspan="5"><strong>Personal Asignado</strong></td>
                                             </tr>
                                             <tr class="table-info">
                                                 <th>Nombre</th>
                                                 <th>Turno</th>
                                                 <th class="text-center">Asistencia</th>
+                                                <th class="text-center">HV</th>
                                                 <th class="text-center">Alertas</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @foreach ($designaciones as $item)
                                                 <tr>
-                                                    <td>{{ $item->empleado }}</td>
-                                                    <td>
+                                                    <td class="align-middle">{{ $item->empleado }}</td>
+                                                    <td class="align-middle">
                                                         {{ strtoupper($item->turno) }} <br>
                                                         <small>({{ $item->datosturno->horainicio }} - {{ $item->datosturno->horafin }})</small>
                                                     </td>
-                                                    <td class="text-center">
+                                                    <td class="text-center align-middle">
+                                                        {{-- Evaluar estado de marca --}}
                                                         @php
                                                             $marcado = yaMarque2($item->id);
                                                             $estadoMarca = $marcado[0];
@@ -257,7 +259,53 @@
                                                                 <span class="badge badge-pill badge-secondary">N/A</span>
                                                         @endswitch
                                                     </td>
-                                                    <td class="text-center">
+                                                    <td class="text-center align-middle">
+                                                        @php
+                                                            $hoy = date('Y-m-d');
+
+                                                            // Contar hombrevivos de hoy para este empleado
+                                                            $hvs = \App\Models\Hombrevivo::whereHas('intervalo', function($q) use ($item) {
+                                                                $q->where('designacione_id', $item->id);
+                                                            })
+                                                            ->where('fecha', $hoy)
+                                                            ->where('status', true)
+                                                            ->count();
+
+                                                            // Contar intervalos totales de esta designación
+                                                            $intervalos = \App\Models\Intervalo::where('designacione_id', $item->id)
+                                                                ->count();
+                                                        @endphp
+
+
+                                                        @if ($intervalos > 0)
+                                                            @php
+                                                                // Calcular porcentaje
+                                                                $porcentaje = round(($hvs / $intervalos) * 100);
+
+                                                                // Determinar color del badge
+                                                                if ($porcentaje >= 90) {
+                                                                    $badgeColor = 'success';
+                                                                } elseif ($porcentaje >= 70) {
+                                                                    $badgeColor = 'warning';
+                                                                } elseif ($porcentaje > 0) {
+                                                                    $badgeColor = 'danger';
+                                                                } else {
+                                                                    $badgeColor = 'secondary';
+                                                                }
+                                                            @endphp
+
+                                                            <span class="badge badge-pill badge-{{ $badgeColor }}"
+                                                                  title="Hombres vivos reportados: {{ $porcentaje }}%">
+                                                                {{ $hvs }} / {{ $intervalos }}
+                                                            </span>
+                                                        @else
+                                                            <span class="badge badge-pill badge-secondary" title="Sin intervalos configurados">
+                                                                N/A
+                                                            </span>
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-center align-middle">
+                                                        {{-- Contar alertas de pánico --}}
                                                         @php
                                                             $panicos = tengoPanicos($item->datosempleado->user_id, $selCliente->id);
                                                         @endphp

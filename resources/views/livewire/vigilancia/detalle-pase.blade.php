@@ -153,8 +153,18 @@
 @endsection
 @section('css')
     <style>
-        @keyframes pulse {
+        /* Forzar modo claro permanente */
+        * {
+            color-scheme: light !important;
+        }
 
+        html,
+        body {
+            background-color: #f8fafc !important;
+            color: #1e293b !important;
+        }
+
+        @keyframes pulse {
             0%,
             100% {
                 opacity: 1;

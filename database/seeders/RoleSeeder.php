@@ -156,5 +156,10 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.hombre_vivo',  'grupo' => 'HOMBRE VIVO', 'descripcion' => 'Ver listado'])->assignRole([$role]);
         Permission::create(['name' => 'admin.hombre_vivo_reportes',  'grupo' => 'HOMBRE VIVO', 'descripcion' => 'Generar Reportes'])->assignRole([$role]);
 
+        Permission::create(['name' => 'admin.clientes.dotaciones.index',  'grupo' => 'DOTACIONES CLIENTES', 'descripcion' => 'Ver listado'])->assignRole([$role]);
+        Permission::create(['name' => 'admin.clientes.dotaciones.create',  'grupo' => 'DOTACIONES CLIENTES', 'descripcion' => 'Crear'])->assignRole([$role]);
+        Permission::create(['name' => 'admin.clientes.dotaciones.edit',  'grupo' => 'DOTACIONES CLIENTES', 'descripcion' => 'Editar'])->assignRole([$role]);
+        Permission::create(['name' => 'admin.clientes.dotaciones.destroy',  'grupo' => 'DOTACIONES CLIENTES', 'descripcion' => 'Eliminar'])->assignRole([$role]);
+
     }
 }

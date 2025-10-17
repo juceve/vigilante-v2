@@ -1,8 +1,9 @@
+{{-- filepath: c:\laragon\www\vigilantev2\resources\views\livewire\vigilancia\hombre-vivo.blade.php --}}
 <div>
     @section('title')
         Hombre Vivo
     @endsection
-    
+
     <!-- Header Corporativo -->
     <div style="margin-top: 85px; background: linear-gradient(135deg, #1e3a8a, #1e293b); padding: 1rem 0; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(30, 41, 59, 0.1);">
         <div class="container">
@@ -34,14 +35,14 @@
                             <i class="fas fa-edit" style="color: #d97706; width: 16px; text-align: center;"></i>
                             Anotaciones:
                         </label>
-                        <textarea class="form-control" wire:model='anotaciones' rows="4" 
+                        <textarea class="form-control" wire:model='anotaciones' rows="4"
                                 placeholder="Ingrese observaciones sobre su estado y situación actual..."
                                 style="border: 2px solid #e2e8f0; border-radius: 12px; padding: 0.8rem 1rem; font-size: 0.9rem; transition: all 0.3s ease; background: white; min-height: 100px; resize: vertical; font-family: inherit; line-height: 1.5;"
                                 onfocus="this.style.borderColor='#d97706'; this.style.boxShadow='0 0 0 3px rgba(217, 119, 6, 0.1)'"
                                 onblur="this.style.borderColor='#e2e8f0'; this.style.boxShadow='none'"></textarea>
                     </div>
                     <div class="d-grid">
-                        <button type="button" onclick="activarGeolocalizacionYReportarse()" 
+                        <button type="button" onclick="activarGeolocalizacionYReportarse()"
                                 style="background: linear-gradient(135deg, #059669, #047857); color: white; border: none; border-radius: 12px; padding: 1rem 2rem; font-size: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.8rem; box-shadow: 0 4px 16px rgba(5, 150, 105, 0.3); min-height: 60px;"
                                 onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 24px rgba(5, 150, 105, 0.4)'"
                                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 16px rgba(5, 150, 105, 0.3)'"
@@ -67,17 +68,28 @@
     </div>
 
     <style>
+        /* Forzar modo claro permanente */
+        * {
+            color-scheme: light !important;
+        }
+
+        html,
+        body {
+            background-color: #f8fafc !important;
+            color: #1e293b !important;
+        }
+
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.8; transform: scale(1.05); }
         }
-        
+
         .form-control::placeholder {
             color: #94a3b8;
             font-style: italic;
         }
-        
-        /* Estilos responsivos */
+
+        /* Responsive */
         @media (max-width: 768px) {
             .container {
                 padding-left: 0.5rem !important;
@@ -86,7 +98,7 @@
         }
     </style>
 </div>
-</div>
+
 @section('js')
     @if ($intervalo)
         <script>
@@ -111,14 +123,14 @@
                     geoLocationPosition.coords.latitude,
                     geoLocationPosition.coords.longitude,
                 ];
-                
+
                 // Emitir evento y esperar respuesta usando promesa
                 @this.call('ubicacionAprox', data).then(() => {
                     // Ahora que las coordenadas están guardadas, reportarse
                     reportarseActivo();
                 });
             }
-            
+
             function reportarseActivo() {
                 @this.reportarse();
             }

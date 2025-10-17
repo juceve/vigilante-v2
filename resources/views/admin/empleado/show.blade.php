@@ -42,9 +42,13 @@
                                 <strong>Tipo Doc.:</strong>
                                 {{ $empleado->tipodocumento_id ? $empleado->tipodocumento->name : '' }}
                             </div>
-                            <div class="col-12 col-md-6 mb-2">
+                            <div class="col-12 col-md-3 mb-2">
                                 <strong>Nro. Doc.:</strong>
                                 {{ $empleado->cedula }}
+                            </div>
+                            <div class="col-12 col-md-3 mb-2">
+                                <strong>Exp.:</strong>
+                                {{ $empleado->expedido }}
                             </div>
 
                             <div class="col-12 col-md-6 mb-2">

@@ -37,71 +37,80 @@
             </thead>
             <tbody>
                 @foreach ($clientes as $cliente)
-                    <tr>
-                        <td>{{ ++$i }}</td>
+                <tr>
+                    <td>{{ ++$i }}</td>
 
-                        <td>{{ $cliente->nombre }}</td>
-                        <td>{{ $cliente->direccion }}</td>
-                        <td>{{ $cliente->oficina }}</td>
-                        <td>
-                            @if ($cliente->status)
-                                <span class="badge badge-pill badge-success">Activo</span>
-                            @else
-                                <span class="badge badge-pill badge-secondary">Inactivo</span>
-                            @endif
-                        </td>
-                        <td class="text-right">
-                            <div class="btn-group dropleft">
-                                <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
-                                    data-toggle="dropdown">Opciones</button>
-                                {{-- <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                    <td>{{ $cliente->nombre }}</td>
+                    <td>{{ $cliente->direccion }}</td>
+                    <td>{{ $cliente->oficina }}</td>
+                    <td>
+                        @if ($cliente->status)
+                        <span class="badge badge-pill badge-success">Activo</span>
+                        @else
+                        <span class="badge badge-pill badge-secondary">Inactivo</span>
+                        @endif
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group dropleft">
+                            <button type="button" class="btn btn-secondary btn-sm dropdown-toggle"
+                                data-toggle="dropdown">Opciones</button>
+                            {{-- <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
                                 aria-expanded="false"> --}}
                                 <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <div class="dropdown-menu" role="menu" style="">
+                            </button>
+                            <div class="dropdown-menu" role="menu" style="">
 
-                                    <a class="dropdown-item" href="{{ route('clientes.show', $cliente->id) }}"><i
-                                            class="fa fa-fw fa-eye text-secondary"></i> Info</a>
-                                    @can('clientes.edit')
-                                        <a class="dropdown-item" href="{{ route('clientes.edit', $cliente->id) }}"><i
-                                                class="fa fa-fw fa-edit text-secondary"></i> Editar</a>
+                                <a class="dropdown-item" href="{{ route('clientes.show', $cliente->id) }}"><i
+                                        class="fa fa-fw fa-eye text-secondary"></i> Info</a>
+                                @can('clientes.edit')
+                                <a class="dropdown-item" href="{{ route('clientes.edit', $cliente->id) }}"><i
+                                        class="fa fa-fw fa-edit text-secondary"></i> Editar</a>
 
-                                        <a class="dropdown-item" href="{{ route('usuariocliente', $cliente->id) }}">
-                                            <i class="fas fa-user-plus text-secondary"></i> Usuario externo</a>
-                                    @endcan
-                                    @can('residencias.index')
-                                        <a class="dropdown-item" href="{{ route('admin.residencias', $cliente->id) }}">
-                                            <i class="fas fa-home text-secondary"></i> Residencias</a>
-                                    @endcan
-                                    @can('residencias.solicitudes')
-                                        <a class="dropdown-item" href="javascript:void(0)" wire:click="generaLink({{ $cliente->id }})">
-                                            <i class="fas fa-plus text-secondary"></i> Form. Propietarios</a>
-                                    @endcan
+                                <a class="dropdown-item" href="{{ route('usuariocliente', $cliente->id) }}">
+                                    <i class="fas fa-user-plus text-secondary"></i> Usuario externo</a>
+                                @endcan
+                                @can('residencias.index')
+                                <a class="dropdown-item" href="{{ route('admin.residencias', $cliente->id) }}">
+                                    <i class="fas fa-home text-secondary"></i> Residencias</a>
+                                @endcan
+                                @can('residencias.solicitudes')
+                                <a class="dropdown-item" href="javascript:void(0)"
+                                    wire:click="generaLink({{ $cliente->id }})">
+                                    <i class="fas fa-plus text-secondary"></i> Form. Propietarios</a>
+                                @endcan
+                                @can('admin.clientes.dotaciones.index')
+                                <a class="dropdown-item" href="{{ route('admin.clientes.dotaciones', $cliente->id) }}">
+                                    <i class="fas fa-boxes text-secondary"></i>
+                                    Dotaciones
+                                </a>
+                                @endcan
+                                @can('admin.registros.rondas')
+                                <a class="dropdown-item" href="{{ route('clientes.rondas', $cliente->id) }}">
+                                    <i class="fas fa-street-view text-secondary"></i>
+                                    Rondas
+                                </a>
+                                @endcan
 
-                                            <a class="dropdown-item" href="{{ route('clientes.rondas', $cliente->id) }}">
-                                                <i class="fas fa-street-view text-secondary"></i>
-                                                 Rondas
-                                            </a>
 
-                                    @can('turnos.index')
-                                        <a class="dropdown-item" href="{{ route('admin.turnos-cliente', $cliente->id) }}"><i
-                                                class="fas fa-clock text-secondary"></i> Turnos</a>
+                                @can('turnos.index')
+                                <a class="dropdown-item" href="{{ route('admin.turnos-cliente', $cliente->id) }}"><i
+                                        class="fas fa-clock text-secondary"></i> Turnos</a>
+                                @endcan
+                                <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST"
+                                    class="delete" onsubmit="return false">
+                                    @csrf
+                                    @method('DELETE')
+                                    @can('clientes.destroy')
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="fas fa-fw fa-trash text-secondary"></i>
+                                        Eliminar de la DB
+                                    </button>
                                     @endcan
-                                    <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST"
-                                        class="delete" onsubmit="return false">
-                                        @csrf
-                                        @method('DELETE')
-                                        @can('clientes.destroy')
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="fas fa-fw fa-trash text-secondary"></i>
-                                                Eliminar de la DB
-                                            </button>
-                                        @endcan
-                                    </form>
-                                </div>
+                                </form>
                             </div>
-                        </td>
-                    </tr>
+                        </div>
+                    </td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
@@ -154,14 +163,14 @@
     </div>
 </div>
 @section('js')
-    <script>
-        Livewire.on('abrirModalLink', () => {
+<script>
+    Livewire.on('abrirModalLink', () => {
             $('#modalFormSolicitud').modal('show');
         });
-    </script>
+</script>
 
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
             const copyBtn = document.getElementById('copyBtn');
             const whatsappBtn = document.getElementById('whatsappBtn');
             const linkInput = document.getElementById('linkInput');
@@ -203,5 +212,5 @@
                 window.open(whatsappURL, '_blank');
             });
         });
-    </script>
+</script>
 @endsection

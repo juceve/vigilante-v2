@@ -2,7 +2,7 @@
     @section('title')
         Novedades
     @endsection
-    
+
     <!-- Header Corporativo -->
     <div style="margin-top: 85px; background: linear-gradient(135deg, #1e3a8a, #1e293b); padding: 1rem 0; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(30, 41, 59, 0.1);">
         <div class="container">
@@ -98,11 +98,22 @@
     </div>
 
     <style>
+        /* Forzar modo claro permanente */
+        * {
+            color-scheme: light !important;
+        }
+
+        html,
+        body {
+            background-color: #f8fafc !important;
+            color: #1e293b !important;
+        }
+
         .form-control::placeholder {
             color: #94a3b8;
             font-style: italic;
         }
-        
+
         .img-thumbnail {
             border: 2px solid #e2e8f0;
             border-radius: 8px;
@@ -110,19 +121,19 @@
             background: white;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Estilos responsivos */
         @media (max-width: 768px) {
             .container {
                 padding-left: 0.5rem !important;
                 padding-right: 0.5rem !important;
             }
-            
+
             .col-12.col-md-6 {
                 margin-bottom: 1.5rem;
             }
         }
-        
+
         /* Mejorar la apariencia de los inputs de archivo */
         input[type="file"]::-webkit-file-upload-button {
             background: linear-gradient(135deg, #d97706, #f59e0b);
@@ -134,13 +145,13 @@
             cursor: pointer;
             margin-right: 1rem;
         }
-        
+
         input[type="file"]::-webkit-file-upload-button:hover {
             background: linear-gradient(135deg, #f59e0b, #d97706);
         }
     </style>
 </div>
-</div>
+
 @section('js')
 <script>
     let inputCount = 1;
@@ -173,7 +184,7 @@
                 createNewFileInput();
 
                 const imgElement = document.createElement("img");
-                imgElement.src = event.target.result;            
+                imgElement.src = event.target.result;
 
                 imgElement.onload = function (e) {
                     const canvas = document.createElement("canvas");
@@ -188,7 +199,7 @@
                     ctx.drawImage(e.target, 0, 0, canvas.width, canvas.height);
 
                     srcEncoded = ctx.canvas.toDataURL(e.target, "image/jpeg");
-                    
+
                     @this.cargaImagenBase64(srcEncoded);
                 };
             }
@@ -292,7 +303,7 @@
             geoLocationPosition.coords.latitude,
             geoLocationPosition.coords.longitude,
         ];
-        
+
         // Usar la sintaxis moderna de Livewire para enviar las coordenadas
         @this.call('ubicacionAprox', data).then(() => {
             // Después de enviar la ubicación, ejecutar el envío
@@ -303,7 +314,7 @@
             enviarNovedad();
         });
     }
-    
+
     function enviarNovedad() {
         @this.enviar();
     }

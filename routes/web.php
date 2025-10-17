@@ -7,6 +7,7 @@ use App\Http\Controllers\CitecotizacionController;
 use App\Http\Controllers\CiteinformeController;
 use App\Http\Controllers\CitememorandumController;
 use App\Http\Controllers\CitereciboController;
+use App\Http\Controllers\CldotacionController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\DesignacioneController;
 use App\Http\Controllers\EmpleadoController;
@@ -45,6 +46,7 @@ use App\Http\Controllers\VisitaController;
 
 use App\Http\Livewire\Admin\Admrondas;
 use App\Http\Livewire\Admin\Aprobaciones;
+use App\Http\Livewire\Admin\ClienteDotaciones;
 use App\Http\Livewire\Admin\CtrlAllAirbnb;
 use App\Http\Livewire\Admin\Diaslibres;
 use App\Http\Livewire\Admin\GenDocs;
@@ -105,6 +107,7 @@ use App\Http\Livewire\Vigilancia\RegSalida;
 use App\Http\Livewire\Vigilancia\Ronda;
 use App\Http\Livewire\Vigilancia\SalidaVisita;
 use App\Http\Livewire\Vigilancia\Vtareas;
+
 use App\Models\Empleado;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -178,6 +181,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/{cliente_id}/listado-solicitudes', ListadoSolicitudes::class)->middleware('can:residencias.solicitudes')->name('admin.listadosolicitudes');
     Route::get('admin/{propietario_id}/{cliente_id}/aprobacion-solicitudes', Aprobaciones::class)->middleware('can:residencias.aprobaciones')->name('admin.aprobacionsolicitudes');
     Route::get('admin/listado-propietarios', ListadoPropietarios::class)->middleware('can:propietarios.index')->name('admin.listadopropietarios');
+    Route::get('admin/clientes/{cliente_id}/dotaciones', ClienteDotaciones::class)->middleware('can:admin.clientes.dotaciones.index')->name('admin.clientes.dotaciones');
 
     Route::post('/designaciones-historial/exportar', [DesignacioneController::class, 'exportar'])->name('designaciones-historial.exportar');
 
@@ -285,7 +289,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/subir-archivo', [UploadsController::class, 'uploadFile'])->name('uploadFile');
 
-
+    Route::get('pdf/acta-dotacion-cliente/', [CldotacionController::class, 'acta'])->name('pdf.actadotacioncliente');
     ////////////////// AREA DE CLIENTES ///////////////////////
     Route::get('admin/usuariocliente/{cliente_id}', Usuariocliente::class)->name('usuariocliente');
 

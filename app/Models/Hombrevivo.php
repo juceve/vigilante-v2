@@ -2,49 +2,43 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Class Hombrevivo
- *
- * @property $id
- * @property $intervalo_id
- * @property $fecha
- * @property $hora
- * @property $anotaciones
- * @property $status
- * @property $created_at
- * @property $updated_at
- *
- * @property Intervalo $intervalo
- * @package App
- * @mixin \Illuminate\Database\Eloquent\Builder
- */
 class Hombrevivo extends Model
 {
+    use HasFactory;
 
-  static $rules = [
-    'intervalo_id' => 'required',
-    'fecha' => 'required',
-    'hora' => 'required',
-    'status' => 'required',
-  ];
+    protected $fillable = [
+        'intervalo_id',
+        'fecha',
+        'hora',
+        'anotaciones',
+        'lat',
+        'lng',
+        'status'
+    ];
 
-  protected $perPage = 20;
+    protected $casts = [
+        'fecha' => 'date',
+        'status' => 'boolean'
+    ];
 
-  /**
-   * Attributes that should be mass-assignable.
-   *
-   * @var array
-   */
-  protected $fillable = ['intervalo_id', 'fecha', 'hora', 'anotaciones', 'lat', 'lng', 'status'];
+    // Relación con Intervalo
+    public function intervalo()
+    {
+        return $this->belongsTo(Intervalo::class);
+    }
 
+    // Scope para filtrar por fecha
+    public function scopeFecha($query, $fecha)
+    {
+        return $query->where('fecha', $fecha);
+    }
 
-  /**
-   * @return \Illuminate\Database\Eloquent\Relations\HasOne
-   */
-  public function intervalo()
-  {
-    return $this->hasOne('App\Models\Intervalo', 'id', 'intervalo_id');
-  }
+    // Scope para activos
+    public function scopeActivos($query)
+    {
+        return $query->where('status', true);
+    }
 }

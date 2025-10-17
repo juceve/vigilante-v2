@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
+    <meta name="color-scheme" content="light only">
+    <meta name="supported-color-schemes" content="light">
     <title>@yield('title') | {{ strtoupper(config('app.name')) }}</title>
 
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -35,39 +37,42 @@
 
     <!-- Material Design Styles -->
     <style>
+        /* Forzar modo claro permanente */
+        :root {
+            color-scheme: light only !important;
+            supported-color-schemes: light !important;
+        }
+
+        * {
+            color-scheme: light !important;
+        }
+
+        html,
+        body {
+            background-color: #f8fafc !important;
+            color: #1e293b !important;
+            color-scheme: light !important;
+        }
+
         /* Variables CSS Material Design - Paleta Empresarial de Seguridad */
         :root {
             --primary-color: #1e3a8a;
-            /* Azul naval profundo */
             --primary-dark: #1e293b;
-            /* Azul oscuro casi negro */
             --primary-light: #3b82f6;
-            /* Azul corporativo */
             --secondary-color: #334155;
-            /* Gris azulado */
             --secondary-dark: #1e293b;
-            /* Gris oscuro */
             --accent-color: #d97706;
-            /* Dorado corporativo */
             --accent-light: #f59e0b;
-            /* Dorado claro */
             --success-color: #059669;
-            /* Verde profesional */
             --warning-color: #d97706;
-            /* Naranja dorado */
             --error-color: #dc2626;
-            /* Rojo corporativo */
             --surface-color: #ffffff;
             --background-color: #f8fafc;
-            /* Gris muy claro */
             --card-background: #ffffff;
             --on-surface: #1e293b;
-            /* Texto principal */
             --on-primary: #ffffff;
             --text-secondary: #64748b;
-            /* Texto secundario */
             --border-color: #e2e8f0;
-            /* Bordes sutiles */
             --shadow-1: 0 1px 3px rgba(30, 41, 59, 0.12), 0 1px 2px rgba(30, 41, 59, 0.24);
             --shadow-2: 0 3px 6px rgba(30, 41, 59, 0.16), 0 3px 6px rgba(30, 41, 59, 0.23);
             --shadow-3: 0 10px 20px rgba(30, 41, 59, 0.19), 0 6px 6px rgba(30, 41, 59, 0.23);
@@ -78,8 +83,8 @@
         /* Body y Typography */
         body {
             font-family: 'Montserrat', 'Roboto', sans-serif !important;
-            background-color: var(--background-color);
-            color: var(--on-surface);
+            background-color: var(--background-color) !important;
+            color: var(--on-surface) !important;
             line-height: 1.6;
         }
 
@@ -299,28 +304,6 @@
             }
         }
 
-        /* Dark Mode Support */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --surface-color: #1e1e1e;
-                --background-color: #121212;
-                --on-surface: #e0e0e0;
-            }
-
-            body {
-                background-color: var(--background-color);
-                color: var(--on-surface);
-            }
-
-            .main-content {
-                background: var(--background-color);
-            }
-
-            .navbar-collapse {
-                background: rgba(30, 30, 30, 0.95);
-            }
-        }
-
         /* Scroll Behavior */
         html {
             scroll-behavior: smooth;
@@ -431,6 +414,7 @@
                 </div>
             </a>
             @livewire('vigilancia.ronda-en-progreso')
+            @livewire('vigilancia.alerta-hv')
             @auth
                 <button class="navbar-toggler material-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"

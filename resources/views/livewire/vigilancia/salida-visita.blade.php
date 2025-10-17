@@ -91,6 +91,22 @@
         </button>
     </div><br><br>
 </div>
+
+@section('css')
+<style>
+    /* Forzar modo claro permanente */
+    * {
+        color-scheme: light !important;
+    }
+
+    html,
+    body {
+        background-color: #f8fafc !important;
+        color: #1e293b !important;
+    }
+</style>
+@endsection
+
 @section('js')
 
 <script>
@@ -125,7 +141,7 @@ function CARGAFOTO(inputId) {
             createNewFileInput();
 
             const imgElement = document.createElement("img");
-            imgElement.src = event.target.result;            
+            imgElement.src = event.target.result;
 
             imgElement.onload = function (e) {
                 const canvas = document.createElement("canvas");
@@ -140,7 +156,7 @@ function CARGAFOTO(inputId) {
                 ctx.drawImage(e.target, 0, 0, canvas.width, canvas.height);
 
                 srcEncoded = ctx.canvas.toDataURL(e.target, "image/jpeg");
-                
+
                 @this.cargaImagenBase64(srcEncoded);
             };
         }

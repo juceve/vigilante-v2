@@ -27,8 +27,8 @@
                 <div class="card-body">
                     <form wire:submit.prevent="guardarPunto">
                         <div class="form-group">
-                            <label>Descripción del punto</label>
-                            <textarea id="descripcion-punto" class="form-control" wire:model.defer="descripcion" required></textarea>
+                            <label>Nombre del punto</label>
+                            <input type="text" id="descripcion-punto" maxlength="30" class="form-control" wire:model.defer="descripcion" required>
                             @error('descripcion')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror

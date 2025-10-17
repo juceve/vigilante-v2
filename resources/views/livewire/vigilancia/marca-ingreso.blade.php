@@ -16,6 +16,21 @@
     </div>
 </div>
 
+@section('css')
+<style>
+    /* Forzar modo claro permanente */
+    * {
+        color-scheme: light !important;
+    }
+
+    html,
+    body {
+        background-color: #f8fafc !important;
+        color: #1e293b !important;
+    }
+</style>
+@endsection
+
 @section('js')
     <script>
         // Guardar y restaurar HTML original, validar expiración (más de 1 hora desde la hora programada)

@@ -5,6 +5,7 @@
 @push('head')
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
     <meta name="format-detection" content="telephone=no">
+    <meta name="color-scheme" content="light only">
 @endpush
 
 @section('content')
@@ -251,6 +252,17 @@
     {{-- Estilos Material Design --}}
     @push('styles')
         <style>
+            /* Forzar modo claro permanente */
+            * {
+                color-scheme: light !important;
+            }
+
+            html,
+            body {
+                background-color: #f8fafc !important;
+                color: #1e293b !important;
+            }
+
             /* Variables CSS - Paleta Empresarial de Seguridad */
             :root {
                 --primary-color: #1e3a8a;
@@ -301,7 +313,7 @@
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                background: rgba(255, 255, 255, 0.95);
+                background: rgba(255, 255, 255, 0.95) !important;
                 backdrop-filter: blur(10px);
                 border-radius: 12px;
                 padding: 1rem;
@@ -309,35 +321,10 @@
                 border: 1px solid rgba(255, 255, 255, 0.2);
             }
 
-            .user-section {
-                display: flex;
-                align-items: center;
-                gap: 0.8rem;
-            }
-
-            .user-avatar-mini {
-                width: 45px;
-                height: 45px;
-                background: linear-gradient(135deg, var(--accent-color), var(--accent-light));
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                font-size: 1.2rem;
-                box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);
-            }
-
-            .user-details {
-                display: flex;
-                flex-direction: column;
-                gap: 0.2rem;
-            }
-
             .user-name-mini {
                 font-size: 1.1rem;
                 font-weight: 600;
-                color: var(--on-surface);
+                color: #1e293b !important;
                 margin: 0;
                 line-height: 1.2;
             }
@@ -361,6 +348,10 @@
                 flex-direction: column;
                 gap: 0.3rem;
                 text-align: right;
+            }
+
+            .assignment-compact div {
+                color: #64748b !important;
             }
 
             .assignment-item {
@@ -401,7 +392,7 @@
 
             /* Tarjetas de Función */
             .function-card {
-                background: white;
+                background: white !important;
                 border-radius: var(--border-radius);
                 box-shadow: var(--shadow-light);
                 transition: var(--transition);
@@ -855,55 +846,6 @@
                     grid-template-columns: repeat(4, 1fr);
                     max-width: 1200px;
                     margin: 0 auto 2rem auto;
-                }
-            }
-
-            /* Modo oscuro */
-            @media (prefers-color-scheme: dark) {
-                .function-card {
-                    background: #1e293b;
-                    color: white;
-                    border-color: #334155;
-                }
-
-                .header-content {
-                    background: rgba(30, 41, 59, 0.95);
-                    color: white;
-                }
-
-                .user-name-mini {
-                    color: white;
-                }
-
-                .assignment-item {
-                    color: #94a3b8;
-                }
-
-                .checkout-card {
-                    background: #1e293b;
-                    color: white;
-                    border-color: #334155;
-                }
-
-                .checkout-header h5 {
-                    color: white;
-                }
-
-                .checkout-description {
-                    color: #94a3b8;
-                }
-
-                .alert-modern {
-                    background: #1e293b;
-                    color: white;
-                }
-
-                .alert-content h5 {
-                    color: white;
-                }
-
-                .alert-content p {
-                    color: #94a3b8;
                 }
             }
 

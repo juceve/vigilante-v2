@@ -119,17 +119,21 @@ class Clientestools extends Component
     {
         $this->reset('selCliente', 'designaciones');
 
-        // Optimizar carga del cliente
         $this->selCliente = Cliente::select('id', 'nombre', 'direccion', 'personacontacto', 'telefonocontacto','fecha_fin')
             ->find($cliente_id);
 
         $hoy = date('Y-m-d');
 
-        // Optimizar carga de designaciones
+        // Optimizar con eager loading
         $this->designaciones = Vwdesignacione::select('id', 'empleado', 'turno', 'empleado_id', 'turno_id', 'cliente_id')
             ->with([
                 'datosempleado:id,user_id',
-                'datosturno:id,horainicio,horafin'
+                'datosturno:id,horainicio,horafin',
+                'intervalos' => function($query) use ($hoy) {
+                    $query->withCount(['hombrevivos' => function($q) use ($hoy) {
+                        $q->where('fecha', $hoy)->where('status', true);
+                    }]);
+                }
             ])
             ->where([
                 ['cliente_id', $this->selCliente->id],

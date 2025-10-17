@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('apellidos');
             $table->foreignId('tipodocumento_id')->nullable()->constrained()->nullOnDelete();
             $table->string('cedula', 25);
+            $table->string('expedido', 4);
             $table->date('fecnacimiento')->nullable();
             $table->string('nacionalidad')->nullable();
             $table->string('direccion');

@@ -35,12 +35,20 @@
                     {!! $errors->first('tipodocumento_id', '<div class="invalid-feedback">:message</div>') !!}
                 </div> --}}
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-3">
                 <div class="form-group">
                     {{ Form::label('Nro. Documento') }}
                     {{ Form::text('cedula', $empleado->cedula, ['class' => 'form-control' . ($errors->has('cedula') ? '
                     is-invalid' : ''), 'placeholder' => 'Nro. Documento']) }}
                     {!! $errors->first('cedula', '<div class="invalid-feedback">:message</div>') !!}
+                </div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="form-group">
+                    {{ Form::label('Expedido') }}
+                    {!! Form::select('expedido', ['LP'=>'LP','SC'=>'SC','CB'=>'CB','OR'=>'OR','PT'=>'PT','CH'=>'CH','TJ'=>'TJ','BN'=>'BN'],  $empleado->expedido, ['class' => 'form-control' . ($errors->has('expedido') ? '
+                    is-invalid' : ''),'placeholder'=>'- Elija una opción -']) !!}
+                    {!! $errors->first('expedido', '<div class="invalid-feedback">:message</div>') !!}
                 </div>
             </div>
             <div class="col-12 col-md-6">

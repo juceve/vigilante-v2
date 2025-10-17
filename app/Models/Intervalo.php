@@ -2,55 +2,38 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * Class Intervalo
- *
- * @property $id
- * @property $designacione_id
- * @property $hora
- * @property $created_at
- * @property $updated_at
- *
- * @property Designacione $designacione
- * @property Hombrevivo[] $hombrevivos
- * @package App
- * @mixin \Illuminate\Database\Eloquent\Builder
- */
 class Intervalo extends Model
 {
-    
-    static $rules = [
-		'designacione_id' => 'required',
-		'hora' => 'required',
+    use HasFactory;
+
+    protected $fillable = [
+        'designacione_id',
+        'hora'
     ];
 
-    protected $perPage = 20;
-
-    /**
-     * Attributes that should be mass-assignable.
-     *
-     * @var array
-     */
-    protected $fillable = ['designacione_id','hora'];
-
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
+    // Relación con Designacione
     public function designacione()
     {
-        return $this->hasOne('App\Models\Designacione', 'id', 'designacione_id');
+        return $this->belongsTo(Designacione::class);
     }
-    
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
+
+    // Relación con Hombrevivos
     public function hombrevivos()
     {
-        return $this->hasMany('App\Models\Hombrevivo', 'intervalo_id', 'id');
+        return $this->hasMany(Hombrevivo::class);
     }
-    
 
+    // Scope para obtener hombrevivos de hoy
+    public function scopeConHombrevivoHoy($query, $fecha = null)
+    {
+        $fecha = $fecha ?? date('Y-m-d');
+
+        return $query->with(['hombrevivos' => function($q) use ($fecha) {
+            $q->where('fecha', $fecha)
+              ->where('status', true);
+        }]);
+    }
 }
