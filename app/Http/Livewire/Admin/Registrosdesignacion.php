@@ -3,7 +3,12 @@
 namespace App\Http\Livewire\Admin;
 
 use App\Models\Cliente;
+use App\Models\Designaciondia;
 use App\Models\Designacione;
+use App\Models\Intervalo;
+use App\Models\Rrhhbono;
+use App\Models\Rrhhtipobono;
+use App\Models\Turno;
 use App\Models\Vwdesignacione;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -14,7 +19,7 @@ class Registrosdesignacion extends Component
 {
     use WithPagination;
 
-    public $clientes, $cliente_id = "", $estado = "1", $search = "";
+    public $clientes, $cliente_id = "", $estado = "1", $search = "", $designacioneSelected = null, $turnos = [], $turno_extra_id, $tipobonos = [], $fechaInicio, $rrhhtipobono_id, $intervalo = 1;
     protected $paginationTheme = 'bootstrap'; // Activamos Bootstrap 4 para Livewire
 
     // Evitar reset de página al cambiar filtros
@@ -23,6 +28,8 @@ class Registrosdesignacion extends Component
     public function mount()
     {
         $this->clientes = Cliente::all()->pluck('nombre', 'id');
+        $this->tipobonos = Rrhhtipobono::all()->pluck('nombre', 'id');
+        $this->fechaInicio = date('Y-m-d');
     }
 
     public function updatingSearch()
@@ -58,7 +65,7 @@ class Registrosdesignacion extends Component
         if ($this->search != "") {
             $query->where(function ($q) {
                 $q->where('empleado', 'LIKE', '%' . $this->search . '%')
-                  ->orWhere('turno', 'LIKE', '%' . $this->search . '%');
+                    ->orWhere('turno', 'LIKE', '%' . $this->search . '%');
             });
         }
 
@@ -95,8 +102,93 @@ class Registrosdesignacion extends Component
         }
     }
 
-    public function exporExcel()
+    public function resetearTurnoExtra()
     {
-        // Exportar Excel
+        $this->reset('fechaInicio', 'turno_extra_id', 'rrhhtipobono_id', 'designacioneSelected');
+    }
+
+    public function addTurnoExtra($designacione_id)
+    {
+        $this->designacioneSelected = Designacione::find($designacione_id);
+        $this->turnos = Turno::where('id', '!=', $this->designacioneSelected->turno_id)->pluck('nombre', 'id');
+
+        $this->emit('openModal');
+    }
+
+    public function registrarTurnoExtra()
+    {
+        $this->validate([
+            'turno_extra_id' => 'required',
+            'fechaInicio' => 'required|date',
+            'rrhhtipobono_id' => 'required',
+            'intervalo' => 'required|numeric|min:1',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $designacion = Designacione::create([
+                "empleado_id" => $this->designacioneSelected->empleado_id,
+                "turno_id" => $this->turno_extra_id,
+                "fechaInicio" => $this->fechaInicio,
+                "fechaFin" => $this->fechaInicio,
+                "intervalo_hv" => $this->intervalo,
+                "observaciones" => "Turno extra asignado desde la designación ID: " . $this->designacioneSelected->id,
+            ]);
+            $turno_extra = Turno::find($this->turno_extra_id);
+
+            $intervalos = [];
+            $intervalos = crearIntervalo($turno_extra->horainicio, $turno_extra->horafin, $this->intervalo);
+            
+            foreach ($intervalos as $item) {
+                Intervalo::create([
+                    "designacione_id" => $designacion->id,
+                    "hora" => $item,
+                ]);
+            }
+            $numDia = date('N', strtotime($this->fechaInicio));
+            $lunes=false; $martes=false; $miercoles=false; $jueves=false; $viernes=false; $sabado=false; $domingo=false;
+            switch ($numDia) {
+                case '1':
+                    $lunes=true;
+                    break;
+                case '2':
+                    $martes=true;
+                    break;
+                case '3':
+                    $miercoles=true;
+                    break;
+                case '4':
+                    $jueves=true;
+                    break;
+                case '5':
+                    $viernes=true;
+                    break;
+                case '6':
+                    $sabado=true;
+                    break;
+                case '7':
+                    $domingo=true;
+                    break;
+            }
+
+            $dias = Designaciondia::create([
+                "designacione_id" => $designacion->id,
+                "lunes" => $lunes,
+                "martes" => $martes,
+                "miercoles" => $miercoles,
+                "jueves" => $jueves,
+                "viernes" => $viernes,
+                "sabado" => $sabado,
+                "domingo" => $domingo,
+            ]);
+
+            DB::commit();
+            $this->emit('success', 'Turno extra registrado correctamente');
+            $this->resetearTurnoExtra();
+            $this->emit('closeModal');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            $this->emit('error', 'Ha ocurrido un error al registrar el turno extra');
+        }
     }
 }

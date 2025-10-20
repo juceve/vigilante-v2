@@ -37,7 +37,7 @@ class Flujopase extends Model
      *
      * @var array
      */
-    protected $fillable = ['paseingreso_id','fecha','tipo','hora','user_id'];
+    protected $fillable = ['paseingreso_id','fecha','tipo','hora','anotaciones','user_id'];
 
 
     /**

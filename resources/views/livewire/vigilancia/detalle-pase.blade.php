@@ -113,6 +113,16 @@
 
         </table>
     </div>
+    <div class="container-fluid">
+        <label>
+             @if ($flujos && $flujos->tipo == 'INGRESO')
+            <small>Anotaciones de Salida</small>
+        @else
+            <small>Anotaciones de Ingreso</small>
+        @endif
+        </label>
+        <textarea class="form-control" id="" rows="2" maxlength="255" wire:model='anotaciones' placeholder="Describa brevemente detalles adicionales de la visita."></textarea>
+    </div>
     <div class="d-grid p-3">
         @if ($flujos && $flujos->tipo == 'INGRESO')
             <button class="btn btn-danger" onclick='marcado("SALIDA")'>Marcar Salida <br><i

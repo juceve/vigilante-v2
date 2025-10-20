@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('fecha', 12);
             $table->enum('tipo',['INGRESO','SALIDA']);
             $table->string('hora',10);
+            $table->string('anotaciones',255)->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });

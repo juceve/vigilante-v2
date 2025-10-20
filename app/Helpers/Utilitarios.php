@@ -347,22 +347,35 @@ function tengoPanicos($user_id, $cliente_id)
 
 function crearIntervalo($horaI, $horaF, $intervalo)
 {
-    $intervalos = array();
-    if ($intervalo > 0) {
-        $inicio = date('Y-m-d ') . $horaI;
-        $final = date('Y-m-d ') . $horaF;
-        $inicio = new DateTime($inicio);
-        $final = new DateTime($final);
-        $int = "+" . $intervalo . " hour";
+    $intervalos = [];
 
-        while ($inicio <= $final) {
-            $inicio->modify($int);
-            if ($inicio < $final) {
-                $intervalos[] = $inicio->format('H:i');
-            }
-        }
+    // Validación básica
+    if (empty($horaI) || empty($horaF) || $intervalo <= 0) {
+        return $intervalos;
     }
 
+    // Fecha base (hoy)
+    $hoy = date('Y-m-d');
+
+    // Crear DateTime para inicio y final en la misma fecha
+    $inicio = new DateTime($hoy . ' ' . $horaI);
+    $final = new DateTime($hoy . ' ' . $horaF);
+
+    // Si el final es menor o igual al inicio, asumimos que termina al día siguiente
+    if ($final <= $inicio) {
+        $final->modify('+1 day');
+    }
+
+    // Generar intervalos incluyendo la hora inicial y avanzando por unidades de $intervalo horas
+    $cursor = clone $inicio;
+    $safety = 0;
+    $maxLoops = 1000; // prevención contra bucles infinitos
+
+    while ($cursor < $final && $safety < $maxLoops) {
+        $intervalos[] = $cursor->format('H:i');
+        $cursor->modify("+" . $intervalo . " hour");
+        $safety++;
+    }
 
     return $intervalos;
 }

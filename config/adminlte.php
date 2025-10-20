@@ -360,6 +360,12 @@ return [
                     'can'   =>  'admin.registros.panico',
                 ],
                 [
+                    'text'  =>  'Visitas con Pases',
+                    'route' =>  'admin.flujopases',
+                    'icon'  =>  'fas fa-fw fa-qrcode',
+                    'can'   =>  'admin.registros.visitas',
+                ],
+                [
                     'text'  =>  'Visitas',
                     'route' =>  'admin.visitas',
                     'icon'  =>  'fas fa-fw fa-glasses',

@@ -49,6 +49,7 @@ use App\Http\Livewire\Admin\Aprobaciones;
 use App\Http\Livewire\Admin\ClienteDotaciones;
 use App\Http\Livewire\Admin\CtrlAllAirbnb;
 use App\Http\Livewire\Admin\Diaslibres;
+use App\Http\Livewire\Admin\Flujopases;
 use App\Http\Livewire\Admin\GenDocs;
 use App\Http\Livewire\Admin\ListadoCiteCobro;
 use App\Http\Livewire\Admin\ListadoCiteCotizacion;
@@ -215,7 +216,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/turnos-cliente/{cliente_id}', TurnoCliente::class)->middleware('can:turnos.index')->name('admin.turnos-cliente');
     Route::get('admin/puntos-control/{turno_id}', PuntosControl::class)->name(('puntoscontrol'));
     Route::get('admin/feriados', ManageFeriados::class)->name(('feriados'));
-
+    Route::get('admin/flujo-pases', Flujopases::class)->name('admin.flujopases');
 
     Route::get('/admin/puntos-control-v2/{turnoId}', PuntosControlV2::class)->name('puntoscontrolv2');
 
@@ -235,6 +236,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/ctrl-airbnb', CtrlAllAirbnb::class)->name('admin.ctrlallairbnb');
     Route::get('admin/designaciones/guardias', [DesignacioneController::class, 'designacioneguardia'])->name('admin.designacione-guardias');
     Route::get('admin/designaciones/selEmpleado/{empleado_id}', [DesignacioneController::class, 'seleccionarEmpleado'])->name('admin.selempleado');
+
 
     Route::resource('registroguardias', RegistroguardiaController::class)->names('registroguardias');
     Route::resource('admin/empleados', EmpleadoController::class)->names('empleados');

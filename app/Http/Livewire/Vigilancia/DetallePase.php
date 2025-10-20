@@ -10,7 +10,7 @@ use Livewire\Component;
 
 class DetallePase extends Component
 {
-    public $designacione_id, $paseingreso, $procesando = false, $flujos;
+    public $designacione_id, $paseingreso, $procesando = false, $flujos, $anotaciones = '';
 
     public function mount($designacione_id, $pase_id)
     {
@@ -37,6 +37,7 @@ class DetallePase extends Component
                     "fecha" => date('Y-m-d'),
                     "tipo" => $tipo,
                     "hora" => date('H:i:s'),
+                    "anotaciones" => $this->anotaciones,
                     "user_id" => Auth::user()->id,
                 ]);
                 DB::commit();
