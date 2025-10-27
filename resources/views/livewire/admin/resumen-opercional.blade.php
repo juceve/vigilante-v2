@@ -21,7 +21,7 @@
                 <div class="row">
                     <div class="col-12 col-md-3 mb-3">
                         {!! Form::select('cliente_id', $clientes, null,
-                        ['class'=>'form-control','placeholder'=>'Seleccione un cliente','wire:model'=>'cliente_id']) !!}
+                        ['class'=>'form-control','placeholder'=>'- Todos los Clientes -','wire:model'=>'cliente_id']) !!}
                     </div>
 
                     <div class="col-12 col-md-3">
@@ -60,14 +60,23 @@
                 </div>
                 <div class="table-responsive">
 
-                    <table class="table table-bordered table-striped" style="vertical-align: middle">
+                    <table class="table table-bordered table-striped table-sm " style="vertical-align: middle; font-size: 12px;">
                         <thead>
+                            <tr class="table-info">
+                                <th></th>
+                                <th colspan="7" class="text-center">
+                                    CANTIDAD DE REGISTROS
+                                </th>
+                            </tr>
                             <tr class="table-info text-center">
                                 <th>CLIENTE</th>
-                                <th>REG. RONDAS</th>
-                                <th>REG. VISITAS</th>
-                                <th>REG. PASES QR</th>
-                                <th>REG. PANICOS</th>
+                                <th>RONDAS</th>
+                                <th>VISITAS</th>
+                                <th>PASES QR</th>
+                                <th>PANICOS</th>
+                                <th>TAREAS</th>
+                                <th>NOVEDADES</th>
+                                <th>HOMBRE VIVO</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -79,10 +88,13 @@
                                 <td class="text-center align-middle">{{$item['visitas']}}</td>
                                 <td class="text-center align-middle">{{$item['flujopases']}}</td>
                                 <td class="text-center align-middle">{{$item['panicos']}}</td>
+                                <td class="text-center align-middle">{{$item['tareas']}}</td>
+                                <td class="text-center align-middle">{{$item['novedades']}}</td>
+                                <td class="text-center align-middle">{{$item['hombrevivos']}}</td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="text-center">No existen datos para mostrar</td>
+                                <td colspan="8" class="text-center">No existen datos para mostrar</td>
                             </tr>
                             @endforelse
                             {{-- @endif --}}

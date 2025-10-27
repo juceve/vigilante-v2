@@ -19,24 +19,37 @@
             Fecha Fin:&nbsp; {{ formatearFecha($parametros[2]) }}
         </td>
     </tr>
+    <tr><td></td></tr>
     <thead>
         <tr>
-            <th>CLIENTE</th>
-            <th>REG. RONDAS</th>
-            <th>REG. VISITAS</th>
-            <th>REG. PASES QR</th>
-            <th>REG. PANICOS</th>
+            <td></td>
+            <td colspan="7">
+                CANTIDAD DE REGISTROS
+            </td>
+        </tr>
+        <tr>
+            <td>CLIENTE</td>
+            <td>RONDAS</td>
+            <td>VISITAS</td>
+            <td>PASES QR</td>
+            <td>PANICOS</td>
+            <td>TAREAS</td>
+            <td>NOVEDADES</td>
+            <td>HOMBRE VIVO</td>
         </tr>
     </thead>
     <tbody>
         @foreach ($resultados as $item)
-            <tr>
-                <td>{{ $item['cliente'] }}</td>
-                <td>{{ $item['rondas'] }}</td>
-                <td>{{ $item['visitas'] }}</td>
-                <td>{{ $item['flujopases'] }}</td>
-                <td>{{ $item['panicos'] }}</td>
-            </tr>
+        <tr>
+            <td>{{$item['cliente']}}</td>
+            <td>{{$item['rondas']}}</td>
+            <td>{{$item['visitas']}}</td>
+            <td>{{$item['flujopases']}}</td>
+            <td>{{$item['panicos']}}</td>
+            <td>{{$item['tareas']}}</td>
+            <td>{{$item['novedades']}}</td>
+            <td>{{$item['hombrevivos']}}</td>
+        </tr>
         @endforeach
     </tbody>
 </table>

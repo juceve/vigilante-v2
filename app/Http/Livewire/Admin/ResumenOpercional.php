@@ -6,8 +6,11 @@ use App\Exports\ResumenOperacionalExport;
 use App\Models\Cliente;
 use App\Models\Designacione;
 use App\Models\Flujopase;
+use App\Models\Hombrevivo;
+use App\Models\Novedade;
 use App\Models\Registroguardia;
 use App\Models\Rondaejecutada;
+use App\Models\Tarea;
 use App\Models\Visita;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
@@ -47,7 +50,7 @@ class ResumenOpercional extends Component
             $visitas = Visita::whereDate('created_at', '>=', $this->fechaInicio)
                 ->whereDate('created_at', '<=', $this->fechaFin)
                 ->whereHas('designacione.turno.cliente', function ($query) use ($cliente) {
-                    $query->where('id', $cliente->id);
+                    $query->where('id', $cliente->id); // Asegurarse de usar el ID correcto
                 })
                 ->count();
 
@@ -55,13 +58,32 @@ class ResumenOpercional extends Component
                 ->whereDate('fecha', '<=', $this->fechaFin)
                 ->where('tipo', 'INGRESO')
                 ->whereHas('paseingreso.residencia.cliente', function ($query) use ($cliente) {
-                    $query->where('id', $cliente->id);
+                    $query->where('id', $cliente->id); // Asegurarse de usar el ID correcto
                 })
+                ->count();
+
+            $tareas = Tarea::whereDate('fecha', '>=', $this->fechaInicio)
+                ->whereDate('fecha', '<=', $this->fechaFin)
+                ->where('cliente_id', $cliente->id) // Filtro directo por cliente_id
                 ->count();
 
             $panicos = Registroguardia::whereDate('created_at', '>=', $this->fechaInicio)
                 ->whereDate('created_at', '<=', $this->fechaFin)
-                ->where('cliente_id', $cliente->id)
+                ->where('cliente_id', $cliente->id) // Filtro directo por cliente_id
+                ->count();
+
+            $novedades = Novedade::whereDate('fecha', '>=', $this->fechaInicio)
+                ->whereDate('fecha', '<=', $this->fechaFin)
+                ->whereHas('designacione.turno.cliente', function ($query) use ($cliente) {
+                    $query->where('id', $cliente->id); // Asegurarse de usar el ID correcto
+                })
+                ->count();
+
+            $hombrevivos = Hombrevivo::whereDate('fecha', '>=', $this->fechaInicio)
+                ->whereDate('fecha', '<=', $this->fechaFin)
+                ->whereHas('intervalo.designacione.turno.cliente', function ($query) use ($cliente) {
+                    $query->where('id', $cliente->id); // Asegurarse de usar el ID correcto
+                })
                 ->count();
 
             $resultados[] = [
@@ -70,6 +92,9 @@ class ResumenOpercional extends Component
                 'visitas' => $visitas,
                 'flujopases' => $flujopases,
                 'panicos' => $panicos,
+                'tareas' => $tareas,
+                'novedades' => $novedades,
+                'hombrevivos' => $hombrevivos,
             ];
         }
         Session::put('resumen_operacional_data', $resultados);

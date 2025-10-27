@@ -20,27 +20,49 @@
                     </div>
                 </div>
             </div>
-            <table class="table table-bordered" style="font-size: 12px;">
+            <table class="table table-bordered table-striped" style="font-size: 11px;">
                 <thead class="table-success">
                     <tr class="text-center">
+                        <th class="align-middle">OPERACIÓN REALIZADA</th>
+                        <th class="align-middle text-center">CANTIDAD</th>
 
-                        <th>RONDAS EJECUTADAS</th>
-                        <th>REG. VISITAS</th>
-                        <th>REG. PASES QR</th>
-                        <th>PANICOS REPORTADOS</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <tr></tr>
                     @forelse ($resultados as $item)
-                    <tr class="text-center">
-                        <td>{{$item['rondas']}}</td>
-                        <td>{{$item['visitas']}}</td>
-                        <td>{{$item['flujopases']}}</td>
-                        <td>{{$item['panicos']}}</td>
+                    <tr>
+                        <td class="align-middle">RONDAS EJECUTADAS</td>
+                        <td class="text-center">{{$item['rondas']}}</td>
                     </tr>
+                    <tr>
+                        <td class="align-middle">VISITAS REGISTRADAS</td>
+                        <td class="text-center">{{$item['visitas']}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-middle">PASES QR REGISTRADOOS</td>
+                        <td class="text-center">{{$item['flujopases']}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-middle">REGISTRO DE PANICOS</td>
+                        <td class="text-center">{{$item['panicos']}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-middle">TAREAS PROCESADAS</td>
+                        <td class="text-center">{{$item['tareas']}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-middle">REGISTRO DE HOMBRES VIVOS</td>
+                        <td class="text-center">{{$item['hombrevivos']}}</td>
+                    </tr>
+                    <tr>
+                        <td class="align-middle">NOVEDADES RECIBIDAS</td>
+                        <td class="text-center">{{$item['novedades']}}</td>
+                    </tr>
+
                     @empty
                     <tr>
-                        <td colspan="4" class="text-center">No existen datos disponibles</td>
+                        <td colspan="2" class="text-center">No existen datos disponibles</td>
                     </tr>
                     @endforelse
                 </tbody>
