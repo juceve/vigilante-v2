@@ -31,6 +31,7 @@
             <th class="text-left">Tipo Pase</th>
             <th>Inicio</th>
             <th>Fin</th>
+            <th>Uso Único</th>
             <th>Estado</th>
             <th></th>
         </tr>
@@ -44,6 +45,7 @@
 
                 <td class="align-middle">{{ $item->fecha_inicio }}</td>
                 <td class="align-middle">{{ $item->fecha_fin }}</td>
+                <td class="align-middle">{{ $item->usounico ? 'SI' : 'NO' }}</td>
                 <td class="align-middle">
                     @php
                         $fechaInicio = (new DateTime($item->fecha_inicio))->format('Y-m-d');
@@ -156,6 +158,15 @@
                                     </div>
                                     <input readonly type="text" class="form-control"
                                         value="{{ $paseingreso->motivo->nombre }}">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Uso único</span>
+                                    </div>
+                                    <input readonly type="text" class="form-control"
+                                        value="{{ $paseingreso->usounico ? 'SI' : 'NO' }}">
                                 </div>
                             </div>
 

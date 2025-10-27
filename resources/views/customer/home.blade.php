@@ -67,6 +67,8 @@
                 </div>
             </div>
         </div>
+        <hr>
+        @livewire('customer.resumen-operacional', ['cliente_id' => $cliente->id])
     </div>
     <div class="col-12 col-md-5 mb-3">
         <div class="card">

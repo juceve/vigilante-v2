@@ -161,5 +161,7 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'admin.clientes.dotaciones.edit',  'grupo' => 'DOTACIONES CLIENTES', 'descripcion' => 'Editar'])->assignRole([$role]);
         Permission::create(['name' => 'admin.clientes.dotaciones.destroy',  'grupo' => 'DOTACIONES CLIENTES', 'descripcion' => 'Eliminar'])->assignRole([$role]);
 
+        Permission::create(['name' => 'admin.resumenoperacional',  'grupo' => 'REPORTES', 'descripcion' => 'Resumen Operacional'])->assignRole([$role]);
+        Permission::create(['name' => 'admin.cronogramadiaslibres',  'grupo' => 'REPORTES', 'descripcion' => 'Cronograma de Días Libres'])->assignRole([$role]);
     }
 }

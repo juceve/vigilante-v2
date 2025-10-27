@@ -81,10 +81,11 @@ class HomeController extends Controller
         }
         if (Auth::user()->template == "PROPIETARIO") {
 
-            $paseingresos = \App\Models\Paseingreso::whereHas('residencia', function ($query) {
-                $query->where('estado', 'VERIFICADO')
-                    ->where('propietario_id', auth()->user()->propietario->id);
-            })
+            $paseingresos = \App\Models\Paseingreso::where('estado', 1)
+                ->whereHas('residencia', function ($query) {
+                    $query->where('estado', 'VERIFICADO')
+                        ->where('propietario_id', auth()->user()->propietario->id);
+                })
                 ->whereDate('fecha_inicio', '<=', Carbon::today())
                 ->whereDate('fecha_fin', '>=', Carbon::today())
                 ->get();

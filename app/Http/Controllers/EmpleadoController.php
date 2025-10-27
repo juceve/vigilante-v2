@@ -288,4 +288,6 @@ class EmpleadoController extends Controller
 
         // return view('pdfs.kardex-empleado', compact('empleado','contrato'));
     }
+
+    
 }

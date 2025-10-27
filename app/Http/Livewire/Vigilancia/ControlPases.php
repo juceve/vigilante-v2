@@ -46,7 +46,7 @@ class ControlPases extends Component
                         if ($paseingreso->estado) {
                             return redirect()->route('vigilancia.detallepase', ['designacione_id' => $this->designacione_id, 'pase_id' => $paseingreso->id]);
                         } else {
-                            $this->emit('warning', 'El presente Pase se encuentra deshabilitado por el Propietario.');
+                            $this->emit('warning', 'Pase Finalizado.');
                         }
                     } else {
                         $this->emit('error', 'La fecha está fuera de los limites.');
@@ -83,7 +83,7 @@ class ControlPases extends Component
                     if ($paseingreso->estado) {
                         return redirect()->route('vigilancia.detallepase', ['designacione_id' => $this->designacione_id, 'pase_id' => $paseingreso_id]);
                     } else {
-                        $this->emit('warning', 'El presente Pase se encuentra deshabilitado por el Propietario.');
+                        $this->emit('warning', 'Pase Finalizado.');
                     }
                 } else {
                     $this->emit('warning', 'La fecha está fuera de los limites.');

@@ -40,6 +40,10 @@ class DetallePase extends Component
                     "anotaciones" => $this->anotaciones,
                     "user_id" => Auth::user()->id,
                 ]);
+                if ($this->paseingreso->usounico == true && $tipo == 'SALIDA') {
+                    $this->paseingreso->estado = false;
+                    $this->paseingreso->save();
+                }
                 DB::commit();
                 return redirect()->route('vigilancia.controlpases', $this->designacione_id)->with('success', 'Acceso registrado correctamente.');
             } catch (\Throwable $th) {

@@ -20,8 +20,9 @@ return new class extends Migration
             $table->date('fecha_fin');
             $table->foreignId('motivo_id')->nullable()->constrained()->nullOnDelete();
             $table->string('detalles');
+            $table->boolean('usounico')->nullable()->default(true);
             $table->string('url_foto')->nullable();
-            $table->boolean('estado')->default(true);
+            $table->boolean('estado')->default(true);            
             $table->timestamps();
         });
     }

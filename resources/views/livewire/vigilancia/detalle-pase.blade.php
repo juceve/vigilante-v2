@@ -1,6 +1,6 @@
 <div>
     @section('title')
-        Detalles del Pase
+    Detalles del Pase
     @endsection
 
     <!-- Header Corporativo -->
@@ -50,18 +50,28 @@
             </tr>
 
             <tr>
-                <td colspan="2">
+                <td>
                     <strong>Detalles:</strong> {{ $paseingreso->detalles ?? 'N/A' }}
+                </td>
+
+
+                <td>
+                    <strong>Unico Uso:</strong>
+                    @if ($paseingreso->usounico)
+                    <span class="badge rounded-pill text-bg-primary">SI</span>
+                    @else
+                    <span class="badge rounded-pill text-bg-warning">NO</span>
+                    @endif
                 </td>
 
             </tr>
             @if ($flujos)
-                <tr>
-                    <td colspan="2">
-                        <strong>Ultimo registro:</strong>
-                        {{ $flujos->tipo . ' | ' . $flujos->fecha . ' | ' . $flujos->hora }}
-                    </td>
-                </tr>
+            <tr>
+                <td colspan="2">
+                    <strong>Ultimo registro:</strong>
+                    {{ $flujos->tipo . ' | ' . $flujos->fecha . ' | ' . $flujos->hora }}
+                </td>
+            </tr>
             @endif
 
         </table>
@@ -115,35 +125,36 @@
     </div>
     <div class="container-fluid">
         <label>
-             @if ($flujos && $flujos->tipo == 'INGRESO')
+            @if ($flujos && $flujos->tipo == 'INGRESO')
             <small>Anotaciones de Salida</small>
-        @else
+            @else
             <small>Anotaciones de Ingreso</small>
-        @endif
+            @endif
         </label>
-        <textarea class="form-control" id="" rows="2" maxlength="255" wire:model='anotaciones' placeholder="Describa brevemente detalles adicionales de la visita."></textarea>
+        <textarea class="form-control" id="" rows="2" maxlength="255" wire:model='anotaciones'
+            placeholder="Describa brevemente detalles adicionales de la visita."></textarea>
     </div>
     <div class="d-grid p-3">
         @if ($flujos && $flujos->tipo == 'INGRESO')
-            <button class="btn btn-danger" onclick='marcado("SALIDA")'>Marcar Salida <br><i
-                    class="fas fa-sign-out-alt fs-2"></i></button>
+        <button class="btn btn-danger" onclick='marcado("SALIDA")'>Marcar Salida <br><i
+                class="fas fa-sign-out-alt fs-2"></i></button>
         @else
-            <button class="btn btn-success" onclick='marcado("INGRESO")'>Marcar Ingreso <br><i
-                    class="fas fa-sign-in-alt fs-2"></i></button>
+        <button class="btn btn-success" onclick='marcado("INGRESO")'>Marcar Ingreso <br><i
+                class="fas fa-sign-in-alt fs-2"></i></button>
         @endif
 
 
         {{--
-            <button class="btn btn-danger" onclick='marcado("SALIDA")'>Marcar Salida <br><i
-                    class="fas fa-sign-out-alt fs-2"></i></button> --}}
+        <button class="btn btn-danger" onclick='marcado("SALIDA")'>Marcar Salida <br><i
+                class="fas fa-sign-out-alt fs-2"></i></button> --}}
 
     </div>
     <br>
 
 </div>
 @section('js')
-    <script>
-        function marcado(tipo) {
+<script>
+    function marcado(tipo) {
             Swal.fire({
                 title: "Marcar " + tipo,
                 text: "¿Seguro de realizar esta operación?",
@@ -159,45 +170,46 @@
                 }
             });
         }
-    </script>
+</script>
 @endsection
 @section('css')
-    <style>
-        /* Forzar modo claro permanente */
-        * {
-            color-scheme: light !important;
+<style>
+    /* Forzar modo claro permanente */
+    * {
+        color-scheme: light !important;
+    }
+
+    html,
+    body {
+        background-color: #f8fafc !important;
+        color: #1e293b !important;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1);
         }
 
-        html,
-        body {
-            background-color: #f8fafc !important;
-            color: #1e293b !important;
+        50% {
+            opacity: 0.8;
+            transform: scale(1.05);
         }
+    }
 
-        @keyframes pulse {
-            0%,
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
+    .form-control::placeholder {
+        color: #94a3b8;
+        font-style: italic;
+    }
 
-            50% {
-                opacity: 0.8;
-                transform: scale(1.05);
-            }
+    /* Estilos responsivos */
+    @media (max-width: 768px) {
+        .container {
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
         }
-
-        .form-control::placeholder {
-            color: #94a3b8;
-            font-style: italic;
-        }
-
-        /* Estilos responsivos */
-        @media (max-width: 768px) {
-            .container {
-                padding-left: 0.5rem !important;
-                padding-right: 0.5rem !important;
-            }
-        }
-    </style>
+    }
+</style>
 @endsection

@@ -43,7 +43,7 @@ class MisResidencias extends Component
         $this->emit('openModalNuevo');
     }
 
-    public $nombre = "", $cedula = "", $motivo_id = "", $fecha_inicio = "", $fecha_fin = "", $detalles = "";
+    public $nombre = "", $cedula = "", $motivo_id = "", $fecha_inicio = "", $fecha_fin = "", $detalles = "",$usounico = "";
 
     public function registrarPase()
     {
@@ -57,6 +57,7 @@ class MisResidencias extends Component
             'fecha_inicio' => 'required|date',
             'fecha_fin' => 'required|date|after_or_equal:fecha_inicio',
             'motivo_id' => 'required',
+            'usounico' => 'required',
         ]);
         DB::beginTransaction();
         try {
@@ -73,6 +74,7 @@ class MisResidencias extends Component
             $paseingreso->fecha_fin = $this->fecha_fin;
             $paseingreso->motivo_id = $this->motivo_id;
             $paseingreso->detalles = $this->detalles;
+            $paseingreso->usounico = $this->usounico;
             $paseingreso->save();
 
             DB::commit();

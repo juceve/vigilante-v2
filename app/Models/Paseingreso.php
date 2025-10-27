@@ -33,6 +33,7 @@ class Paseingreso extends Model
 		'fecha_inicio' => 'required',
 		'fecha_fin' => 'required',
 		'detalles' => 'required',
+		'usounico' => 'required',
     ];
 
     protected $perPage = 20;
@@ -42,7 +43,7 @@ class Paseingreso extends Model
      *
      * @var array
      */
-    protected $fillable = ['residencia_id','nombre','cedula','fecha_inicio','fecha_fin','motivo_id','detalles','url_foto','estado'];
+    protected $fillable = ['residencia_id','nombre','cedula','fecha_inicio','fecha_fin','motivo_id','detalles','usounico','url_foto','estado'];
 
 
     /**

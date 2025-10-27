@@ -38,7 +38,7 @@ class Registroguardia extends Model
      *
      * @var array
      */
-    protected $fillable = ['fechahora','prioridad','user_id','detalle','latitud','longitud','visto','cliente_id'];
+    protected $fillable = ['fechahora','prioridad','user_id','detalle','latitud','longitud','visto','cliente_id','created_at'];
 
 
     /**

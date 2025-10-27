@@ -47,6 +47,7 @@ use App\Http\Controllers\VisitaController;
 use App\Http\Livewire\Admin\Admrondas;
 use App\Http\Livewire\Admin\Aprobaciones;
 use App\Http\Livewire\Admin\ClienteDotaciones;
+use App\Http\Livewire\Admin\CronogramaMensualEmpleados;
 use App\Http\Livewire\Admin\CtrlAllAirbnb;
 use App\Http\Livewire\Admin\Diaslibres;
 use App\Http\Livewire\Admin\Flujopases;
@@ -77,6 +78,7 @@ use App\Http\Livewire\Admin\Registrostareas;
 use App\Http\Livewire\Admin\Registrosvisita;
 use App\Http\Livewire\Admin\TurnoCliente;
 use App\Http\Livewire\Admin\RegNovedades;
+use App\Http\Livewire\Admin\ResumenOpercional;
 use App\Http\Livewire\Admin\RondaPuntos;
 use App\Http\Livewire\Admin\Usuariocliente;
 use App\Http\Livewire\CtrlAsisitencias;
@@ -217,6 +219,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/puntos-control/{turno_id}', PuntosControl::class)->name(('puntoscontrol'));
     Route::get('admin/feriados', ManageFeriados::class)->name(('feriados'));
     Route::get('admin/flujo-pases', Flujopases::class)->name('admin.flujopases');
+    Route::get('admin/cronograma-dias-libres', CronogramaMensualEmpleados::class)->middleware('can:admin.cronogramadiaslibres')->name('admin.cronogramadiaslibres');
+    Route::get('admin/resumen-operacional', ResumenOpercional::class)->middleware('can:admin.resumenoperacional')->name('admin.resumenoperacional');
 
     Route::get('/admin/puntos-control-v2/{turnoId}', PuntosControlV2::class)->name('puntoscontrolv2');
 
@@ -292,6 +296,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/subir-archivo', [UploadsController::class, 'uploadFile'])->name('uploadFile');
 
     Route::get('pdf/acta-dotacion-cliente/', [CldotacionController::class, 'acta'])->name('pdf.actadotacioncliente');
+    Route::get('pdf/cronograma-mensual', [DesignacioneController::class, 'pdfCronogramaMensual'])->name('pdf.cronogramamensual');
     ////////////////// AREA DE CLIENTES ///////////////////////
     Route::get('admin/usuariocliente/{cliente_id}', Usuariocliente::class)->name('usuariocliente');
 

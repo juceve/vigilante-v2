@@ -10,6 +10,7 @@ use App\Models\Vwdesignacione;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 
 /**
@@ -111,13 +112,19 @@ class DesignacioneController extends Controller
         return $pdf->stream();
     }
 
+    public function pdfCronogramaMensual()
+    {
+        $data = Session::get('cronograma_data');
+        $empleados = $data['employees'];
+        $daysInMonth = $data['daysInMonth'];
+        $year = $data['year'];
+        $month = $data['month'];
+        $pdf = Pdf::loadView('pdfs.cronograma-mensual', compact('empleados','daysInMonth', 'year', 'month'))
+            ->setPaper('letter', 'landscape');
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
+        return $pdf->stream("Cronograma_Mensual_{$month}_{$year}_" . date('YmdHis') . ".pdf");
+    }
+
     public function edit($id)
     {
         $designacione = Designacione::find($id);
@@ -220,8 +227,7 @@ ORDER BY e.cubrerelevos ASC, empleado;");
     }
 
     public function exportar(Request $request)
-    {   
+    {
         return Excel::download(new HistorialGuardiasExport($request), 'Reporte-Historial-Guardias.xlsx');
-
     }
 }

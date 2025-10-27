@@ -396,7 +396,26 @@ return [
                     'icon'  =>  'fas fa-fw fa-heartbeat'
                 ],
 
+
             ],
+        ],
+        [
+            'text'    => 'Reportes',
+            'icon'    => 'fas fa-fw fa-flag',
+            'submenu' => [
+                [
+                    'text'  =>  'Cronograma Mensual',
+                    'route' =>  'admin.cronogramadiaslibres',
+                    'can'   =>  'admin.cronogramadiaslibres',
+                    'icon'  =>  'fas fa-fw fa-calendar-check'
+                ],
+                [
+                    'text'  =>  'Resumen Operacional',
+                    'route' =>  'admin.resumenoperacional',
+                    'can'   =>  'admin.resumenoperacional',
+                    'icon'  =>  'fas fa-fw fa-users-cog'
+                ],
+            ]
         ],
         [
             'text'    => 'Generador Docs',
