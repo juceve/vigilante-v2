@@ -14,11 +14,9 @@ return new class extends Migration
         Schema::create('rrhhdotacions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('rrhhcontrato_id')->nullable()->constrained()->nullOnDelete();
-            $table->date('fecha');
-            $table->string('detalle');
-            $table->foreignId('rrhhestadodotacion_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('empleado_id')->nullable()->constrained()->nullOnDelete();
-            $table->integer('cantidad');            
+            $table->date('fecha');
+            $table->string('responsable_entrega', 150);            
             $table->boolean('estado')->default(true);
             $table->timestamps();
         });

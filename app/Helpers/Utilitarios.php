@@ -186,10 +186,19 @@ function esDiaLibre2($designacione_id, $fecha)
 
 function traeDesignacionActiva($empleado_id)
 {
+    $hoy = Carbon::today()->toDateString();
+
     $designacione = Designacione::where('empleado_id', $empleado_id)
         ->where('estado', 1)
-        ->orderBy('id', 'DESC')->first();
-    dd($designacione);
+        ->whereDate('fechaInicio', '<=', $hoy)
+        ->where(function ($q) use ($hoy) {
+            $q->whereNull('fechaFin')
+              ->orWhereDate('fechaFin', '>=', $hoy);
+        })
+        ->orderBy('id', 'DESC')
+        ->first();
+
+    return $designacione;
 }
 
 function yaMarque($designacione_id)

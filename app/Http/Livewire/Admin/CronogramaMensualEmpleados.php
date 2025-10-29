@@ -145,7 +145,7 @@ class CronogramaMensualEmpleados extends Component
 
 		} catch (\Throwable $th) {
 			$this->employees = [];
-			\Log::error('Error en CronogramaMensualEmpleados: ' . $th->getMessage());
+			// \Log::error('Error en CronogramaMensualEmpleados: ' . $th->getMessage());
 			$this->emit('error', 'Error al cargar los datos: ' . $th->getMessage());
 		}
 	}

@@ -9,18 +9,16 @@ use Illuminate\Database\Eloquent\Model;
  *
  * @property $id
  * @property $rrhhcontrato_id
- * @property $fecha
- * @property $detalle
- * @property $rrhhestadodotacion_id
  * @property $empleado_id
- * @property $cantidad
+ * @property $fecha
+ * @property $responsable_entrega
  * @property $estado
  * @property $created_at
  * @property $updated_at
  *
  * @property Empleado $empleado
  * @property Rrhhcontrato $rrhhcontrato
- * @property Rrhhestadodotacion $rrhhestadodotacion
+ * @property Rrhhdetalledotacion[] $rrhhdetalledotacions
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
@@ -29,8 +27,7 @@ class Rrhhdotacion extends Model
     
     static $rules = [
 		'fecha' => 'required',
-		'detalle' => 'required',
-		'cantidad' => 'required',
+		'responsable_entrega' => 'required',
 		'estado' => 'required',
     ];
 
@@ -41,7 +38,7 @@ class Rrhhdotacion extends Model
      *
      * @var array
      */
-    protected $fillable = ['rrhhcontrato_id','fecha','detalle','rrhhestadodotacion_id','empleado_id','cantidad','estado'];
+    protected $fillable = ['rrhhcontrato_id','empleado_id','fecha','responsable_entrega','estado'];
 
 
     /**
@@ -61,11 +58,11 @@ class Rrhhdotacion extends Model
     }
     
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function rrhhestadodotacion()
+    public function rrhhdetalledotacions()
     {
-        return $this->hasOne('App\Models\Rrhhestadodotacion', 'id', 'rrhhestadodotacion_id');
+        return $this->hasMany('App\Models\Rrhhdetalledotacion', 'rrhhdotacion_id', 'id');
     }
     
 

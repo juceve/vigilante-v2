@@ -296,6 +296,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/subir-archivo', [UploadsController::class, 'uploadFile'])->name('uploadFile');
 
     Route::get('pdf/acta-dotacion-cliente/', [CldotacionController::class, 'acta'])->name('pdf.actadotacioncliente');
+    Route::get('pdf/acta-dotacion-empleado/{id}/{contrato_id}', [RrhhdotacionController::class, 'acta'])->name('pdf.actadotacionempleado');
     Route::get('pdf/cronograma-mensual', [DesignacioneController::class, 'pdfCronogramaMensual'])->name('pdf.cronogramamensual');
     ////////////////// AREA DE CLIENTES ///////////////////////
     Route::get('admin/usuariocliente/{cliente_id}', Usuariocliente::class)->name('usuariocliente');
