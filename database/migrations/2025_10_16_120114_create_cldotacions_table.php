@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('cliente_id')->nullable()->constrained()->nullOnDelete();
             $table->date('fecha');
+            $table->string('responsable_entrega',150);
             $table->boolean('status')->default(true);
             $table->timestamps();
         });

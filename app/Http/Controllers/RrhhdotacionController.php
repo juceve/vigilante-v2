@@ -28,7 +28,7 @@ class RrhhdotacionController extends Controller
             $pdf = Pdf::loadView('pdfs.acta-dotacion-empleado', compact('dotacion','designacione', 'contrato'))
                 ->setPaper('letter', 'portrait');
 
-            return $pdf->stream();
+            return $pdf->stream('Acta_Dotacion_Empleados_' . date('Ymd_His') . '.pdf');
         } else {
             return redirect()->back()->with('error', 'Dotación no encontrada');
         }
@@ -202,10 +202,9 @@ class RrhhdotacionController extends Controller
                     $file = $images[$fileKey];
                     $ext = $file->getClientOriginalExtension() ?: 'jpg';
                     $filename = 'dot_' . $dotacion->id . '_det_' . $det->id . '_' . Str::uuid() . '.' . $ext;
-                    // Guardar en storage/app/public/images/dotaciones-empleados (accesible vía public/storage/...)
-                    $path = $file->storeAs('images/dotaciones-empleados', $filename, 'public');
-                    // guardar URL completa pública, por ejemplo: http(s)://tu-dominio/storage/images/...
-                    $url = asset('storage/' . $path);
+                    // Comprimir y guardar usando GD (objetivo <= 200 KB). Retorna ruta relativa dentro de disk 'public'
+                    $path = $this->compressAndStoreUploaded($file, 'images/dotaciones-empleados', $filename, 200);
+                    $url = $path ? asset('storage/' . $path) : null;
                     
                     // save both imagen (legacy) and url (new)
                     if (Schema::hasColumn('rrhhdetalledotacions', 'imagen')) {
@@ -302,9 +301,8 @@ class RrhhdotacionController extends Controller
                     $file = $images[$fileKey];
                     $ext = $file->getClientOriginalExtension() ?: 'jpg';
                     $filename = 'dot_' . $dotacion->id . '_det_' . $det->id . '_' . Str::uuid() . '.' . $ext;
-                    // Guardar en storage/app/public/images/dotaciones-empleados (accesible vía public/storage/...)
-                    $path = $file->storeAs('images/dotaciones-empleados', $filename, 'public');
-                    $url = asset('storage/' . $path);
+                    $path = $this->compressAndStoreUploaded($file, 'images/dotaciones-empleados', $filename, 200);
+                    $url = $path ? asset('storage/' . $path) : null;
                     
                     if (Schema::hasColumn('rrhhdetalledotacions', 'imagen')) {
                         $det->imagen = $filename;
@@ -337,6 +335,91 @@ class RrhhdotacionController extends Controller
                 'message' => 'Error al registrar la dotación: ' . $th->getMessage(),
                 'errors' => [$th->getMessage()]
             ]);
+        }
+    }
+
+    /**
+     * Comprime un UploadedFile y lo almacena en disk 'public', retorna la ruta relativa dentro del disk.
+     */
+    private function compressAndStoreUploaded($file, $dir, $filename, $maxKb = 200)
+    {
+        try {
+            $tmpIn = $file->getRealPath();
+            if (!file_exists($tmpIn)) return null;
+            $mime = $file->getClientMimeType() ?: mime_content_type($tmpIn);
+            $src = null;
+            switch (strtolower($mime)) {
+                case 'image/jpeg':
+                case 'image/jpg':
+                    $src = @imagecreatefromjpeg($tmpIn);
+                    break;
+                case 'image/png':
+                    $src = @imagecreatefrompng($tmpIn);
+                    break;
+                case 'image/gif':
+                    $src = @imagecreatefromgif($tmpIn);
+                    break;
+                case 'image/webp':
+                    if (function_exists('imagecreatefromwebp')) $src = @imagecreatefromwebp($tmpIn);
+                    break;
+                default:
+                    $data = @file_get_contents($tmpIn);
+                    $src = $data ? @imagecreatefromstring($data) : null;
+            }
+            if (!$src) return null;
+
+            $w = imagesx($src);
+            $h = imagesy($src);
+            $maxDim = 1600;
+            $scale = 1;
+            if (max($w, $h) > $maxDim) $scale = $maxDim / max($w, $h);
+            $newW = max(1, (int)round($w * $scale));
+            $newH = max(1, (int)round($h * $scale));
+            $dst = imagecreatetruecolor($newW, $newH);
+            imagealphablending($dst, false);
+            imagesavealpha($dst, true);
+            $transparent = imagecolorallocatealpha($dst, 255, 255, 255, 127);
+            imagefilledrectangle($dst, 0, 0, $newW, $newH, $transparent);
+            imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $newH, $w, $h);
+
+            $tmpOut = tempnam(sys_get_temp_dir(), 'imgc');
+            $quality = 90;
+            imagejpeg($dst, $tmpOut, $quality);
+            $sizeKb = filesize($tmpOut) / 1024;
+            while ($sizeKb > $maxKb && $quality > 30) {
+                $quality -= 10;
+                imagejpeg($dst, $tmpOut, $quality);
+                clearstatcache(true, $tmpOut);
+                $sizeKb = filesize($tmpOut) / 1024;
+            }
+            $reduceScale = 0.9;
+            while ($sizeKb > $maxKb && ($newW > 400 && $newH > 400)) {
+                $newW = max(100, (int)round($newW * $reduceScale));
+                $newH = max(100, (int)round($newH * $reduceScale));
+                $tmpDst = imagecreatetruecolor($newW, $newH);
+                imagealphablending($tmpDst, false);
+                imagesavealpha($tmpDst, true);
+                $transparent = imagecolorallocatealpha($tmpDst, 255, 255, 255, 127);
+                imagefilledrectangle($tmpDst, 0, 0, $newW, $newH, $transparent);
+                imagecopyresampled($tmpDst, $dst, 0, 0, 0, 0, $newW, $newH, imagesx($dst), imagesy($dst));
+                imagejpeg($tmpDst, $tmpOut, max(25, $quality - 10));
+                imagedestroy($tmpDst);
+                clearstatcache(true, $tmpOut);
+                $sizeKb = filesize($tmpOut) / 1024;
+            }
+
+            $relativePath = trim($dir, '/') . '/' . $filename;
+            $content = file_get_contents($tmpOut);
+            \Storage::disk('public')->put($relativePath, $content);
+
+            if (file_exists($tmpOut)) @unlink($tmpOut);
+            imagedestroy($dst);
+            imagedestroy($src);
+
+            return $relativePath;
+        } catch (\Throwable $e) {
+            \Log::error('compressAndStoreUploaded error', ['exception' => $e]);
+            return null;
         }
     }
 }

@@ -174,6 +174,10 @@
                             <td><strong>CLIENTE:</strong> {{ $dotacion->cliente->nombre }}</td>
                             <td><strong>FECHA:</strong> {{ formatearFecha($dotacion->fecha) }}</td>
                         </tr>
+                        <tr>
+                            <td><strong>RESP. ENTREGA:</strong> {{ $dotacion->responsable_entrega }}</td>
+                            <td></td>
+                        </tr>
                     </tbody>
                 </table>
                 <h5 class="text-center text-info">ARTICULOS ENTREGADOS</h5>
@@ -190,7 +194,7 @@
                         @foreach ($dotacion->cldotaciondetalles as $detalle)
                             <tr>
                                 <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $detalle->detalle }}</td>
+                                <td class="text-center">{{ $detalle->detalle }}</td>
                                 <td class="text-center">{{ $detalle->cantidad }}</td>
                                 <td class="text-center">{{ strtoupper($detalle->rrhhestadodotacion->nombre) }}</td>
                             </tr>

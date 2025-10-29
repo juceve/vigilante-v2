@@ -193,15 +193,7 @@
                         </td>
                     </tr>
                 </table>
-                {{-- <div class="row" style="width: 100%; font-size: 10px;">
-                    <div class="col-xs-12">
-                        <div class="alert alert-info" role="alert">
-                            DE ACUERDO A LO ESTIPULADO EN LA LEY DE SEGURIDAD OCUPACIONAL... LOS EMPLEADORES
-                            PROPORCIONARAN A SUS EMPLEADOS EQUIPOS DE PROTECCION ADECUADO SEGUN EL TIPO DE TRABAJO Y
-                            RIESGOS ESPECIFICOS PRESENTE EN EL DESEMPEÑO DE SUS FUNCIONES.
-                        </div>
-                    </div>
-                </div> --}}
+             
             </div>
 
         </div>
@@ -244,7 +236,7 @@
                         <td>
                             Usando los equipos de comunicacion y elemento de seguridad(incluyendo ropa de trabajo) estoy
                             cumpliendo mis deberes como trabajador, soy responsable del uso y cuidado de los EPP mismo
-                            soy pena de verme inmerso en faltas disciplinarias. El presente compromiso quedará archivada
+                            soy pena de verme inmerso en faltas disciplinarias. <br> El presente compromiso quedará archivada
                             en el departamento de gestión de Talento Humano, como sistema de verificación y seguimiento
                             del cumplimiento de mis deberes y derechos como trabajador.
                         </td>

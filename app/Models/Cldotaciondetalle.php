@@ -35,7 +35,7 @@ class Cldotaciondetalle extends Model
      *
      * @var array
      */
-    protected $fillable = ['cldotacion_id','detalle','cantidad','rrhhestadodotacion_id'];
+    protected $fillable = ['cldotacion_id','detalle','cantidad','rrhhestadodotacion_id','url'];
 
 
     /**

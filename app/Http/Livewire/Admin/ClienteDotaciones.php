@@ -13,12 +13,18 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ClienteDotaciones extends Component
 {
     use WithPagination;
+    use WithFileUploads;
 
     public $cliente_id, $cliente;
+    public $imagen = null; // <-- agregar propiedad para wire:model="imagen"
+    public $responsable_entrega = ''; // nuevo campo agregado al modelo Cldotacion
     public $search = '';
     public $perPage = 5;
     public $sortField = 'id';
@@ -88,7 +94,9 @@ class ClienteDotaciones extends Component
 
     public function resetAll()
     {
-        $this->reset('fecha', 'status', 'detalle', 'cantidad', 'rrhhestadodotacion_id', 'detalles', 'mode', 'procesando');
+        $this->reset('fecha', 'status', 'detalle', 'cantidad', 'rrhhestadodotacion_id', 'detalles', 'mode', 'procesando', 'imagen', 'responsable_entrega');
+        // informar al navegador para que limpie el input file y el preview local
+        $this->dispatchBrowserEvent('imagen-cleared');
     }
 
     public function edit($cldotacion_id, $mode)
@@ -101,14 +109,18 @@ class ClienteDotaciones extends Component
         $this->dotacionSelect = $dotacion;
         if ($dotacion) {
             $this->fecha = $dotacion->fecha;
+            $this->responsable_entrega = $dotacion->responsable_entrega ?? '';
             $this->status = $dotacion->status;
             foreach ($dotacion->cldotaciondetalles as $detalle) {
                 $rrhhestadodotacion = Rrhhestadodotacion::find($detalle->rrhhestadodotacion_id);
+                // incluir url/imagen para previsualización en la vista
                 $this->detalles[] = [
                     'detalle' => $detalle->detalle,
                     'cantidad' => $detalle->cantidad,
                     'rrhhestadodotacion_id' => $detalle->rrhhestadodotacion_id,
                     'estado' => $rrhhestadodotacion->nombre,
+                    'url' => $detalle->url ?? null,
+                    'imagen' => $detalle->imagen ?? null,
                 ];
             }
         }
@@ -121,6 +133,7 @@ class ClienteDotaciones extends Component
         $this->validate([
             'fecha' => 'required|date',
             'status' => 'required|in:0,1',
+            'responsable_entrega' => 'required|string|max:255',
             'detalles' => 'required|array|min:1',
         ]);
 
@@ -138,6 +151,7 @@ class ClienteDotaciones extends Component
             $this->dotacionSelect->update([
                 'fecha' => $this->fecha,
                 'status' => $this->status,
+                'responsable_entrega' => $this->responsable_entrega,
             ]);
 
             // Reemplazar detalles
@@ -147,6 +161,8 @@ class ClienteDotaciones extends Component
                     'detalle' => $detalle['detalle'],
                     'cantidad' => $detalle['cantidad'],
                     'rrhhestadodotacion_id' => $detalle['rrhhestadodotacion_id'] ?? null,
+                    'imagen' => $detalle['imagen'] ?? null,
+                    'url' => $detalle['url'] ?? null,
                 ]);
             }
 
@@ -168,6 +184,7 @@ class ClienteDotaciones extends Component
         $this->validate([
             'fecha' => 'required|date',
             'status' => 'required|in:0,1',
+            'responsable_entrega' => 'required|string|max:255',
             'detalles' => 'required|array|min:1',
         ]);
 
@@ -184,38 +201,58 @@ class ClienteDotaciones extends Component
                 'cliente_id' => $this->cliente_id,
                 'fecha' => $this->fecha ?? date('Y-m-d'),
                 'status' => $this->status,
+                'responsable_entrega' => $this->responsable_entrega,
             ]);
 
-            foreach ($this->detalles as $detalle) {
-                $detalle = Cldotaciondetalle::create([
+            // validar y persistir cada detalle
+            foreach ($this->detalles as $index => $detalle) {
+                // Validación defensiva por detalle
+                if (!is_array($detalle) || empty($detalle['detalle']) || empty($detalle['cantidad'])) {
+                    throw new \Exception("Detalle inválido en la posición {$index}");
+                }
+                // Normalizar claves (evitar undefined index)
+                $rrhhId = $detalle['rrhhestadodotacion_id'] ?? null;
+                $imagen = $detalle['imagen'] ?? null;
+                $url = $detalle['url'] ?? null;
+
+                // crear registro de detalle
+                Cldotaciondetalle::create([
                     'cldotacion_id' => $dotacion->id,
                     'detalle' => $detalle['detalle'],
                     'cantidad' => $detalle['cantidad'],
-                    'rrhhestadodotacion_id' => $detalle['rrhhestadodotacion_id'],
+                    'rrhhestadodotacion_id' => $rrhhId,
+                    'imagen' => $imagen,
+                    'url' => $url,
                 ]);
             }
 
             DB::commit();
 
-            // 🔥 Solo si se guardó bien se resetea y se cierra modal
+            // reset y notificaciones
             $this->resetAll();
             $this->emit('closeModal');
             $this->emit('success', 'Dotación creada correctamente');
         } catch (\Throwable $th) {
             DB::rollBack();
+            \Log::error('Error crear dotacion (ClienteDotaciones::create)', ['exception' => $th]);
+            $this->emit('error', 'Error al crear la dotación: ' . $th->getMessage());
+        } finally {
+            // Asegurar que el flag procesando se restaure incluso en error
             $this->procesando = false;
-            $this->emit('error', 'Error al crear la dotación');
         }
     }
 
     public function addDetalle()
     {
         // Validar solo los campos del detalle antes de agregar
-        $this->validate([
+        $this->validate(array_merge([
             'detalle' => 'required|string|max:255',
             'cantidad' => 'required|integer|min:1',
             'rrhhestadodotacion_id' => 'required|exists:rrhhestadodotacions,id',
-        ], [
+        ],
+        // validar imagen opcional
+        $this->imagen ? ['imagen' => 'nullable|image|max:2048'] : []
+        ), [
             'detalle.required' => 'La descripción del detalle es obligatoria.',
             'cantidad.required' => 'La cantidad es obligatoria.',
             'cantidad.integer' => 'La cantidad debe ser un número entero.',
@@ -230,11 +267,125 @@ class ClienteDotaciones extends Component
             'cantidad' => $this->cantidad,
             'rrhhestadodotacion_id' => $estadoDotacion->id,
             'estado' => $estadoDotacion->nombre,
+            'url' => null,
+            'imagen' => null,
         ];
+
+        // Si hay imagen temporal subida por Livewire, comprimir y guardarla en disk 'public'
+        if ($this->imagen) {
+            $ext = $this->imagen->getClientOriginalExtension() ?: 'jpg';
+            $filename = 'cl_' . time() . '_' . Str::uuid() . '.' . $ext;
+            // compress and store (<= 200 KB target)
+            $path = $this->compressAndStoreUploaded($this->imagen, 'images/dotaciones-clientes', $filename, 200);
+            $url = $path ? ('storage/' . $path) : null;
+            $row['imagen'] = $filename;
+            $row['url'] = $url;
+            // resetear la propiedad imagen para nuevas cargas
+            $this->reset('imagen');
+            // notificar al navegador que borre el input file y preview
+            $this->dispatchBrowserEvent('imagen-cleared');
+        }
+
         $this->detalles[] = $row;
         // Resetear campos y errores específicos
         $this->reset('detalle', 'cantidad', 'rrhhestadodotacion_id');
         $this->resetValidation(['detalle', 'cantidad', 'rrhhestadodotacion_id']);
+    }
+
+    /**
+     * Comprime un UploadedFile a JPEG y lo guarda en disk 'public' en $dir con $filename.
+     * Retorna la ruta relativa dentro del disk (por ejemplo "images/dotaciones-clientes/xxx.jpg") o null.
+     */
+    private function compressAndStoreUploaded($uploadedFile, $dir, $filename, $maxKb = 200)
+    {
+        try {
+            $tmpIn = $uploadedFile->getRealPath();
+            if (!file_exists($tmpIn)) return null;
+
+            $mime = $uploadedFile->getClientMimeType() ?: mime_content_type($tmpIn);
+            // crear resource desde el archivo
+            $src = null;
+            switch (strtolower($mime)) {
+                case 'image/jpeg':
+                case 'image/jpg':
+                    $src = @imagecreatefromjpeg($tmpIn);
+                    break;
+                case 'image/png':
+                    $src = @imagecreatefrompng($tmpIn);
+                    break;
+                case 'image/gif':
+                    $src = @imagecreatefromgif($tmpIn);
+                    break;
+                case 'image/webp':
+                    if (function_exists('imagecreatefromwebp')) $src = @imagecreatefromwebp($tmpIn);
+                    break;
+                default:
+                    $data = @file_get_contents($tmpIn);
+                    $src = $data ? @imagecreatefromstring($data) : null;
+            }
+            if (!$src) return null;
+
+            $w = imagesx($src);
+            $h = imagesy($src);
+            $maxDim = 1600;
+            $scale = 1;
+            if (max($w, $h) > $maxDim) {
+                $scale = $maxDim / max($w, $h);
+            }
+            $newW = max(1, (int)round($w * $scale));
+            $newH = max(1, (int)round($h * $scale));
+
+            $dst = imagecreatetruecolor($newW, $newH);
+            // preserve transparency for PNG/GIF by filling with transparent background
+            imagealphablending($dst, false);
+            imagesavealpha($dst, true);
+            $transparent = imagecolorallocatealpha($dst, 255, 255, 255, 127);
+            imagefilledrectangle($dst, 0, 0, $newW, $newH, $transparent);
+            imagecopyresampled($dst, $src, 0, 0, 0, 0, $newW, $newH, $w, $h);
+
+            // generar temp file y reducir calidad progresivamente
+            $tmpOut = tempnam(sys_get_temp_dir(), 'imgc');
+            $quality = 90;
+            imagejpeg($dst, $tmpOut, $quality);
+            $sizeKb = filesize($tmpOut) / 1024;
+            while ($sizeKb > $maxKb && $quality > 30) {
+                $quality -= 10;
+                imagejpeg($dst, $tmpOut, $quality);
+                clearstatcache(true, $tmpOut);
+                $sizeKb = filesize($tmpOut) / 1024;
+            }
+            // if still too big, downscale more
+            $reduceScale = 0.9;
+            while ($sizeKb > $maxKb && ($newW > 400 && $newH > 400)) {
+                $newW = max(100, (int)round($newW * $reduceScale));
+                $newH = max(100, (int)round($newH * $reduceScale));
+                $tmpDst = imagecreatetruecolor($newW, $newH);
+                imagealphablending($tmpDst, false);
+                imagesavealpha($tmpDst, true);
+                $transparent = imagecolorallocatealpha($tmpDst, 255, 255, 255, 127);
+                imagefilledrectangle($tmpDst, 0, 0, $newW, $newH, $transparent);
+                imagecopyresampled($tmpDst, $dst, 0, 0, 0, 0, $newW, $newH, imagesx($dst), imagesy($dst));
+                imagejpeg($tmpDst, $tmpOut, max(25, $quality - 10));
+                imagedestroy($tmpDst);
+                clearstatcache(true, $tmpOut);
+                $sizeKb = filesize($tmpOut) / 1024;
+            }
+
+            // guardar en storage public
+            $relativePath = trim($dir, '/') . '/' . $filename;
+            $content = file_get_contents($tmpOut);
+            \Storage::disk('public')->put($relativePath, $content);
+
+            // cleanup
+            if (file_exists($tmpOut)) @unlink($tmpOut);
+            imagedestroy($dst);
+            imagedestroy($src);
+
+            return $relativePath;
+        } catch (\Throwable $e) {
+            \Log::error('compressAndStoreUploaded error', ['exception' => $e]);
+            return null;
+        }
     }
 
     public function removeDetalle($i)

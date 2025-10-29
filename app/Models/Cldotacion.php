@@ -25,6 +25,7 @@ class Cldotacion extends Model
     static $rules = [
 		'fecha' => 'required',
 		'status' => 'required',
+		'responsable_entrega' => 'required',
     ];
 
     protected $perPage = 20;
@@ -34,7 +35,7 @@ class Cldotacion extends Model
      *
      * @var array
      */
-    protected $fillable = ['cliente_id','fecha','status'];
+    protected $fillable = ['cliente_id','fecha','status','responsable_entrega'];
 
 
     /**

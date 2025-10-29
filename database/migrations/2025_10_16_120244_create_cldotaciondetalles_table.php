@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('detalle');
             $table->integer('cantidad');
             $table->foreignId('rrhhestadodotacion_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('url')->nullable();
             $table->timestamps();
         });
     }

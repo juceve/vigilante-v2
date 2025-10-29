@@ -20,7 +20,7 @@ class CldotacionController extends Controller
             $pdf = Pdf::loadView('pdfs.acta-dotacion-cliente', compact('dotacion'))
                 ->setPaper('letter', 'portrait');
 
-            return $pdf->stream();
+            return $pdf->stream('Acta_Dotacion_Cliente_' . date('Ymd_His') . '.pdf');
         } else {
             return redirect()->back()->with('error', 'Dotación no encontrada');
         }

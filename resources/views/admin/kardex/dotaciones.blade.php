@@ -38,7 +38,7 @@
 <!-- Modal -->
 <div class="modal fade" id="modalDotaciones" data-backdrop="static" data-keyboard="false" tabindex="-1"
     aria-labelledby="modalDotacionesLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalDotacionesLabel">Formulario de Dotaciones</h5>
@@ -220,7 +220,7 @@
 
 <!-- Modal: Ver Detalle -->
 <div class="modal fade" id="modalVerDotacion" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Detalle Dotación <span id="ver_dotacion_id"></span></h5>
