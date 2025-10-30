@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class Rrhhpermiso
@@ -42,7 +43,7 @@ class Rrhhpermiso extends Model
      *
      * @var array
      */
-    protected $fillable = ['rrhhcontrato_id','empleado_id','rrhhtipopermiso_id','fecha_inicio','fecha_fin','cantidad_horas','motivo','documento_adjunto','activo'];
+    protected $fillable = ['rrhhcontrato_id','empleado_id','rrhhtipopermiso_id','fecha_inicio','fecha_fin','cantidad_horas','motivo','documento_adjunto','activo','status'];
 
 
     /**
@@ -69,5 +70,36 @@ class Rrhhpermiso extends Model
         return $this->hasOne('App\Models\Rrhhtipopermiso', 'id', 'rrhhtipopermiso_id');
     }
     
+    /**
+     * Devuelve los valores posibles del enum 'status' de la tabla asociada.
+     *
+     * @return array
+     */
+    public static function getStatusOptions(): array
+    {
+        static $cache = null;
+        if ($cache !== null) {
+            return $cache;
+        }
+
+        $instance = new static;
+        $table = $instance->getTable();
+
+        $column = DB::selectOne(DB::raw("SHOW COLUMNS FROM `{$table}` WHERE Field = 'status'"));
+        if (! $column || ! isset($column->Type)) {
+            $cache = [];
+            return $cache;
+        }
+
+        // Extrae los valores entre enum(...)
+        if (preg_match("/^enum\((.*)\)$/", $column->Type, $matches)) {
+            $vals = str_getcsv($matches[1], ',', "'");
+            $cache = array_map(function($v){ return trim($v, "'\""); }, $vals);
+            return $cache;
+        }
+
+        $cache = [];
+        return $cache;
+    }
 
 }

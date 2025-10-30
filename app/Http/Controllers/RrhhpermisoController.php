@@ -19,32 +19,51 @@ class RrhhpermisoController extends Controller
     public function data($contrato_id)
     {
         $permisos = Rrhhpermiso::with('Rrhhtipopermiso:id,nombre') // Ajustá según tu modelo
-            ->select('id', 'rrhhtipopermiso_id', 'fecha_inicio', 'fecha_fin', 'activo','documento_adjunto')
+            ->select('id', 'rrhhtipopermiso_id', 'fecha_inicio', 'fecha_fin', 'activo', 'status', 'documento_adjunto')
             ->where('rrhhcontrato_id', $contrato_id)
+            ->where('activo', true)
             ->get();
 
 
         return response()->json([
             'data' => $permisos->map(function ($permiso) {
                 $button = '<button class="btn btn-sm btn-warning" data-toggle="modal" data-target="#modalPermisos" onclick="editar(' . $permiso->id . ')"><i class="fas fa-edit"></i></button> ';
-                
+
                 if (!is_null($permiso->documento_adjunto)) {
-                    $button.='<a href="'.Storage::url($permiso->documento_adjunto).'"
-                                                    class="btn btn-sm btn-success" download title="Descargar" target="_blank">
-                                                    <i class="fas fa-cloud-download-alt"></i>
+                    $button .= '<a href="' . Storage::url($permiso->documento_adjunto) . '"
+                                                    class="btn btn-sm btn-info" download title="Documento Adjunto" target="_blank">
+                                                    <i class="fas fa-paperclip"></i>
                                                 </a>';
-                }else{
-                    $button.='<button class="btn btn-sm btn-success" disabled><i class="fas fa-cloud-download-alt"></i>
-                                                </a>';
+                } else {
+                    $button .= '<button class="btn btn-sm btn-secondary" title="Sin adjuntos" disabled><i class="fas fa-paperclip"></i>
+                                                </button>';
                 }
+
+                $estado = "N/A";
+
+                switch ($permiso->status) {
+                    case 'SOLICITADO':
+                        $estado = '<span class="badge bg-primary text-dark">Solicitado</span>';
+                        break;
+                    case 'APROBADO':
+                        $estado = '<span class="badge bg-success text-white">Aprobado</span>';
+                        break;
+                    case 'RECHAZADO':
+                        $estado = '<span class="badge bg-danger text-white">Rechazado</span>';
+                        break;
+                }
+
+
+
                 return [
                     'id' => $permiso->id,
                     'tipopermiso' => $permiso->rrhhtipopermiso->nombre ?? '—',
                     'fecha_inicio' => $permiso->fecha_inicio,
                     'fecha_fin' => $permiso->fecha_fin,
-                    'activo' => $permiso->activo ? '<span class="badge badge-success badge-pill">SI</span>' : '<span class="badge badge-secondary badge-pill">NO</span>',
+                    'estado' => $estado,
                     'boton' => $button,
                     'documento_adjunto' => $permiso->documento_adjunto,
+                    
                 ];
             }),
         ]);
@@ -73,6 +92,7 @@ class RrhhpermisoController extends Controller
             $permiso->fecha_fin = $request->fecha_fin;
             $permiso->motivo = $request->motivo;
             $permiso->activo = $request->activo;
+            $permiso->status = $request->status;
 
             if ($request->hasFile('documento_adjunto')) {
 
@@ -120,6 +140,7 @@ class RrhhpermisoController extends Controller
                 "fecha_inicio" => $request->fecha_inicio,
                 "fecha_fin" => $request->fecha_fin,
                 "motivo" => $request->motivo,
+                "status" => $request->status,
                 "activo" => 1,
             ]);
             if ($request->hasFile('documento_adjunto')) {

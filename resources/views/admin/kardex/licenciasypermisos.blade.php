@@ -1,17 +1,18 @@
 <div class="row mb-2">
     <div class="col-12 col-md-9 mb-2">
-        <strong>LISTADO PERMISOS - Contrato ID: {{ $contratoActivo ?cerosIzq($contratoActivo->id)  : 'Sin definir' }}</strong>
+        <strong>LISTADO PERMISOS - Contrato ID: {{ $contratoActivo ?cerosIzq($contratoActivo->id) : 'Sin definir'
+            }}</strong>
     </div>
     <div class="col-12 col-md-3 mb-2">
         @if ($contratoActivo)
-            <button class="btn btn-info btn-sm btn-block" data-toggle="modal" data-target="#modalPermisos">
-                Nuevo <i class="fas fa-plus"></i>
-            </button>
+        <button class="btn btn-info btn-sm btn-block" data-toggle="modal" data-target="#modalPermisos">
+            Nuevo <i class="fas fa-plus"></i>
+        </button>
         @endif
 
     </div>
 </div>
-<div class="table-responsive" >
+<div class="table-responsive">
     <table class="table table-bordered table-striped table-sm" id="tabla-permisos" style="width: 100%">
         <thead class="table-info">
             <tr>
@@ -19,7 +20,7 @@
                 <th>Tipo</th>
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
-                <th>Activo</th>
+                <th>Estado</th>
                 <th></th>
             </tr>
         </thead>
@@ -53,7 +54,7 @@
                             <select name="" id="rrhhtipopermiso_id" class="form-control">
                                 <option value="">Seleccione un tipo</option>
                                 @foreach ($tipopermisos as $tipopermiso)
-                                    <option value="{{ $tipopermiso->id }}">{{ $tipopermiso->nombre }}</option>
+                                <option value="{{ $tipopermiso->id }}">{{ $tipopermiso->nombre }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -82,7 +83,7 @@
                             <input type="text" class="form-control" id="motivo">
                         </div>
                     </div>
-                    <div class="col-12">
+                    <div class="col-12 col-md-8">
                         <div class="form-group">
                             <div class="input-group">
                                 <div class="input-group-prepend">
@@ -98,6 +99,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 col-md-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <label class="input-group-text" for="statusPermiso">Estado</label>
+                            </div>
+                            <select class="custom-select" id="statusPermiso">
+                                <option value="SOLICITADO">Solicitado</option>
+                                <option value="APROBADO">Aprobado</option>
+                                <option value="RECHAZADO">Rechazado</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-12 col-md-4 d-none" id="swActivo">
                         <label><small>Activo</small></label>
                         <input type="checkbox" id="activo" name="my-checkbox" checked data-bootstrap-switch>
@@ -108,8 +121,8 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="limpiar()"><i
                         class="fas fa-ban"></i>
                     Cerrar</button>
-                <button type="button" class="btn btn-warning d-none" id="btnEdit"
-                    onclick="updatePermiso()">Actualizar permiso <i class="fas fa-save"></i></button>
+                <button type="button" class="btn btn-warning d-none" id="btnEdit" onclick="updatePermiso()">Actualizar
+                    permiso <i class="fas fa-save"></i></button>
                 <button type="button" class="btn btn-info" id="btnRegist" onclick="registrarPermiso()">Registrar
                     permiso <i class="fas fa-save"></i></button>
 
@@ -118,9 +131,22 @@
     </div>
 </div>
 @section('js3')
-    <script src="{{ asset('vendor/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
-    <script>
-        $('.nav-permisos').click(function() {
+<script>
+    function bloquearBoton(btn) {
+    btn.disabled = true;
+    btn.dataset.originalText = btn.innerHTML; // Guarda el texto original
+    btn.innerHTML = 'Procesando... <i class="fas fa-spinner fa-spin"></i>';
+}
+
+function desbloquearBoton(btn) {
+    btn.disabled = false;
+    if(btn.dataset.originalText) btn.innerHTML = btn.dataset.originalText;
+}
+
+</script>
+<script src="{{ asset('vendor/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
+<script>
+    $('.nav-permisos').click(function() {
             cargarTablaPermisos();
         });
 
@@ -132,20 +158,21 @@
                 offColor: 'secondary',
             });
         })
-    </script>
-    <script>
-        function limpiar() {
+</script>
+<script>
+    function limpiar() {
             document.getElementById('rrhhtipopermiso_id').value = '';
             document.getElementById('fecha_inicio').value = '';
             document.getElementById('fecha_fin').value = '';
             document.getElementById('motivo').value = '';
+            document.getElementById('statusPermiso').value = 'SOLICITADO';
             const input = document.getElementById('documento_adjunto');
             const btnEdit = document.getElementById('btnEdit');
             const btnRegist = document.getElementById('btnRegist');
             const swActivo = document.getElementById('swActivo');
             btnEdit.classList.add('d-none');
             btnRegist.classList.remove('d-none');
-            swActivo.classList.add('d-none');
+            // swActivo.classList.add('d-none');
             // Limpia el archivo
             input.value = '';
 
@@ -166,7 +193,7 @@
             body.classList.add('d-none');
             spinner.classList.remove('d-none');
             btnEdit.classList.remove('d-none');
-            swActivo.classList.remove('d-none');
+            // swActivo.classList.remove('d-none');
             btnRegist.classList.add('d-none');
 
             const formData = new FormData();
@@ -187,6 +214,7 @@
                     document.getElementById('fecha_inicio').value = data.message.fecha_inicio;
                     document.getElementById('fecha_fin').value = data.message.fecha_fin;
                     document.getElementById('motivo').value = data.message.motivo;
+                    document.getElementById('statusPermiso').value = data.message.status;
                     activo.bootstrapSwitch('state', data.message.activo ? true : false);
 
                     spinner.classList.add('d-none');
@@ -200,6 +228,9 @@
         }
 
         function updatePermiso() {
+
+            const btnEdit = document.getElementById('btnEdit');
+    bloquearBoton(btnEdit); // ✅ Bloquea botón
             const input = document.getElementById('documento_adjunto');
             const formDataU = new FormData();
             const file = input.files[0];
@@ -212,6 +243,7 @@
             formDataU.append('fecha_fin', $('#fecha_fin').val());
             formDataU.append('motivo', $('#motivo').val());
             formDataU.append('activo', activo.bootstrapSwitch('state') ? 1 : 0);
+            formDataU.append('status', $('#statusPermiso').val());
             formDataU.append('documento_adjunto', file);
 
             fetch('{{ route('permisos.update') }}', {
@@ -229,6 +261,7 @@
                     cargarTablaPermisos();
                     $('#modalPermisos').modal('hide')
                     limpiar();
+                    desbloquearBoton(btnEdit); // ✅ Reactiva botón
                     if (data.success) {
                         Swal.fire({
                             title: 'Excelente',
@@ -246,11 +279,15 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    desbloquearBoton(btnEdit); // ✅ Reactiva botón
                     alert('Ocurrió un error al enviar el permiso');
                 });
         }
 
         function registrarPermiso() {
+const btnRegist = document.getElementById('btnRegist');
+    bloquearBoton(btnRegist); // ✅ Bloquea botón
+
             const input = document.getElementById('documento_adjunto');
             const formData = new FormData();
             const file = input.files[0];
@@ -262,9 +299,11 @@
             formData.append('motivo', $('#motivo').val());
             formData.append('rrhhcontrato_id', {{ $contratoActivo?->id }});
             formData.append('empleado_id', {{ $contratoActivo?->empleado->id }});
+            formData.append('status', $('#statusPermiso').val());
             formData.append('documento_adjunto', file);
 
             if (!formData.get('motivo') || formData.get('motivo').length < 1) {
+                desbloquearBoton(btnRegist);
                 alert('El motivo debe tener al menos 1 caracteres');
                 return;
             }
@@ -281,6 +320,7 @@
                     cargarTablaPermisos();
                     $('#modalPermisos').modal('hide')
                     limpiar();
+                    desbloquearBoton(btnRegist);
                     if (data.success) {
                         Swal.fire({
                             title: 'Excelente',
@@ -298,13 +338,15 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    desbloquearBoton(btnRegist);
                     alert('Ocurrió un error al enviar el permiso');
                 });
         }
-    </script>
+    
+</script>
 
-    <script>
-        let tablaPermisos;
+<script>
+    let tablaPermisos;
 
         function cargarTablaPermisos() {
             if (tablaPermisos) {
@@ -328,7 +370,7 @@
                         data: 'fecha_fin'
                     },
                     {
-                        data: 'activo'
+                        data: 'estado'
                     },
                     {
                         data: 'boton',
@@ -365,5 +407,5 @@
         }
 
         // document.addEventListener('DOMContentLoaded', cargarTablaPermisos);
-    </script>
+</script>
 @endsection

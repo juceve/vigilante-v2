@@ -435,6 +435,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link material-nav-link" href="{{route('vigilancia.profile')}}">
+                                <i class="fas fa-user me-2"></i>
+                                <span>Mi Perfil</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('logout') }}" class="nav-link material-nav-link logout-link"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 <i class="fas fa-sign-out-alt me-2"></i>

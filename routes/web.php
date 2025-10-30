@@ -42,6 +42,7 @@ use App\Http\Controllers\TareaController;
 use App\Http\Controllers\UbicacionController;
 use App\Http\Controllers\UploadsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VigilanciaController;
 use App\Http\Controllers\VisitaController;
 
 use App\Http\Livewire\Admin\Admrondas;
@@ -109,6 +110,7 @@ use App\Http\Livewire\Vigilancia\RegIngreso;
 use App\Http\Livewire\Vigilancia\RegSalida;
 use App\Http\Livewire\Vigilancia\Ronda;
 use App\Http\Livewire\Vigilancia\SalidaVisita;
+use App\Http\Livewire\Vigilancia\Vacaciones;
 use App\Http\Livewire\Vigilancia\Vtareas;
 
 use App\Models\Empleado;
@@ -171,6 +173,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('vigilancia/controlairbnb', function () {
         return view('vigilancia.listadoairbnb');
     })->name('vigilancia.ctrlairbnb');
+    Route::get('vigilancia/mi-perfil', [VigilanciaController::class, 'profile'])->name('vigilancia.profile');
+    Route::get('vigilancia/vacaciones', Vacaciones::class)->name('vigilancia.vacaciones');
 
     Route::get('admin/visitas', Registrosvisita::class)->middleware('can:admin.registros.visitas')->name('admin.visitas');
     Route::get('admin/rondas', Registrosronda::class)->middleware('can:admin.registros.rondas')->name('admin.rondas');
