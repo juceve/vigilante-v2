@@ -43,7 +43,7 @@ class Rrhhadelanto extends Model
      *
      * @var array
      */
-    protected $fillable = ['rrhhcontrato_id', 'empleado_id', 'fecha', 'mes', 'motivo', 'monto', 'documento_adjunto', 'estado'];
+    protected $fillable = ['rrhhcontrato_id', 'empleado_id', 'fecha', 'mes', 'motivo', 'monto', 'documento_adjunto', 'estado', 'activo'];
 
 
     /**

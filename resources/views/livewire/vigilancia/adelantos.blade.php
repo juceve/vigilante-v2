@@ -1,11 +1,11 @@
 <div class="container-fluid px-3 py-2" style="margin-top: 110px;">
-    @section('title', 'Vacaciones')
+    @section('title', 'Adelantos')
     <!-- Header / back -->
     <div class="d-flex align-items-center mb-3">
         <a class="btn btn-link p-0 me-2" href="{{route('vigilancia.profile')}}" aria-label="Volver">
             <i class="fas fa-arrow-left fa-lg"></i>
         </a>
-        <h4 class="mb-0">Permisos y Vacaciones</h4>
+        <h4 class="mb-0">Adelantos</h4>
 
     </div>
 
@@ -18,20 +18,20 @@
                         <tr class="text-center">
                             <th>ID</th>
                             <th>Solicitado</th>
-                            <th>Tipo</th>
+                            <th>Monto Bs.</th>
                             <th>Estado</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($permisos as $permiso)
+                        @forelse ($adelantos as $adelanto)
                         <tr class="text-center">
-                            <td class="align-middle">{{$permiso->id}}</td>
-                            <td class="align-middle">{{$permiso->created_at}}</td>
-                            <td class="align-middle">{{$permiso->rrhhtipopermiso->nombre}}</td>
+                            <td class="align-middle">{{$adelanto->id}}</td>
+                            <td class="align-middle">{{$adelanto->fecha}}</td>
+                            <td class="align-middle">{{$adelanto->monto}}</td>
                             <td class="align-middle">
-                                @if ($permiso->activo==1)
-                                @switch($permiso->status)
+                                @if ($adelanto->activo==1)
+                                @switch($adelanto->estado)
                                 @case('SOLICITADO')
                                 <span class="badge bg-warning text-dark">Solicitado</span>
                                 @break
@@ -47,9 +47,9 @@
                                 @endif
                             </td>
                             <td class="text-end align-middle">
-                                @if ($permiso->activo)
+                                @if ($adelanto->activo)
                                 <button class="btn btn-warning" title="Ver Detalles"
-                                    wire:click="view({{ $permiso->id }})"><i class="fas fa-eye"></i></button>
+                                    wire:click="view({{ $adelanto->id }})"><i class="fas fa-eye"></i></button>
                                 @else
                                 <button class="btn btn-secondary" title="Ver Detalles" disabled><i
                                         class="fas fa-eye"></i></button>
@@ -66,12 +66,13 @@
                     </tbody>
                 </table>
                 <div class="d-flex justify-content-end">
-                    {{ $permisos->links('pagination::bootstrap-4') }}
+                    {{ $adelantos->links('pagination::bootstrap-4') }}
                 </div>
             </div>
 
-            <button class="btn btn-primary mt-2 py-3" wire:click='nuevaSolicitud'>Nueva Solicitud <i
-                    class="fas fa-folder-plus"></i></button>
+            <button class="btn btn-primary mt-2 py-3" wire:click='nuevaSolicitud'>Nueva Solicitud 
+            <i class="fas fa-file-invoice-dollar"></i>    
+            </button>
         </div>
     </div>
 
@@ -87,39 +88,30 @@
                 <div class="modal-body">
                     <div class="table-responsive">
                         <table class="table table-striped" style="font-size: 12px;">
-                            @if ($permisoSel)
+                            @if ($adelantoSel)
                             <tbody>
                                 <tr>
                                     <td><strong>Fecha Solicitud</strong></td>
-                                    <td>{{formatearFecha(substr($this->permisoSel->created_at, 0, 10))}}</td>
+                                    <td>{{formatearFecha($this->adelantoSel->fecha)}}</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Tipo Permiso</strong></td>
-                                    <td>{{ $this->permisoSel->rrhhtipopermiso->nombre ?? 'N/A' }}</td>
+                                    <td><strong>Monto Bs.</strong></td>
+                                    <td>{{ $this->adelantoSel->monto ?? 'N/A' }}</td>
                                 </tr>
-                                <tr>
-                                    <td><strong>Fecha Inicio</strong></td>
-                                    <td>{{ $this->permisoSel->fecha_inicio ?
-                                        formatearFecha($this->permisoSel->fecha_inicio) : 'N/A' }}</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Fecha Fin</strong></td>
-                                    <td>{{ $this->permisoSel->fecha_fin ? formatearFecha($this->permisoSel->fecha_fin) :
-                                        'N/A' }}</td>
-                                </tr>
+                                
                                 <tr>
                                     <td><strong>Motivo</strong></td>
-                                    <td>{{ $this->permisoSel->motivo ?? 'N/A' }}</td>
+                                    <td>{{ $this->adelantoSel->motivo ?? 'N/A' }}</td>
                                 </tr>
                                 <tr>
                                     <td><strong>Estado</strong></td>
                                     <td>
-                                        @if ($permisoSel->activo==1)
-                                        @switch($permisoSel->status)
+                                        @if ($adelantoSel->activo==1)
+                                        @switch($adelantoSel->estado)
                                         @case('SOLICITADO')
                                         <span class="badge bg-warning text-dark">Solicitado</span> &nbsp;
                                         <button class="btn btn-sm btn-danger" style="font-size: 10px;"
-                                            onclick="anular({{ $this->permisoSel->id }})">
+                                            onclick="anular({{ $this->adelantoSel->id }})">
                                             <i class="fas fa-trash"></i> Anular Solicitud
                                         </button>
                                         @break
@@ -139,7 +131,7 @@
                                     <td><strong>Documento <br> Adjunto</strong></td>
                                     <td>
                                         @php
-                                        $doc = $this->permisoSel->documento_adjunto ?? null;
+                                        $doc = $this->adelantoSel->documento_adjunto ?? null;
                                         @endphp
                                         @if ($doc)
                                         @php
@@ -200,22 +192,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
+                       
                         <div class="col-12 col-md-6 mb-2">
-                            <small class="text-muted"><strong>Tipo de Permiso</strong></small>
-                            <select id="tipo" class="form-select" wire:model.lazy="rrhhtipopermiso_id">
-                                <option value="">-- Seleccione --</option>
-                                @foreach ($rrhhtipopermisos as $tipo)
-                                <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-6 mb-2">
-                            <small class="text-muted"><strong>Fecha Inicio</strong></small>
-                            <input type="date" id="fecha_inicio" class="form-control" wire:model.lazy="fecha_inicio">
-                        </div>
-                        <div class="col-12 col-md-6 mb-2">
-                            <small class="text-muted"><strong>Fecha Fin</strong></small>
-                            <input type="date" id="fecha_fin" class="form-control" wire:model.lazy="fecha_fin">
+                            <small class="text-muted"><strong>Monto Bs.</strong></small>
+                            <input type="number" id="monto" class="form-control" wire:model.lazy="monto" step="any" placeholder="Ingrese el monto">
                         </div>
                         <div class="col-12 col-md-6 mb-2">
                             <small class="text-muted"><strong>Motivo</strong></small>
@@ -227,14 +207,14 @@
                             <!-- permitir cámara en móviles (capture) y múltiples tipos de archivo -->
                             <input type="file" id="file" class="form-control" wire:model="file"
                                 accept="image/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.doc,.docx,.xls,.xlsx"
-                                capture="environment"
-                                onchange="handleFileInputChange(this)">
+                                capture="environment" onchange="handleFileInputChange(this)">
                         </div>
 
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:loading.attr="disabled" wire:target="file,store"><i class="fas fa-ban"></i>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:loading.attr="disabled"
+                        wire:target="file,store"><i class="fas fa-ban"></i>
                         Cerrar</button>
                     <!-- Al hacer click, marcamos que se inicia el registro y Livewire ejecuta store -->
                     {{-- <button type="button" class="btn btn-primary" onclick="startRegistering()" wire:click="store">

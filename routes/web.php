@@ -113,6 +113,9 @@ use App\Http\Livewire\Vigilancia\SalidaVisita;
 use App\Http\Livewire\Vigilancia\Vacaciones;
 use App\Http\Livewire\Vigilancia\Vtareas;
 
+use App\Http\Controllers\NotificationsController;
+use App\Http\Livewire\Vigilancia\Adelantos;
+use App\Http\Livewire\Vigilancia\Asistencias;
 use App\Models\Empleado;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -175,6 +178,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('vigilancia.ctrlairbnb');
     Route::get('vigilancia/mi-perfil', [VigilanciaController::class, 'profile'])->name('vigilancia.profile');
     Route::get('vigilancia/vacaciones', Vacaciones::class)->name('vigilancia.vacaciones');
+    Route::get('vigilancia/adelantos', Adelantos::class)->name('vigilancia.adelantos');
+    Route::get('vigilancia/asistencias', Asistencias::class)->name('vigilancia.asistencias');
 
     Route::get('admin/visitas', Registrosvisita::class)->middleware('can:admin.registros.visitas')->name('admin.visitas');
     Route::get('admin/rondas', Registrosronda::class)->middleware('can:admin.registros.rondas')->name('admin.rondas');
@@ -327,6 +332,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('propietarios/resumen/{id}', [PaseingresoController::class, 'resumen'])->name('resumenpase');
 
     Route::get('tools/passwords-propietarios', [App\Http\Controllers\ToolsController::class, 'passwordsPropietarios'])->name('tools.passwords-propietarios');
+
+    // RUTAS DEL NAVBAR
+
+
+    Route::get('notifications/get', [NotificationsController::class, 'getNotificationsData'])
+        ->name('notifications.get');
+
+    // Route::get('notifications/show', [NotificationsController::class, 'showAll'])
+    //     ->name('notifications.show');
 });
 
 Route::middleware('throttle:10,1')->get('formulario-cobro/{link_id}', [FormularioAirbnbController::class, 'cobro'])->name('formcobro');

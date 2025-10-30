@@ -21,6 +21,7 @@ return new class extends Migration
             $table->float('monto',10,2);
             $table->string('documento_adjunto')->nullable();
             $table->enum('estado',['SOLICITADO','APROBADO','ANULADO'])->default('APROBADO');
+            $table->boolean('activo')->default(true);
             $table->timestamps();
         });
     }

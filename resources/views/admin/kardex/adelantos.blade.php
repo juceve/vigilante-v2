@@ -19,7 +19,7 @@
                 <th>Fecha</th>
                 <th>Monto Bs. &nbsp;</th>
                 <th>Estado</th>
-                <th></th>
+                <th style="width: 100px"></th>
             </tr>
         </thead>
         <tbody>
@@ -238,7 +238,7 @@
                 ],
                 responsive: true,
                 order: [
-                    [0, 'desc']
+                    [3, 'desc']
                 ],
                 pageLength: 5,
                 lengthMenu: [
@@ -288,6 +288,7 @@
                     cargarTablaAdelantos();
                     $('#modalAdelantos').modal('hide')
                     limpiar1();
+                    actualizarContadorNotificaciones(); 
                     if (data.success) {
                         Swal.fire({
                             title: 'Excelente',
@@ -340,6 +341,7 @@
                     cargarTablaAdelantos();
                     $('#modalAdelantos').modal('hide')
                     limpiar1();
+                    actualizarContadorNotificaciones(); 
                     if (data.success) {
                         Swal.fire({
                             title: 'Excelente',

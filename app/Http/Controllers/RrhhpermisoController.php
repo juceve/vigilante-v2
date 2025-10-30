@@ -22,6 +22,7 @@ class RrhhpermisoController extends Controller
             ->select('id', 'rrhhtipopermiso_id', 'fecha_inicio', 'fecha_fin', 'activo', 'status', 'documento_adjunto')
             ->where('rrhhcontrato_id', $contrato_id)
             ->where('activo', true)
+            ->orderBy('status', 'desc')
             ->get();
 
 
@@ -43,7 +44,7 @@ class RrhhpermisoController extends Controller
 
                 switch ($permiso->status) {
                     case 'SOLICITADO':
-                        $estado = '<span class="badge bg-primary text-dark">Solicitado</span>';
+                        $estado = '<span class="badge bg-warning text-dark">Solicitado</span>';
                         break;
                     case 'APROBADO':
                         $estado = '<span class="badge bg-success text-white">Aprobado</span>';

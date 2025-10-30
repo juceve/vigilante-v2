@@ -290,6 +290,22 @@ return [
     */
 
     'menu' => [
+        // NOTIFICACIONES EN EL NAVBAR
+        [
+            'type' => 'navbar-notification',
+            'id' => 'my-notification',
+            'icon' => 'fas fa-bell',
+            'can' => 'admin.notificaciones',
+            'url' => '#',
+            'topnav_right' => true,
+            'dropdown_mode' => true,
+            'dropdown_flabel' => '',
+            'update_cfg' => [
+                'url' => 'notifications/get',
+                'period' => 30,
+            ],
+        ],
+        // MENU SIDEBAR
         [
             'text'   => 'Inicio',
             'icon'   => 'fas fa-fw fa-home',

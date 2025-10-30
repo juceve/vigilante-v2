@@ -17,7 +17,10 @@ class RrhhadelantoController extends Controller
 {
     public function data($contrato_id)
     {
-        $adelantos = Rrhhadelanto::where('rrhhcontrato_id', $contrato_id)->get();
+        $adelantos = Rrhhadelanto::where('rrhhcontrato_id', $contrato_id)
+        ->where('activo', true)
+        ->orderBy('estado', 'desc')
+        ->get();
 
         return response()->json([
             'data' => $adelantos->map(function ($adelanto) {
@@ -32,6 +35,21 @@ class RrhhadelantoController extends Controller
                     $button .= '<button class="btn btn-sm btn-success" disabled><i class="fas fa-cloud-download-alt"></i>
                                                 </a>';
                 }
+
+                 $estado = "N/A";
+
+                switch ($adelanto->estado) {
+                    case 'SOLICITADO':
+                        $estado = '<span class="badge bg-warning text-dark">Solicitado</span>';
+                        break;
+                    case 'APROBADO':
+                        $estado = '<span class="badge bg-success text-white">Aprobado</span>';
+                        break;
+                    case 'RECHAZADO':
+                        $estado = '<span class="badge bg-danger text-white">Rechazado</span>';
+                        break;
+                }
+
                 return [
                     'id' => $adelanto->id,
                     'rrhhcontrato_id' => $adelanto->rrhhcontrato_id,
@@ -40,7 +58,7 @@ class RrhhadelantoController extends Controller
                     'mes' => $adelanto->mes,
                     'monto' => number_format($adelanto->monto, 2, '.'),
                     'motivo' => $adelanto->motivo,
-                    'estado' => $adelanto->estado,
+                    'estado' => $estado,
                     'boton' => $button,
                     'documento_adjunto' => $adelanto->documento_adjunto,
                 ];

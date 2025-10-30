@@ -163,5 +163,6 @@ class RoleSeeder extends Seeder
 
         Permission::create(['name' => 'admin.resumenoperacional',  'grupo' => 'REPORTES', 'descripcion' => 'Resumen Operacional'])->assignRole([$role]);
         Permission::create(['name' => 'admin.cronogramadiaslibres',  'grupo' => 'REPORTES', 'descripcion' => 'Cronograma de Días Libres'])->assignRole([$role]);
+        Permission::create(['name' => 'admin.notificaciones',  'grupo' => 'REPORTES', 'descripcion' => 'Notificaciones'])->assignRole([$role]);
     }
 }

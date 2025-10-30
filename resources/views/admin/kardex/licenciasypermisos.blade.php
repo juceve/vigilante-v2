@@ -131,6 +131,7 @@
     </div>
 </div>
 @section('js3')
+<script src="{{ asset('vendor/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
 <script>
     function bloquearBoton(btn) {
     btn.disabled = true;
@@ -144,7 +145,7 @@ function desbloquearBoton(btn) {
 }
 
 </script>
-<script src="{{ asset('vendor/bootstrap-switch/js/bootstrap-switch.min.js') }}"></script>
+
 <script>
     $('.nav-permisos').click(function() {
             cargarTablaPermisos();
@@ -159,7 +160,9 @@ function desbloquearBoton(btn) {
             });
         })
 </script>
+
 <script>
+    let tablaPermisos;
     function limpiar() {
             document.getElementById('rrhhtipopermiso_id').value = '';
             document.getElementById('fecha_inicio').value = '';
@@ -230,7 +233,7 @@ function desbloquearBoton(btn) {
         function updatePermiso() {
 
             const btnEdit = document.getElementById('btnEdit');
-    bloquearBoton(btnEdit); // ✅ Bloquea botón
+            bloquearBoton(btnEdit); 
             const input = document.getElementById('documento_adjunto');
             const formDataU = new FormData();
             const file = input.files[0];
@@ -256,13 +259,13 @@ function desbloquearBoton(btn) {
                 .then(response => response.json())
                 .then(data => {
                     console.log(data.message);
-
-
                     cargarTablaPermisos();
                     $('#modalPermisos').modal('hide')
                     limpiar();
-                    desbloquearBoton(btnEdit); // ✅ Reactiva botón
+                    desbloquearBoton(btnEdit);
+                    
                     if (data.success) {
+                        actualizarContadorNotificaciones(); 
                         Swal.fire({
                             title: 'Excelente',
                             text: 'Permiso actualizado correctamente.',
@@ -279,14 +282,14 @@ function desbloquearBoton(btn) {
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    desbloquearBoton(btnEdit); // ✅ Reactiva botón
+                    desbloquearBoton(btnEdit); 
                     alert('Ocurrió un error al enviar el permiso');
                 });
         }
 
         function registrarPermiso() {
-const btnRegist = document.getElementById('btnRegist');
-    bloquearBoton(btnRegist); // ✅ Bloquea botón
+        const btnRegist = document.getElementById('btnRegist');
+            bloquearBoton(btnRegist); 
 
             const input = document.getElementById('documento_adjunto');
             const formData = new FormData();
@@ -321,7 +324,9 @@ const btnRegist = document.getElementById('btnRegist');
                     $('#modalPermisos').modal('hide')
                     limpiar();
                     desbloquearBoton(btnRegist);
+                    
                     if (data.success) {
+                        actualizarContadorNotificaciones(); 
                         Swal.fire({
                             title: 'Excelente',
                             text: 'Permiso registrado correctamente.',
@@ -342,11 +347,12 @@ const btnRegist = document.getElementById('btnRegist');
                     alert('Ocurrió un error al enviar el permiso');
                 });
         }
-    
-</script>
 
-<script>
-    let tablaPermisos;
+        // Función para actualizar contador de notificaciones
+    
+    
+
+    
 
         function cargarTablaPermisos() {
             if (tablaPermisos) {
@@ -384,7 +390,7 @@ const btnRegist = document.getElementById('btnRegist');
                 }],
                 responsive: true,
                 order: [
-                    [0, 'desc']
+                    [4, 'desc']
                 ],
                 pageLength: 5,
                 lengthMenu: [

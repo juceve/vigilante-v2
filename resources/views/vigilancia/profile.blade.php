@@ -66,14 +66,14 @@
             <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details"
                 type="button" role="tab" aria-controls="details" aria-selected="true">Detalles</button>
         </li>
-        <li class="nav-item" role="presentation">
+        {{-- <li class="nav-item" role="presentation">
             <button class="nav-link" id="docs-tab" data-bs-toggle="tab" data-bs-target="#docs" type="button" role="tab"
                 aria-controls="docs" aria-selected="false">Documentos</button>
-        </li>
-        <li class="nav-item" role="presentation">
+        </li> --}}
+        {{-- <li class="nav-item" role="presentation">
             <button class="nav-link" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity" type="button"
                 role="tab" aria-controls="activity" aria-selected="false">Actividad</button>
-        </li>
+        </li> --}}
     </ul>
 
     <div class="tab-content">
@@ -158,17 +158,18 @@
             </a>
         </div>
         <div class="col-12 col-sm-4 mb-1">
-            <button
+            <a href="{{ route('vigilancia.adelantos') }}"
                 class="btn btn-primary w-100 text-dark d-flex flex-column align-items-center justify-content-center py-3">
                 <i class="fas fa-hand-holding-usd fa-2x mb-2"></i>
                 <span class="fw-semibold">Adelantos</span>
-            </button>
+            </a>
         </div>
         <div class="col-12 col-sm-4 mb-1">
-            <button class="btn btn-warning w-100 d-flex flex-column align-items-center justify-content-center py-3">
+            <a  href="{{ route('vigilancia.asistencias') }}"
+            class="btn btn-warning w-100 d-flex flex-column align-items-center justify-content-center py-3">
                 <i class="fas fa-user-clock fa-2x mb-2"></i>
                 <span class="fw-semibold">Asistencias</span>
-            </button>
+            </a>
         </div>
     </div>
 
