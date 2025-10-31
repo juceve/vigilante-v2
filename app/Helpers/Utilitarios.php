@@ -16,6 +16,7 @@ use App\Models\Intervalo;
 use App\Models\Marcacione;
 use App\Models\Regronda;
 use App\Models\Rondaejecutada;
+use App\Models\Rrhhcontrato;
 use App\Models\Tarea;
 use App\Models\Usercliente;
 use App\Models\Vwnovedade;
@@ -193,7 +194,7 @@ function traeDesignacionActiva($empleado_id)
         ->whereDate('fechaInicio', '<=', $hoy)
         ->where(function ($q) use ($hoy) {
             $q->whereNull('fechaFin')
-              ->orWhereDate('fechaFin', '>=', $hoy);
+                ->orWhereDate('fechaFin', '>=', $hoy);
         })
         ->orderBy('id', 'DESC')
         ->first();
@@ -331,7 +332,6 @@ function yaMarque2($designacione_id)
             // Estado 3: Aún no es hora de marcar (EN DESCANSO)
             return [3, null, null];
         }
-
     } catch (Exception $e) {
         Log::error('Error en yaMarque2: ' . $e->getMessage(), [
             'designacione_id' => $designacione_id,
@@ -499,11 +499,15 @@ function registrosHV($designacione_id)
 
 function fechaEs($fecha)
 {
-    setlocale(LC_TIME, 'es_VE.UTF-8', 'esp');
-    $date = strtotime($fecha);
-    $fecha = strftime('%e de %B de %Y', $date);
-
-    return $fecha;
+    $fmt = new IntlDateFormatter(
+        'es_VE',
+        IntlDateFormatter::LONG,
+        IntlDateFormatter::NONE,
+        'America/Caracas',
+        IntlDateFormatter::GREGORIAN,
+        "dd 'de' MMMM 'de' yyyy"
+    );
+    return ucfirst($fmt->format(new DateTime($fecha)));
 }
 
 function ultDiaMes($fecha)
@@ -669,4 +673,141 @@ function tengoRondaIniciada($user_id, $cliente_id)
     ])->first();
 
     return $ronda ? $ronda->id : 0;
+}
+
+function traerDesignacionContrato($rrhhcontrato_id)
+{
+    try {
+        $contrato = Rrhhcontrato::find($rrhhcontrato_id);
+
+        // Si no hay contrato o no tiene empleado, devolver null
+        if (!$contrato || empty($contrato->empleado_id)) {
+            return null;
+        }
+
+        // Fecha de inicio obligatoria en el contrato
+        if (empty($contrato->fecha_inicio)) {
+            return null;
+        }
+
+        $empleadoId = $contrato->empleado_id;
+        $inicioContrato = Carbon::parse($contrato->fecha_inicio)->startOfDay();
+        $finContrato = $contrato->fecha_fin ? Carbon::parse($contrato->fecha_fin)->endOfDay() : null;
+
+        // Query: mismas condiciones básicas
+        $query = Designacione::where('empleado_id', $empleadoId)
+            ->where('estado', 1);
+
+        // Reglas de inclusión estricta (designacion DENTRO del contrato)
+        // Si contrato tiene fecha_fin, exigir:
+        //   D.fechaInicio >= C.fecha_inicio AND D.fechaFin <= C.fecha_fin
+        if ($finContrato) {
+            $query->whereDate('fechaInicio', '>=', $inicioContrato->toDateString())
+                ->whereDate('fechaFin', '<=', $finContrato->toDateString());
+        } else {
+            // Contrato indefinido: exigir que la designacion comience a partir de la fecha_inicio del contrato
+            $query->whereDate('fechaInicio', '>=', $inicioContrato->toDateString());
+        }
+
+        // Ordenar por la más reciente (por fechaInicio / id) y devolver la primera coincidencia
+        return $query->orderBy('fechaInicio', 'ASC')->orderBy('id', 'ASC')->first();
+    } catch (Exception $e) {
+        Log::error('Error en traerDesignacionContrato: ' . $e->getMessage(), [
+            'rrhhcontrato_id' => $rrhhcontrato_id,
+            'trace' => $e->getTraceAsString()
+        ]);
+        return null;
+    }
+}
+
+function numeroALetras($numero, $convertirDecimalALetras = false)
+{
+    // Separar la parte entera y decimal
+    $numero = number_format(floatval($numero), 2, '.', '');
+    $partes = explode('.', $numero);
+    $entero = intval($partes[0]);
+    $decimal = isset($partes[1]) ? intval($partes[1]) : 0;
+
+    // Función recursiva para convertir números a letras
+    $convertir = function ($num) use (&$convertir) {
+        $unidades = ['', 'UNO', 'DOS', 'TRES', 'CUATRO', 'CINCO', 'SEIS', 'SIETE', 'OCHO', 'NUEVE'];
+        $decenas = ['', 'DIEZ', 'VEINTE', 'TREINTA', 'CUARENTA', 'CINCUENTA', 'SESENTA', 'SETENTA', 'OCHENTA', 'NOVENTA'];
+        $especiales = [
+            11 => 'ONCE',
+            12 => 'DOCE',
+            13 => 'TRECE',
+            14 => 'CATORCE',
+            15 => 'QUINCE',
+            16 => 'DIECISÉIS',
+            17 => 'DIECISIETE',
+            18 => 'DIECIOCHO',
+            19 => 'DIECINUEVE'
+        ];
+        $centenas = [
+            '',
+            'CIEN',
+            'DOSCIENTOS',
+            'TRESCIENTOS',
+            'CUATROCIENTOS',
+            'QUINIENTOS',
+            'SEISCIENTOS',
+            'SETECIENTOS',
+            'OCHOCIENTOS',
+            'NOVECIENTOS'
+        ];
+
+        if ($num == 0) return 'CERO';
+        if ($num < 10) return $unidades[$num];
+        if ($num >= 11 && $num <= 19) return $especiales[$num];
+        if ($num < 100) {
+            $d = intval($num / 10);
+            $r = $num % 10;
+            if ($r > 0) {
+                if ($d == 2) return 'VEINTI' . $unidades[$r];
+                else return $decenas[$d] . ' Y ' . $unidades[$r];
+            } else return $decenas[$d];
+        }
+        if ($num < 1000) {
+            $c = intval($num / 100);
+            $r = $num % 100;
+            if ($c == 1 && $r == 0) return 'CIEN';
+            return $centenas[$c] . ($r > 0 ? ' ' . $convertir($r) : '');
+        }
+        if ($num < 1000000) {
+            $m = intval($num / 1000);
+            $r = $num % 1000;
+            $mTexto = $m == 1 ? 'MIL' : $convertir($m) . ' MIL';
+            return $mTexto . ($r > 0 ? ' ' . $convertir($r) : '');
+        }
+        if ($num < 1000000000) { // hasta miles de millones
+            $millones = intval($num / 1000000);
+            $resto = $num % 1000000;
+            $mTexto = $millones == 1 ? 'UN MILLÓN' : $convertir($millones) . ' MILLONES';
+            return $mTexto . ($resto > 0 ? ' ' . $convertir($resto) : '');
+        }
+        if ($num < 1000000000000) { // hasta billones
+            $milesMillones = intval($num / 1000000000);
+            $resto = $num % 1000000000;
+            $texto = $milesMillones == 1 ? 'MIL MILLONES' : $convertir($milesMillones) . ' MIL MILLONES';
+            return $texto . ($resto > 0 ? ' ' . $convertir($resto) : '');
+        }
+
+        // números extremadamente grandes
+        $trillones = intval($num / 1000000000000);
+        $resto = $num % 1000000000000;
+        $texto = $trillones == 1 ? 'UN BILLÓN' : $convertir($trillones) . ' BILLONES';
+        return $texto . ($resto > 0 ? ' ' . $convertir($resto) : '');
+    };
+
+    $enteroTexto = $convertir($entero);
+
+    // Convertir decimal a literal opcional
+    if ($convertirDecimalALetras) {
+        $decimalTexto = $decimal > 0 ? ' CON ' . $convertir($decimal) : '';
+        $decimalTexto .= '/100';
+    } else {
+        $decimalTexto = ' CON ' . str_pad($decimal, 2, '0', STR_PAD_LEFT) . '/100';
+    }
+
+    return $enteroTexto . $decimalTexto;
 }

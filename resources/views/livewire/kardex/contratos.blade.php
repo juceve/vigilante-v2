@@ -3,6 +3,7 @@
         <div class="col-12 col-md-8 col-lg-9">
             <strong>LISTADO DE CONTRATOS</strong>
         </div>
+
         <div class="col-12 col-md-4 col-lg-3">
             <button class="btn btn-info btn-sm btn-block" data-toggle="modal" data-target="#modalNuevoContrato">
                 Nuevo <i class="fas fa-plus"></i>
@@ -23,44 +24,47 @@
             </thead>
             <tbody>
                 @foreach ($contratos as $contrato)
-                    <tr class="text-center">
-                        <td class="align-middle">{{ $contrato->id }}</td>
-                        <td class="align-middle text-left">{{ $contrato->rrhhtipocontrato->nombre }}</td>
-                        <td class="align-middle">{{ $contrato->fecha_inicio }}</td>
-                        <td class="align-middle">{{ $contrato->fecha_fin ? $contrato->fecha_fin : 'Indefinido' }}</td>
-                        <td class="align-middle">
-                            @if ($contrato->activo)
-                                <span class="badge badge-pill badge-success">Activo</span>
-                            @else
-                                <span class="badge badge-pill badge-secondary">Finalizado</span>
-                            @endif
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                <button class="btn btn-outline-info btn-sm dropdown-toggle" type="button"
-                                    data-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-bars"></i> Opciones
-                                </button>
-                                <div class="dropdown-menu" style="">
-                                    <a class="dropdown-item" href="javascript:void(0);"
-                                        wire:click='verInfo({{ $contrato->id }})' data-toggle="modal"
-                                        data-target="#modalNuevoContrato"><i
-                                            class="fas fa-eye text-secondary"></i>&nbsp; Ver datos</a>
-                                    <a class="dropdown-item" href="javascript:void(0);"
-                                        @if (!$contrato->activo) disabled @endif
-                                        wire:click='editContrato({{ $contrato->id }})' data-toggle="modal"
-                                        data-target="#modalNuevoContrato"><i
-                                            class="fas fa-edit text-secondary"></i>&nbsp; Editar</a>
-                                    <a class="dropdown-item" href="javascript:void(0);"
-                                        @if (!$contrato->activo) disabled @endif
-                                        wire:click='editContrato({{ $contrato->id }})' data-toggle="modal"
-                                        data-target="#modalDocs"><i class="fas fa-file text-secondary"></i>&nbsp;
-                                        Documentos</a>
-                                </div>
-                            </div>
+                <tr class="text-center">
+                    <td class="align-middle">{{ $contrato->id }}</td>
+                    <td class="align-middle text-left">{{ $contrato->rrhhtipocontrato->nombre }}</td>
+                    <td class="align-middle">{{ $contrato->fecha_inicio }}</td>
+                    <td class="align-middle">{{ $contrato->fecha_fin ? $contrato->fecha_fin : 'Indefinido' }}</td>
+                    <td class="align-middle">
+                        @if ($contrato->activo)
+                        <span class="badge badge-pill badge-success">Activo</span>
+                        @else
+                        <span class="badge badge-pill badge-secondary">Finalizado</span>
+                        @endif
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-info btn-sm dropdown-toggle" type="button"
+                                data-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bars"></i> Opciones
+                            </button>
+                            <div class="dropdown-menu" style="">
+                                <a class="dropdown-item" href="javascript:void(0);"
+                                    wire:click='verInfo({{ $contrato->id }})' data-toggle="modal"
+                                    data-target="#modalNuevoContrato"><i class="fas fa-eye text-secondary"></i>&nbsp;
+                                    Ver datos</a>
+                                <a class="dropdown-item" href="javascript:void(0);" @if (!$contrato->activo) disabled
+                                    @endif
+                                    wire:click='editContrato({{ $contrato->id }})' data-toggle="modal"
+                                    data-target="#modalNuevoContrato"><i class="fas fa-edit text-secondary"></i>&nbsp;
+                                    Editar</a>
+                                <a class="dropdown-item" href="javascript:void(0);" @if (!$contrato->activo) disabled
+                                    @endif
+                                    wire:click='editContrato({{ $contrato->id }})' data-toggle="modal"
+                                    data-target="#modalDocs"><i class="fas fa-file text-secondary"></i>&nbsp;
+                                    Documentos</a>
 
-                        </td>
-                    </tr>
+
+
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
                 @endforeach
             </tbody>
         </table>
@@ -85,8 +89,8 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Referencia:</span>
                                 </div>
-                                <input type="text" class="form-control" placeholder="Descripción corta"
-                                    id='referencia' oninput="this.value = this.value.toUpperCase()">
+                                <input type="text" class="form-control" placeholder="Descripción corta" id='referencia'
+                                    oninput="this.value = this.value.toUpperCase()">
                             </div>
                         </div>
                         <div class="col-12 col-md-5">
@@ -124,26 +128,26 @@
                             </thead>
                             <tbody>
                                 @if (!is_null($selContrato))
-                                    @foreach ($selContrato->rrhhdocscontratos as $index => $doc)
-                                        <tr>
-                                            <td>{{ $index + 1 }}</td>
-                                            <td>{{ $doc->referencia }}</td>
-                                            <td>{{ substr($doc->url, 21, -1) }}</td>
-                                            <td>{{ substr($doc->created_at, 0, 10) }}</td>
-                                            <td class="text-right">
-                                                <a href="{{ asset('storage/' . $doc->url) }}"
-                                                    class="btn btn-sm btn-primary" target="_blank" title="Ver online">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="{{ asset('storage/' . $doc->url) }}"
-                                                    class="btn btn-sm btn-success" download title="Descargar">
-                                                    <i class="fas fa-cloud-download-alt"></i>
-                                                </a>
+                                @foreach ($selContrato->rrhhdocscontratos as $index => $doc)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $doc->referencia }}</td>
+                                    <td>{{ substr($doc->url, 21, -1) }}</td>
+                                    <td>{{ substr($doc->created_at, 0, 10) }}</td>
+                                    <td class="text-right">
+                                        <a href="{{ asset('storage/' . $doc->url) }}" class="btn btn-sm btn-primary"
+                                            target="_blank" title="Ver online">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ asset('storage/' . $doc->url) }}" class="btn btn-sm btn-success"
+                                            download title="Descargar">
+                                            <i class="fas fa-cloud-download-alt"></i>
+                                        </a>
 
 
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                    </td>
+                                </tr>
+                                @endforeach
                                 @endif
 
                             </tbody>
@@ -166,11 +170,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalNuevoContrato">FORMULARIO DE CONTRATO @if ($selContrato)
-                            ID: {{ $selContrato->id }}
+                        ID: {{ $selContrato->id }}
                         @endif
                     </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-                        wire:click='limpiar'>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" wire:click='limpiar'>
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -187,13 +190,11 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Tipo</span>
                                     </div>
-                                    <select wire:model="rrhhtipocontratoid"
-                                        class="form-control @error('rrhhtipocontratoid')
-                                    is-invalid @enderror"
-                                        @if ($show) disabled @endif>
+                                    <select wire:model="rrhhtipocontratoid" class="form-control @error('rrhhtipocontratoid')
+                                    is-invalid @enderror" @if ($show) disabled @endif>
                                         <option value="">Seleccione un tipo</option>
                                         @foreach ($tipocontratos as $tipo)
-                                            <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
+                                        <option value="{{ $tipo->id }}">{{ $tipo->nombre }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -204,14 +205,12 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Cargo</span>
                                     </div>
-                                    <select wire:model.defer="rrhhcargo_id"
-                                        @if ($show) disabled @endif
-                                        class="form-control @error('rrhhtipocontratoid')
+                                    <select wire:model.defer="rrhhcargo_id" @if ($show) disabled @endif class="form-control @error('rrhhtipocontratoid')
                                     is-invalid
                                 @enderror">">
                                         <option value="">Seleccione un cargo</option>
                                         @foreach ($cargos as $cargo)
-                                            <option value="{{ $cargo->id }}">{{ $cargo->nombre }}</option>
+                                        <option value="{{ $cargo->id }}">{{ $cargo->nombre }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -221,167 +220,184 @@
                                     <div class="input-group-prepend">
                                         <span class="input-group-text">Fecha Incio</span>
                                     </div>
-                                    <input type="date" @if ($show) disabled @endif
-                                        class="form-control @error('fecha_inicio')
+                                    <input type="date" @if ($show) disabled @endif class="form-control @error('fecha_inicio')
                                     is-invalid
-                                @enderror"
-                                        wire:model.defer="fecha_inicio">
+                                @enderror" wire:model.defer="fecha_inicio">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
-                                @if ($cantidad_dias < 30)
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Fecha Fin</span>
-                                        </div>
-                                        <input type="date" @if ($show) disabled @endif
-                                            class="form-control @error('fecha_fin')
-                                    is-invalid
-                                @enderror"
-                                            wire:model.defer="fecha_fin">
-                                    </div>
-                                @endif
-
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <div class="input-group input-group-sm mb-3">
+                                @if ($cantidad_dias < 30) <div class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">Salario Basico</span>
+                                        <span class="input-group-text">Fecha Fin</span>
                                     </div>
-                                    <input type="number" step="any"
-                                        @if ($show) disabled @endif
-                                        class="form-control @error('salario_basico')
+                                    <input type="date" @if ($show) disabled @endif class="form-control @error('fecha_fin')
                                     is-invalid
-                                @enderror"
-                                        placeholder="0.00" wire:model.defer="salario_basico">
-                                </div>
+                                @enderror" wire:model.defer="fecha_fin">
                             </div>
-                            <div class="col-12 col-md-6">
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Moneda</span>
-                                    </div>
-                                    <select wire:model.defer="moneda"
-                                        @if ($show) disabled @endif
-                                        class="form-control @error('moneda')
-                                    is-invalid
-                                @enderror">
-                                        <option value="">Seleccione una moneda</option>
-                                        <option value="BOL">Boliviano - BOL</option>
-                                        <option value="USD">Dolar Americano - USD</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Gestora</span>
-                                    </div>
-                                    <input type="number" step="any"
-                                        @if ($show) disabled @endif
-                                        class="form-control @error('gestora')
-                                    is-invalid
-                                @enderror"
-                                        placeholder="0.00" wire:model.defer="gestora">
-                                </div>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">Caja/Seguro</span>
-                                    </div>
-                                    <select @if ($show) disabled @endif
-                                        class="form-control @error('caja_seguro')
-                                    is-invalid
-                                @enderror"
-                                        wire:model.defer="caja_seguro">
-                                        <option value="0">NO</option>
-                                        <option value="1">SI</option>
-                                    </select>
-                                </div>
-                            </div>
-                            @if ($edit || $show)
-                                <div class="col-12 col-md-6">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Motivo Fin</span>
-                                        </div>
-                                        <input type="text" step="any"
-                                            @if ($show) disabled @endif
-                                            class="form-control @error('motivo_fin')
-                                    is-invalid
-                                @enderror"
-                                            placeholder="Detalla el motivo de la finalización del contrato"
-                                            wire:model.defer="motivo_fin">
-                                    </div>
-                                </div>
-                                <div class="col-12 col-md-6">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">Activo</span>
-                                        </div>
-                                        <select wire:model.defer="activo"
-                                            @if ($show) disabled @endif
-                                            class="form-control @error('activo')
-                                    is-invalid
-                                @enderror">
-                                            <option value="1">SI</option>
-                                            <option value="0">NO</option>
-
-                                        </select>
-                                    </div>
-                                </div>
                             @endif
-                        </div>
-                        <hr>
-                        <div class="float-right">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                                wire:click='limpiar'>
-                                @if ($show)
-                                    <i class="far fa-times-circle"></i> Cerrar
-                                @else
-                                    <i class="fas fa-ban"></i> Cancelar
-                                @endif
 
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Salario Basico</span>
+                                </div>
+                                <input type="number" step="any" @if ($show) disabled @endif class="form-control @error('salario_basico')
+                                    is-invalid
+                                @enderror" placeholder="0.00" wire:model.defer="salario_basico">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Moneda</span>
+                                </div>
+                                <select wire:model.defer="moneda" @if ($show) disabled @endif class="form-control @error('moneda')
+                                    is-invalid
+                                @enderror">
+                                    <option value="">Seleccione una moneda</option>
+                                    <option value="BOL">Boliviano - BOL</option>
+                                    <option value="USD">Dolar Americano - USD</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Gestora</span>
+                                </div>
+                                <input type="number" step="any" @if ($show) disabled @endif class="form-control @error('gestora')
+                                    is-invalid
+                                @enderror" placeholder="0.00" wire:model.defer="gestora">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Caja/Seguro</span>
+                                </div>
+                                <select @if ($show) disabled @endif class="form-control @error('caja_seguro')
+                                    is-invalid
+                                @enderror" wire:model.defer="caja_seguro">
+                                    <option value="0">NO</option>
+                                    <option value="1">SI</option>
+                                </select>
+                            </div>
+                        </div>
+                        @if ($edit || $show)
+                        <div class="col-12 col-md-6">
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Motivo Fin</span>
+                                </div>
+                                <input type="text" step="any" @if ($show) disabled @endif class="form-control @error('motivo_fin')
+                                    is-invalid
+                                @enderror" placeholder="Detalla el motivo de la finalización del contrato"
+                                    wire:model.defer="motivo_fin">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Activo</span>
+                                </div>
+                                <select wire:model.defer="activo" @if ($show) disabled @endif class="form-control @error('activo')
+                                    is-invalid
+                                @enderror">
+                                    <option value="1">SI</option>
+                                    <option value="0">NO</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            @if ($designacione)
+                            <button onclick="pdfContrato()" class="btn btn-primary btn-block">
+                                <i class="fas fa-file-pdf"></i> Generar Documento
                             </button>
-                            @if ($edit)
-                                <button type="button"
-                                    class="btn btn-warning @if ($show) d-none @endif"
-                                    wire:click='updateContrato' data-dismiss="modal">Actualizar Contrato <i
-                                        class="fas fa-save"></i></button>
                             @else
-                                <button type="button" class="btn btn-primary" wire:click='registrarContrato'
-                                    >Registrar Contrato <i class="fas fa-save"></i></button>
+                            <span class="form-control">
+                                <small><strong>No cuenta con una Designación activa.</strong></small>
+                            </span>
                             @endif
+
                         </div>
+                        @endif
+                    </div>
+                    <hr>
+                    <div class="float-right">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click='limpiar'>
+                            @if ($show)
+                            <i class="far fa-times-circle"></i> Cerrar
+                            @else
+                            <i class="fas fa-ban"></i> Cancelar
+                            @endif
+
+                        </button>
+                        @if ($edit)
+                        <button type="button" class="btn btn-warning @if ($show) d-none @endif"
+                            wire:click='updateContrato' data-dismiss="modal">Actualizar Contrato <i
+                                class="fas fa-save"></i></button>
+                        @else
+                        <button type="button" class="btn btn-primary" wire:click='registrarContrato'>Registrar Contrato
+                            <i class="fas fa-save"></i></button>
+                        @endif
                     </div>
                 </div>
-
             </div>
+
         </div>
     </div>
-    <style>
-        .mi-contenedor {
-            overflow: visible !important;
-            position: relative;
-        }
-    </style>
+</div>
+<style>
+    .mi-contenedor {
+        overflow: visible !important;
+        position: relative;
+    }
+</style>
 
 </div>
 @section('js2')
-    <script src="{{ asset('vendor/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
-    <script>
-        $(function() {
+<script src="{{ asset('vendor/bs-custom-file-input/bs-custom-file-input.min.js') }}"></script>
+<script>
+    $(function() {
             bsCustomFileInput.init();
         });
-    </script>
-    <script>
-        Livewire.on('subir', id => {
+</script>
+<script>
+    Livewire.on('subir', id => {
             subirArchivo(id);
         });
-    </script>
-    <script>
-        function subirArchivo(contrato_id) {
+</script>
+<script>
+    function pdfContrato(){
+        Swal.fire({
+    title: 'Selecciona una fecha',
+    input: 'date',
+    inputLabel: 'Fecha para firma del Documento',
+    inputPlaceholder: 'Selecciona una fecha',
+    showCancelButton: true,
+    confirmButtonText: 'Aceptar',
+    cancelButtonText: 'Cancelar',
+    inputAttributes: {
+        min: '2025-01-01', // opcional, fecha mínima
+        max: '2030-12-31'  // opcional, fecha máxima
+    }
+}).then((result) => {
+    if (result.isConfirmed) {
+        const fechaSeleccionada = result.value;
+        // Aquí ejecutas tu proceso usando la fecha
+        console.log('Fecha elegida:', fechaSeleccionada);
+        
+        // Ejemplo: llamar a tu función con la fecha
+        var win = window.open("../../../pdf/contrato-vigente/"+fechaSeleccionada, '_blank');
+            win.focus();
+    }
+});
+     
+}
+
+    function subirArchivo(contrato_id) {
             const input = document.getElementById('fileInput');
             const boton = document.getElementById('uploadBtn');
             const referencia = document.getElementById('referencia').value;
@@ -424,10 +440,10 @@
                     document.getElementById('spinnerSubida').classList.add('d-none');
                 });
         }
-    </script>
-    <script>
-        Livewire.on('cerrarModalReg',()=>{
+</script>
+<script>
+    Livewire.on('cerrarModalReg',()=>{
             $('#modalNuevoContrato').modal('hide');
         });
-    </script>
+</script>
 @endsection

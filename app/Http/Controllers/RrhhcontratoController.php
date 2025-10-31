@@ -3,107 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rrhhcontrato;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
-/**
- * Class RrhhcontratoController
- * @package App\Http\Controllers
- */
 class RrhhcontratoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function contratoPdf($fecha)
     {
-        $rrhhcontratos = Rrhhcontrato::paginate();
+        $designacione = Session::get('designacione_data');
+        $contrato = Session::get('contrato_data');
+        $empleado = $contrato->empleado;
 
-        return view('rrhhcontrato.index', compact('rrhhcontratos'))
-            ->with('i', (request()->input('page', 1) - 1) * $rrhhcontratos->perPage());
-    }
+        $pdf = Pdf::loadView('pdfs.contrato', compact('designacione', 'contrato', 'empleado', 'fecha'))
+            ->setPaper([0, 0, 609.4488, 935.433], 'portrait');
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        $rrhhcontrato = new Rrhhcontrato();
-        return view('rrhhcontrato.create', compact('rrhhcontrato'));
-    }
+        $pdf->output();
+        $dom_pdf = $pdf->getDomPDF();
+        $canvas = $dom_pdf->get_canvas();
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        request()->validate(Rrhhcontrato::$rules);
+        // Posición: centrado abajo
+        $width = $canvas->get_width();
+        $height = $canvas->get_height();
+        $canvas->page_text($width / 2, $height - 30, "{PAGE_NUM}", null, 10, [0, 0, 0]);
 
-        $rrhhcontrato = Rrhhcontrato::create($request->all());
-
-        return redirect()->route('rrhhcontratos.index')
-            ->with('success', 'Rrhhcontrato created successfully.');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $rrhhcontrato = Rrhhcontrato::find($id);
-
-        return view('rrhhcontrato.show', compact('rrhhcontrato'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $rrhhcontrato = Rrhhcontrato::find($id);
-
-        return view('rrhhcontrato.edit', compact('rrhhcontrato'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  Rrhhcontrato $rrhhcontrato
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Rrhhcontrato $rrhhcontrato)
-    {
-        request()->validate(Rrhhcontrato::$rules);
-
-        $rrhhcontrato->update($request->all());
-
-        return redirect()->route('rrhhcontratos.index')
-            ->with('success', 'Rrhhcontrato updated successfully');
-    }
-
-    /**
-     * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \Exception
-     */
-    public function destroy($id)
-    {
-        $rrhhcontrato = Rrhhcontrato::find($id)->delete();
-
-        return redirect()->route('rrhhcontratos.index')
-            ->with('success', 'Rrhhcontrato deleted successfully');
+        return $pdf->stream('Contrato_' . $contrato->id . '_' . date('YmdHis') . '.pdf');
     }
 }

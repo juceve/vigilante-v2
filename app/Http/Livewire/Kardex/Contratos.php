@@ -10,6 +10,7 @@ use App\Models\Rrhhtipocontrato;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -21,10 +22,13 @@ class Contratos extends Component
     public $rrhhtipocontratoid = "", $fecha_inicio = "", $fecha_fin = "", $salario_basico = "", $rrhhcargo_id = "", $moneda = "", $motivo_fin = "", $activo = '', $gestora = '0', $caja_seguro = 0;
     public $referencia = "";
     public $cantidad_dias = 0;
+    public $designacione;
 
     public function mount($empleado_id)
     {
         $this->empleado = Empleado::find($empleado_id);
+
+        $hoy = Carbon::now()->toDateString();
     }
     public function render()
     {
@@ -79,6 +83,9 @@ class Contratos extends Component
 
     public function verInfo($contrato_id)
     {
+        $this->designacione = traerDesignacionContrato($contrato_id);
+        
+        Session::put('designacione_data', $this->designacione);
         $this->show = true;
         $this->editContrato($contrato_id);
     }
@@ -86,7 +93,8 @@ class Contratos extends Component
     public function editContrato($contrato_id)
     {
         $this->selContrato = Rrhhcontrato::find($contrato_id);
-
+        Session::put('contrato_data', $this->selContrato);
+        
         $this->rrhhtipocontratoid = $this->selContrato->rrhhtipocontrato_id;
         $this->fecha_inicio = $this->selContrato->fecha_inicio;
         $this->fecha_fin = $this->selContrato->fecha_fin;

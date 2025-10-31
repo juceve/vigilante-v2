@@ -40,6 +40,7 @@ class RrhhKardexController extends Controller
             ->where('activo', true)
             ->orderBy('fecha_inicio', 'asc')
             ->first();
+            
 
         $tipopermisos = Rrhhtipopermiso::all();
         $optionsAdelantos = Rrhhadelanto::estadoOptions();

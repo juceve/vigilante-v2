@@ -114,9 +114,11 @@ use App\Http\Livewire\Vigilancia\Vacaciones;
 use App\Http\Livewire\Vigilancia\Vtareas;
 
 use App\Http\Controllers\NotificationsController;
+use App\Http\Controllers\RrhhcontratoController;
 use App\Http\Livewire\Vigilancia\Adelantos;
 use App\Http\Livewire\Vigilancia\Asistencias;
 use App\Models\Empleado;
+use App\Models\Rrhhcontrato;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -273,7 +275,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('ubicacion');
 
     Route::get('nuevoptctrl/{cliente_id}', Nuevoptctrl::class)->name('nuevoptctrl');
-
+    
+    Route::get('pdf/contrato-vigente/{fecha}', [RrhhcontratoController::class, 'contratoPdf'])->name('pdf.contrato-vigente');
     Route::get('pdf/kardex-empleado/{empleadoID}', [EmpleadoController::class, 'pdfKardex'])->name('pdf.kardex');
     Route::get('pdf/visitas/', [VisitaController::class, 'pdfVisitas'])->name('pdf.visitas');
     Route::get('pdf/rondas/', [RegrondaController::class, 'pdfRondas'])->name('pdf.rondas');
@@ -301,6 +304,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('pdf/cotizacion/{data}', [CitecotizacionController::class, 'previsualizacion'])->name('pdf.cotizacion');
     Route::get('admin/citescotizacion', ListadoCiteCotizacion::class)->middleware('can:admin.generador.cotizacion')->name('admin.citescotizacion');
+
+    
 
     Route::post('/subir-archivo', [UploadsController::class, 'uploadFile'])->name('uploadFile');
 
