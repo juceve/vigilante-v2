@@ -39,7 +39,7 @@ class Rrhhtipocontrato extends Model
      *
      * @var array
      */
-    protected $fillable = ['codigo','nombre','descripcion', 'indefinido','cantidad_dias','horas_dia','sueldo_referencial','activo'];
+    protected $fillable = ['codigo','nombre','descripcion', 'mensualizado','cantidad_dias','horas_dia','sueldo_referencial','activo'];
 
 
     /**

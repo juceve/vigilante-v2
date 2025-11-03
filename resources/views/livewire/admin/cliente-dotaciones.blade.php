@@ -136,7 +136,7 @@
 
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center">No existen registros.</td>
+                            <td colspan="5" class="text-center">No existen registros.</td>
                         </tr>
                         @endforelse
                     </tbody>

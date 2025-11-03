@@ -17,20 +17,20 @@
             {!! $errors->first('descripcion', '<div class="invalid-feedback">:message</div>') !!}
         </div>
         <div class="form-group form-check">
-            <input type="checkbox" name="indefinido" id="indefinidoCheckbox" class="form-check-input" value="1"
-                {{ isset($rrhhtipocontrato->indefinido) ? ($rrhhtipocontrato->indefinido ? 'checked' : '') : 'checked' }}>
-            <label class="form-check-label" for="indefinidoCheckbox">Indefinido</label>
+            <input type="checkbox" name="mensualizado" id="mensualizadoCheckbox" class="form-check-input" value="1"
+                {{ isset($rrhhtipocontrato->mensualizado) ? ($rrhhtipocontrato->mensualizado ? 'checked' : '') : 'checked' }}>
+            <label class="form-check-label" for="mensualizadoCheckbox">mensualizado</label>
         </div>
         <div class="form-group" id="cantidad_dias_div">
-            <label for="cantidad_dias">Cantidad días <small>(Cantidad maxima 30)</small></label>
+            <label for="cantidad_dias">Cantidad días al Mes <small>(Cantidad maxima 30)</small></label>
             {{ Form::number('cantidad_dias', $rrhhtipocontrato->cantidad_dias, ['class' => 'form-control' . ($errors->has('cantidad_dias') ? ' is-invalid' : ''), 'placeholder' => '0', 'id' => 'cantidad_dias', 'min' => '1', 'max' => '30']) }}
             {!! $errors->first('cantidad_dias', '<div class="invalid-feedback">:message</div>') !!}
         </div>
-        <div class="form-group">
+        {{-- <div class="form-group">
             {{ Form::label('horas_dia') }}
             {{ Form::number('horas_dia', $rrhhtipocontrato->horas_dia, ['class' => 'form-control' . ($errors->has('horas_dia') ? ' is-invalid' : ''), 'placeholder' => '0']) }}
             {!! $errors->first('horas_dia', '<div class="invalid-feedback">:message</div>') !!}
-        </div>
+        </div> --}}
         <div class="form-group">
             {{ Form::label('sueldo_referencial') }}
             {{ Form::number('sueldo_referencial', $rrhhtipocontrato->sueldo_referencial, ['class' => 'form-control' . ($errors->has('sueldo_referencial') ? ' is-invalid' : ''), 'placeholder' => '0.00', 'step' => 'any']) }}
@@ -55,7 +55,7 @@
 @section('js')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const checkbox = document.getElementById('indefinidoCheckbox');
+            const checkbox = document.getElementById('mensualizadoCheckbox');
             const cantidadDiasDiv = document.getElementById('cantidad_dias_div');
             const cantidadDiasInput = document.getElementById('cantidad_dias');
 

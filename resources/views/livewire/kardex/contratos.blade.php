@@ -218,7 +218,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">Fecha Incio</span>
+                                        <span class="input-group-text">Incio</span>
                                     </div>
                                     <input type="date" @if ($show) disabled @endif class="form-control @error('fecha_inicio')
                                     is-invalid
@@ -226,135 +226,136 @@
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
-                                @if ($cantidad_dias < 30) <div class="input-group input-group-sm mb-3">
+                                <div class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text">Fecha Fin</span>
+                                        <span class="input-group-text">Fin &nbsp;s<small> (Opcional)</small></span>
                                     </div>
                                     <input type="date" @if ($show) disabled @endif class="form-control @error('fecha_fin')
                                     is-invalid
                                 @enderror" wire:model.defer="fecha_fin">
-                            </div>
-                            @endif
-
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Salario Basico</span>
                                 </div>
-                                <input type="number" step="any" @if ($show) disabled @endif class="form-control @error('salario_basico')
+
+
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Salario Basico</span>
+                                    </div>
+                                    <input type="number" step="any" @if ($show) disabled @endif class="form-control @error('salario_basico')
                                     is-invalid
                                 @enderror" placeholder="0.00" wire:model.defer="salario_basico">
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Moneda</span>
                                 </div>
-                                <select wire:model.defer="moneda" @if ($show) disabled @endif class="form-control @error('moneda')
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Moneda</span>
+                                    </div>
+                                    <select wire:model.defer="moneda" @if ($show) disabled @endif class="form-control @error('moneda')
                                     is-invalid
                                 @enderror">
-                                    <option value="">Seleccione una moneda</option>
-                                    <option value="BOL">Boliviano - BOL</option>
-                                    <option value="USD">Dolar Americano - USD</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Gestora</span>
+                                        <option value="">Seleccione una moneda</option>
+                                        <option value="BOL">Boliviano - BOL</option>
+                                        <option value="USD">Dolar Americano - USD</option>
+                                    </select>
                                 </div>
-                                <input type="number" step="any" @if ($show) disabled @endif class="form-control @error('gestora')
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Gestora</span>
+                                    </div>
+                                    <input type="number" step="any" @if ($show) disabled @endif class="form-control @error('gestora')
                                     is-invalid
                                 @enderror" placeholder="0.00" wire:model.defer="gestora">
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Caja/Seguro</span>
                                 </div>
-                                <select @if ($show) disabled @endif class="form-control @error('caja_seguro')
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Caja/Seguro</span>
+                                    </div>
+                                    <select @if ($show) disabled @endif class="form-control @error('caja_seguro')
                                     is-invalid
                                 @enderror" wire:model.defer="caja_seguro">
-                                    <option value="0">NO</option>
-                                    <option value="1">SI</option>
-                                </select>
-                            </div>
-                        </div>
-                        @if ($edit || $show)
-                        <div class="col-12 col-md-6">
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Motivo Fin</span>
+                                        <option value="0">NO</option>
+                                        <option value="1">SI</option>
+                                    </select>
                                 </div>
-                                <input type="text" step="any" @if ($show) disabled @endif class="form-control @error('motivo_fin')
+                            </div>
+                            @if ($edit || $show)
+                            <div class="col-12 col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Motivo Fin</span>
+                                    </div>
+                                    <input type="text" step="any" @if ($show) disabled @endif class="form-control @error('motivo_fin')
                                     is-invalid
                                 @enderror" placeholder="Detalla el motivo de la finalización del contrato"
-                                    wire:model.defer="motivo_fin">
-                            </div>
-                        </div>
-                        <div class="col-12 col-md-6">
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">Activo</span>
+                                        wire:model.defer="motivo_fin">
                                 </div>
-                                <select wire:model.defer="activo" @if ($show) disabled @endif class="form-control @error('activo')
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Activo</span>
+                                    </div>
+                                    <select wire:model.defer="activo" @if ($show) disabled @endif class="form-control @error('activo')
                                     is-invalid
                                 @enderror">
-                                    <option value="1">SI</option>
-                                    <option value="0">NO</option>
+                                        <option value="1">SI</option>
+                                        <option value="0">NO</option>
 
-                                </select>
+                                    </select>
+                                </div>
                             </div>
+                            <div class="col-12 col-md-6">
+                                @if ($designacione)
+                                <button onclick="pdfContrato()" class="btn btn-primary btn-block">
+                                    <i class="fas fa-file-pdf"></i> Generar Documento
+                                </button>
+                                @else
+                                <span class="form-control">
+                                    <small><strong>No cuenta con una Designación activa.</strong></small>
+                                </span>
+                                @endif
+
+                            </div>
+                            @endif
                         </div>
-                        <div class="col-12 col-md-6">
-                            @if ($designacione)
-                            <button onclick="pdfContrato()" class="btn btn-primary btn-block">
-                                <i class="fas fa-file-pdf"></i> Generar Documento
+                        <hr>
+                        <div class="float-right">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click='limpiar'>
+                                @if ($show)
+                                <i class="far fa-times-circle"></i> Cerrar
+                                @else
+                                <i class="fas fa-ban"></i> Cancelar
+                                @endif
+
                             </button>
+                            @if ($edit)
+                            <button type="button" class="btn btn-warning @if ($show) d-none @endif"
+                                wire:click='updateContrato' data-dismiss="modal">Actualizar Contrato <i
+                                    class="fas fa-save"></i></button>
                             @else
-                            <span class="form-control">
-                                <small><strong>No cuenta con una Designación activa.</strong></small>
-                            </span>
+                            <button type="button" class="btn btn-primary" wire:click='registrarContrato'>Registrar
+                                Contrato
+                                <i class="fas fa-save"></i></button>
                             @endif
-
                         </div>
-                        @endif
-                    </div>
-                    <hr>
-                    <div class="float-right">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click='limpiar'>
-                            @if ($show)
-                            <i class="far fa-times-circle"></i> Cerrar
-                            @else
-                            <i class="fas fa-ban"></i> Cancelar
-                            @endif
-
-                        </button>
-                        @if ($edit)
-                        <button type="button" class="btn btn-warning @if ($show) d-none @endif"
-                            wire:click='updateContrato' data-dismiss="modal">Actualizar Contrato <i
-                                class="fas fa-save"></i></button>
-                        @else
-                        <button type="button" class="btn btn-primary" wire:click='registrarContrato'>Registrar Contrato
-                            <i class="fas fa-save"></i></button>
-                        @endif
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
-</div>
-<style>
-    .mi-contenedor {
-        overflow: visible !important;
-        position: relative;
-    }
-</style>
+    <style>
+        .mi-contenedor {
+            overflow: visible !important;
+            position: relative;
+        }
+    </style>
 
 </div>
 @section('js2')

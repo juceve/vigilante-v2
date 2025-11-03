@@ -101,7 +101,7 @@
                     <tr>
                         <td style="vertical-align: middle;">{{ $item->cliente->nombre }}</td>
                         <td style="vertical-align: middle;">{{ $item->user->name }}</td>
-                        <td style="vertical-align: middle;">{{ $item->ronda->nombre }}</td>
+                        <td style="vertical-align: middle;">{{ $item->ronda?$item->ronda->nombre:'NA' }}</td>
                         <td style="vertical-align: middle;" class="text-center">
                             {{ \Carbon\Carbon::parse($item->inicio)->format('d/m/Y') }} <br>
                             {{ \Carbon\Carbon::parse($item->inicio)->format('H:i:s') }}
@@ -118,7 +118,7 @@
                         </td>
                         <td style="vertical-align: middle;" class="text-center">
                             {{ $item->rondaejecutadaubicaciones->count() }} de
-                            {{ $item->ronda->rondapuntos->count() }}
+                            {{ $item->ronda?$item->ronda->rondapuntos->count():'NA' }}
                         </td>
 
                     </tr>

@@ -53,8 +53,9 @@ class RrhhtipocontratoController extends Controller
             'codigo' => rand(1, 100) . '-' . date('YmdHis'),
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
+            'mensualizado' => $request->mensualizado,
             'cantidad_dias' => $request->cantidad_dias,
-            'horas_dia' => $request->horas_dia ?? '0',
+            'horas_dia' => 0,
             'sueldo_referencial' => $request->sueldo_referencial,
         ]);
 

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('codigo',30);
             $table->string('nombre',100);
             $table->string('descripcion')->nullable();
-            $table->boolean('indefinido')->default(true);
+            $table->boolean('mensualizado')->default(true);
             $table->integer('cantidad_dias');
             $table->integer('horas_dia');
             $table->float('sueldo_referencial',10,2)->nullable();
