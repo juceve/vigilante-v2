@@ -115,6 +115,7 @@ use App\Http\Livewire\Vigilancia\Vtareas;
 
 use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\RrhhcontratoController;
+use App\Http\Livewire\Admin\ListadoDesignacionesSupervisores;
 use App\Http\Livewire\Vigilancia\Adelantos;
 use App\Http\Livewire\Vigilancia\Asistencias;
 use App\Models\Empleado;
@@ -232,6 +233,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/flujo-pases', Flujopases::class)->name('admin.flujopases');
     Route::get('admin/cronograma-dias-libres', CronogramaMensualEmpleados::class)->middleware('can:admin.cronogramadiaslibres')->name('admin.cronogramadiaslibres');
     Route::get('admin/resumen-operacional', ResumenOpercional::class)->middleware('can:admin.resumenoperacional')->name('admin.resumenoperacional');
+    Route::get('admin/designaciones/supervisores/', ListadoDesignacionesSupervisores::class)->name('admin.designacionessupervisores');
 
     Route::get('/admin/puntos-control-v2/{turnoId}', PuntosControlV2::class)->name('puntoscontrolv2');
 
@@ -251,6 +253,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/ctrl-airbnb', CtrlAllAirbnb::class)->name('admin.ctrlallairbnb');
     Route::get('admin/designaciones/guardias', [DesignacioneController::class, 'designacioneguardia'])->name('admin.designacione-guardias');
     Route::get('admin/designaciones/selEmpleado/{empleado_id}', [DesignacioneController::class, 'seleccionarEmpleado'])->name('admin.selempleado');
+    
 
 
     Route::resource('registroguardias', RegistroguardiaController::class)->names('registroguardias');

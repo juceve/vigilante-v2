@@ -129,20 +129,9 @@
         </div>
     </div>
 </div>
-@section('css')
-<style>
-    /* Forzar modo claro permanente */
-    * {
-        color-scheme: light !important;
-    }
-
-    html,
-    body {
-        background-color: #f8fafc !important;
-        color: #1e293b !important;
-    }
-</style>
-@endsection
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/styleVigilancia.css') }}">
+@endpush
 @section('js')
     <script>
         var myModal = new bootstrap.Modal(document.getElementById('modalResidencia'))

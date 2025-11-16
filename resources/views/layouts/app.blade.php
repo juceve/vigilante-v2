@@ -434,12 +434,15 @@
                                 <span>Inicio</span>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link material-nav-link" href="{{route('vigilancia.profile')}}">
-                                <i class="fas fa-user me-2"></i>
-                                <span>Mi Perfil</span>
-                            </a>
-                        </li>
+                        @if (session('cliente_id-oper'))
+                            <li class="nav-item">
+                                <a class="nav-link material-nav-link" href="{{ route('vigilancia.profile') }}">
+                                    <i class="fas fa-user me-2"></i>
+                                    <span>Mi Perfil</span>
+                                </a>
+                            </li>
+                        @endif
+
                         <li class="nav-item">
                             <a href="{{ route('logout') }}" class="nav-link material-nav-link logout-link"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -635,7 +638,7 @@
             });
         }
     </script>
-@yield('js2')
+    @yield('js2')
 </body>
 
 </html>

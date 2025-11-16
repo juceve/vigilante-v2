@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class AreaController
@@ -93,10 +94,23 @@ class AreaController extends Controller
     {
         request()->validate(Area::$rules);
 
-        $area->update($request->all());
+        DB::beginTransaction();
+        try {
+            $area->update($request->all());
 
-        return redirect()->route('areas.index')
-            ->with('success', 'Area editada correctamente');
+            $empleados = $area->empleados;
+            foreach ($empleados as $empleado) {
+                $empleado->user->template = $area->template;
+                $empleado->user->save();
+            }
+            DB::commit();
+            return redirect()->route('areas.index')
+                ->with('success', 'Area editada correctamente');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->route('areas.edit', $area->id)
+                ->with('error', 'Error al editar el area: ' . $th->getMessage());
+        }
     }
 
     /**

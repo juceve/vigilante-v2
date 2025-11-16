@@ -1,4 +1,8 @@
 {{-- filepath: c:\laragon\www\vigilantev2\resources\views\livewire\vigilancia\panico.blade.php --}}
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/styleVigilancia.css') }}">
+@endpush
+
 <div>
     @section('title')
     Pánico

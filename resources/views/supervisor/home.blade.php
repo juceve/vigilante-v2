@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Panel Operativo')
+@section('title', 'Panel Supervisor')
 
 @push('head')
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
@@ -14,11 +14,11 @@
         <div class="container">
             <div class="header-content">
                 <div class="user-section">
-                    <div class="user-avatar-mini">
+                    {{-- <div class="user-avatar-mini">
                         <i class="fas fa-user-shield"></i>
-                    </div>
+                    </div> --}}
                     <div class="user-details">
-                        <h4 class="user-name-mini">{{ Auth::user()->name }}</h4>
+                        <h4 class="user-name-mini"><i class="fas fa-user-shield"></i> {{ Auth::user()->name }}</h4>
                         <div class="status-badge">
                             <i class="fas fa-circle"></i>
                             <span>En Servicio</span>

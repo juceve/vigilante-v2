@@ -1,3 +1,7 @@
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/styleVigilancia.css') }}">
+@endpush
+
 <div>
     @section('title')
         Validaciones Airbnb

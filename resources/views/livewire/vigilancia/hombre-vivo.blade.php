@@ -68,28 +68,6 @@
     </div>
 
     <style>
-        /* Forzar modo claro permanente */
-        * {
-            color-scheme: light !important;
-        }
-
-        html,
-        body {
-            background-color: #f8fafc !important;
-            color: #1e293b !important;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
-        }
-
-        .form-control::placeholder {
-            color: #94a3b8;
-            font-style: italic;
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
             .container {
                 padding-left: 0.5rem !important;
@@ -98,6 +76,10 @@
         }
     </style>
 </div>
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/styleVigilancia.css') }}">
+@endpush
 
 @section('js')
     @if ($intervalo)

@@ -314,26 +314,38 @@ return [
         ],
         ['header' => 'Operativa'],
 
+
         [
-            'text'    => 'Designaciones',
-            'icon'    => 'fas fa-fw fa-user-clock',
+            'text'    => 'Guardias',
+            'icon'    => 'fas fa-fw fa-user-tag',
             'submenu' => [
                 [
-                    'text' => 'Registros',
+                    'text' => 'Designaciones',
                     'route' =>  'designaciones.index',
                     'icon'  =>  'fas fa-clipboard',
                     'can'   =>  'designaciones.index',
                 ],
                 [
-                    'text' => 'Historial',
+                    'text' => 'Historial Designaciones',
                     'route' =>  'admin.designacione-guardias',
                     'icon'  =>  'fas fa-history',
                     'can'   =>  'designaciones.index',
                 ],
-
-
             ],
         ],
+        [
+            'text'    => 'Supervisores',
+            'icon'    => 'fas fa-fw fa-user-secret',
+            'submenu' => [
+                [
+                    'text' => 'Designaciones',
+                    'route' =>  'admin.designacionessupervisores',
+                    'icon'  =>  'fas fa-clipboard',
+                    // 'can'   =>  'designaciones.index',
+                ],
+            ],
+        ],
+
         [
             'text'    => 'Recursos Humanos',
             'icon'    => 'fas fa-fw fa-users-cog',

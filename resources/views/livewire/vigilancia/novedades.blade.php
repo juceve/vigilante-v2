@@ -98,31 +98,6 @@
     </div>
 
     <style>
-        /* Forzar modo claro permanente */
-        * {
-            color-scheme: light !important;
-        }
-
-        html,
-        body {
-            background-color: #f8fafc !important;
-            color: #1e293b !important;
-        }
-
-        .form-control::placeholder {
-            color: #94a3b8;
-            font-style: italic;
-        }
-
-        .img-thumbnail {
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 0.25rem;
-            background: white;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Estilos responsivos */
         @media (max-width: 768px) {
             .container {
                 padding-left: 0.5rem !important;
@@ -133,24 +108,12 @@
                 margin-bottom: 1.5rem;
             }
         }
-
-        /* Mejorar la apariencia de los inputs de archivo */
-        input[type="file"]::-webkit-file-upload-button {
-            background: linear-gradient(135deg, #d97706, #f59e0b);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            padding: 0.5rem 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            margin-right: 1rem;
-        }
-
-        input[type="file"]::-webkit-file-upload-button:hover {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
     </style>
 </div>
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/styleVigilancia.css') }}">
+@endpush
 
 @section('js')
 <script>

@@ -56,10 +56,36 @@ class HomeController extends Controller
                 if ($designaciones->turno) {
                     Session::put('cliente_id-oper', $designaciones->turno->cliente_id);
                 }
+            }else{
+                Session::put('cliente_id-oper', null);
             }
 
             return view('operativo', compact('designaciones'));
         }
+
+         if (Auth::user()->template == "SUPERVISOR") {
+            $empleado_id = Auth::user()->empleados[0]->id;
+            $designaciones = null;
+            if ($empleado_id) {
+                $designaciones = Designacione::where('fechaFin', '>=', date('Y-m-d'))
+                    ->where('fechaInicio', '<=', date('Y-m-d'))
+                    ->where('empleado_id', $empleado_id)
+                    ->where('estado', 1)
+                    ->orderBy('id', 'DESC')->first();
+            }
+
+            if ($designaciones) {
+                Session::put('designacion-oper', $designaciones->id);
+                if ($designaciones->turno) {
+                    Session::put('cliente_id-oper', $designaciones->turno->cliente_id);
+                }
+            }else{
+                Session::put('cliente_id-oper', null);
+            }
+
+            return view('supervisor.home', compact('designaciones'));
+        }
+
         if (Auth::user()->template == "ADMIN") {
 
             return view('admin.home');
